@@ -1,0 +1,109 @@
+/* Color Palette Variables */
+@define-color bg_dark      rgba(18, 19, 26, 0.75);
+@define-color bg_capsule   rgba(30, 32, 46, 0.5);
+@define-color crimson      #d62828;
+@define-color amber_gold   #f4a261;
+@define-color silver_blue  #a8dedc;
+@define-color text_main    #e0e1dd;
+@define-color text_dim     #6c757d;
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    min-height: 0;
+}
+
+/* Core Bar Track Window */
+window#waybar {
+    background-color: @bg_dark;
+    border-bottom: 2px solid rgba(244, 162, 97, 0.15); /* Subtly catch the moon's glow */
+    color: @text_main;
+}
+
+/* Left Section: Workspaces styled as glowing lanterns */
+#workspaces button {
+    padding: 0 12px;
+    margin: 4px 2px;
+    background-color: transparent;
+    color: @text_dim;
+    transition: all 0.3s ease;
+}
+
+#workspaces button.active {
+    color: @amber_gold;
+    border-bottom: 2px solid @crimson;
+    text-shadow: 0 0 6px rgba(244, 162, 97, 0.6);
+}
+
+#workspaces button:hover {
+    background-color: rgba(214, 40, 40, 0.2);
+    color: @text_main;
+}
+
+/* Center Section: Active Window (Clean Ink Capsule) */
+#window {
+    padding: 0 15px;
+    margin: 4px 0;
+    border-radius: 8px;
+    background-color: @bg_capsule;
+    color: @silver_blue;
+}
+
+/* Right Section: System Hardware Blocks */
+#backlight,
+#wireplumber,
+#battery,
+#clock {
+    padding: 0 12px;
+    margin: 4px 3px;
+    border-radius: 6px;
+    background-color: @bg_capsule;
+}
+
+/* Custom individual module highlights matching the artwork */
+#backlight {
+    color: @silver_blue;
+}
+
+#wireplumber {
+    color: @amber_gold;
+}
+
+#battery {
+    color: #a7c957; /* Soft nature green default */
+}
+
+#battery.charging {
+    color: @amber_gold;
+}
+
+#battery.warning:not(.charging) {
+    color: @crimson;
+}
+
+#clock {
+    color: @text_main;
+    border-right: 2px solid @crimson; /* Small crimson maple leaf highlight slash */
+}
+/* Append this block directly to your existing ~/.config/waybar/style.css file */
+
+#backlight,
+#wireplumber,
+#memory,
+#cpu,
+#network,
+#battery,
+#clock {
+    padding: 0 12px;
+    margin: 4px 3px;
+    border-radius: 6px;
+    background-color: @bg_capsule;
+}
+
+/* Color theme accent matching the silver-blue tones of the artwork */
+#memory {
+    color: @silver_blue;
+}
