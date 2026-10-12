@@ -20,15 +20,35 @@ local fileManager = "dolphin"
 local menu        = "hyprlauncher"
 local shot_script = "~/.config/hypr/screenshot.sh"
 
+----------------------------------
+---- ENVIRONMENT RUN HELPER ------
+----------------------------------
+-- Helper function to launch apps safely with or without a UWSM systemd tree context
+local function launch(cmd)
+    if os.getenv("UWSM_ID") then
+        return hl.dsp.exec_cmd("uwsm app -- " .. cmd)
+    else
+        return hl.dsp.exec_cmd(cmd)
+    end
+end
+
 -------------------
 ---- AUTOSTART ----
 -------------------
 hl.on("hyprland.start", function () 
-     hl.exec_cmd("uwsm app -- waybar")
-     hl.exec_cmd("uwsm app -- hyprpaper")
-     hl.exec_cmd("uwsm app -- hypridle")
-     hl.exec_cmd("uwsm app -- dunst")
-     hl.exec_cmd("hyprlauncher -d")
+    -- Dynamic backend environment check to prevent desktop load panel lockups
+    if os.getenv("UWSM_ID") then
+        hl.exec_cmd("uwsm app -- waybar")
+        hl.exec_cmd("uwsm app -- hyprpaper")
+        hl.exec_cmd("uwsm app -- hypridle")
+        hl.exec_cmd("uwsm app -- dunst")
+    else
+        hl.exec_cmd("waybar &")
+        hl.exec_cmd("hyprpaper &")
+        hl.exec_cmd("hypridle &")
+        hl.exec_cmd("dunst &")
+    end
+    hl.exec_cmd("hyprlauncher -d")
 end)
 
 -------------------------------
@@ -141,21 +161,21 @@ hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
 ---------------------
 local mainMod = "SUPER"
 
--- Core System App Launchers (Fully containerized via UWSM)
-hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("uwsm app -- " .. terminal))
-hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("uwsm app -- " .. fileManager))
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("uwsm app -- " .. menu))
-hl.bind(mainMod .. " + SHIFT + F", hl.dsp.exec_cmd("uwsm app -- firefox"))
+-- Core System App Launchers (Auto-detects active environment context)
+hl.bind(mainMod .. " + Q",        launch(terminal))
+hl.bind(mainMod .. " + C",        hl.dsp.window.close())
+hl.bind(mainMod .. " + E",        launch(fileManager))
+hl.bind(mainMod .. " + R",        launch(menu))
+hl.bind(mainMod .. " + SHIFT + F", launch("firefox"))
 
--- Stop and Log out
-hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("uwsm stop"))
+-- Stop and Log out safely matching session context hooks
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("uwsm stop || hyprctl dispatch exit"))
 
--- Connect to your Hsin Samba Media Server instantly
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("uwsm app -- dolphin ~/Videos/Server"))
+-- Connect to your Samba Media Server instantly
+hl.bind(mainMod .. " + SHIFT + V", launch("dolphin " .. os.getenv("HOME") .. "/Videos/Server"))
 
 -- Securely Lock Laptop Screen
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("uwsm app -- hyprlock"))
+hl.bind(mainMod .. " + L", launch("hyprlock"))
 
 -- Window Geometry Controls
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
@@ -201,10 +221,18 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 ---------------------
 ---- SCREENSHOTS ----
 ---------------------
--- Standardized script mappers bypassing nested string character escape crashes
-hl.bind("Print",             hl.dsp.exec_cmd("uwsm app -- " .. shot_script .. " region"))
-hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd("uwsm app -- " .. shot_script .. " full"))
-hl.bind(mainMod .. " + X",     hl.dsp.exec_cmd("uwsm app -- " .. shot_script .. " window")) -- Reassigned to SUPER+X to avoid scratchpad collision
+-- 1. Evaluated instantly at load-time (completely non-blocking on keypress)
+local is_uwsm = os.getenv("UWSM_ID") ~= nil
+
+-- 2. Build the target path commands cleanly without nested quote escaping
+local shot_region = is_uwsm and ("uwsm app -- " .. shot_script .. " region") or (shot_script .. " region")
+local shot_full   = is_uwsm and ("uwsm app -- " .. shot_script .. " full")   or (shot_script .. " full")
+local shot_window = is_uwsm and ("uwsm app -- " .. shot_script .. " window") or (shot_script .. " window")
+
+-- 3. Pass clean, native, non-blocking string dispatchers directly to the API
+hl.bind("Print",               hl.dsp.exec_cmd(shot_region))
+hl.bind(mainMod .. " + Print", hl.dsp.exec_cmd(shot_full))
+hl.bind(mainMod .. " + X",     hl.dsp.exec_cmd(shot_window))
 
 ----------------------
 ---- WINDOW RULES ----
