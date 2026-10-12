@@ -1,0 +1,40 @@
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+    
+    "logo": {
+        "type": "auto",
+        "color": {
+            "1": "#d62828",   // Channel 1: Primary Arch shape -> Hsin Crimson
+            "2": "#f4a261"    // Channel 2: Core accent highlights -> Amber Gold
+        }
+    },
+    "display": {
+        "separator": " ❯ ",
+        
+        "color": {
+            "keys": "#d62828",       // Hsin Crimson Labels
+            "title": "#f4a261",      // Amber Gold Username/Host
+            "separator": "#d62828"   // Crimson Arrow Pointer
+        }
+    },
+
+    "modules": [
+        "title",
+        "separator",
+        "os",
+        "host",
+        "kernel",
+        "uptime",
+        "packages",
+        "shell",
+        "de",
+        "wm",
+        "terminal",
+        "cpu",
+        "gpu",
+        "memory",
+        "disk",
+        "battery",
+        "colors"
+    ]
+}
