@@ -36,6 +36,9 @@ end)
 -------------------------------
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_SIZE", "24")
+-- File association fix for Dolphin file manager
+hl.env("XDG_MENU_PREFIX", "arch-")
+
 
 -----------------------
 ----- PERMISSIONS -----
@@ -144,6 +147,9 @@ hl.bind(mainMod .. " + C", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("uwsm app -- " .. fileManager))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("uwsm app -- " .. menu))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.exec_cmd("uwsm app -- firefox"))
+
+-- Stop and Log out
+hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("uwsm stop"))
 
 -- Connect to your Hsin Samba Media Server instantly
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("uwsm app -- dolphin ~/Videos/Server"))
