@@ -11,7 +11,7 @@
     border: none;
     border-radius: 0;
     font-family: "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 13px;
+    font-size: 16px;
     font-weight: bold;
     min-height: 0;
 }
@@ -68,6 +68,7 @@ window#waybar {
 #cpu,
 #custom-tailscale,
 #network,
+#tray,
 #battery,
 #clock {
     padding: 0 12px;
@@ -123,7 +124,6 @@ window#waybar {
     animation-iteration-count: infinite;
     animation-direction: alternate;
 }
-
 
 #clock {
     color: @text_main;

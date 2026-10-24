@@ -10,7 +10,7 @@
     // Added "memory" right after wireplumber
     "modules-left": ["hyprland/workspaces", "custom/media"],
     "modules-center": ["hyprland/window"],
-    "modules-right": ["backlight", "wireplumber", "memory", "cpu", "network", "battery", "clock"],
+    "modules-right": ["backlight", "wireplumber", "memory", "cpu", "network", "battery", "tray", "clock"],
 
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -47,7 +47,7 @@
     "wireplumber": {
         "format": "   {volume}%",
         "format-muted": "   Muted",
-        "on-click": "uwsm app -- kitty -e wpctl status"
+        "on-click": "uwsm app -- pavucontrol"
     },
 
     "memory": {
@@ -78,6 +78,12 @@
         "format-charging": " 󰂄 {capacity}%",
         "format-icons": ["󰂎", "󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"]
     },
+
+    "tray": {
+    	"icon-size": 16,
+    	"spacing": 10
+    },
+
 
     "clock": {
         "format": "   {:%a %d   %H:%M}"
