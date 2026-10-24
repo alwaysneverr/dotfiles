@@ -9,7 +9,7 @@ hl.monitor({
     output   = "",
     mode     = "preferred",
     position = "auto",
-    scale    = "auto",
+    scale    = 1,
 })
 
 ---------------------
@@ -35,21 +35,35 @@ end
 -------------------
 ---- AUTOSTART ----
 -------------------
-hl.on("hyprland.start", function () 
+hl.on("hyprland.start", function ()
     -- Dynamic backend environment check to prevent desktop load panel lockups
     if os.getenv("UWSM_ID") then
+	hl.exec_cmd("uwsm finalize")
+
+	hl.exec_cmd("uwsm app -- kitty")
+--        hl.exec_cmd("uwsm app -- quickshell") 
         hl.exec_cmd("uwsm app -- waybar")
         hl.exec_cmd("uwsm app -- hyprpaper")
         hl.exec_cmd("uwsm app -- hypridle")
         hl.exec_cmd("uwsm app -- dunst")
+        hl.exec_cmd("uwsm app -- bluetoothctl power on")
+        hl.exec_cmd("uwsm app -- hyprlauncher -d")
+
+        hl.exec_cmd("uwsm app -- steam -silent -nochatui -nofriendsui")
+        hl.exec_cmd("uwsm app -- sh -c 'sleep 2 && env GDK_BACKEND=wayland blueman-applet'")
     else
+	hl.exec_cmd("kitty")
+--        hl.exec_cmd("quickshell &") 
         hl.exec_cmd("waybar &")
         hl.exec_cmd("hyprpaper &")
         hl.exec_cmd("hypridle &")
         hl.exec_cmd("dunst &")
+        hl.exec_cmd("bluetoothctl power on &")
+        hl.exec_cmd("hyprlauncher -d &")
+        hl.exec_cmd("steam -silent -nochatui -nofriendsui &")
     end
-    hl.exec_cmd("hyprlauncher -d")
 end)
+
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
@@ -139,7 +153,7 @@ hl.config({
     dwindle = { preserve_split = true },
     master  = { new_status = "master" },
     scrolling = { fullscreen_on_one_column = true },
-    misc = { force_default_wallpaper = 0, disable_hyprland_logo = true },
+    misc = { force_default_wallpaper = 0, disable_hyprland_logo = true, background_color = "0x12131a" },
 })
 
 ---------------
@@ -254,4 +268,31 @@ hl.window_rule({
     match = { class = "hyprland-run" },
     move  = "20 monitor_h-120",
     float = true,
+})
+-- Pixel-perfect window rule for Visual Novels via Lutris/UMU in v0.56.2
+hl.window_rule({
+    match = {
+        class = "^umu%-default$" -- Safely targets the exact UMU runtime wrapper class
+    },
+    fullscreen = true,
+    no_blur = true,
+    nearest_neighbor = true
+})
+-- Background management rules for silent Steam tracking in v0.56.2
+hl.window_rule({
+    match = {
+        class = "^steam$"
+    },
+    float = true,
+    -- Pass a string argument directly to apply specific engine behaviors
+    suppress_event = "activate",
+    workspace = "silent"
+})
+-- Force Vita3K into fullscreen upon launch
+hl.window_rule({
+    name  = "vita3k-fullscreen",
+    match = { 
+        class = "^Vita3K$" 
+    },
+    fullscreen = true,
 })
