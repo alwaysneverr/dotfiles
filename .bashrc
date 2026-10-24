@@ -11,6 +11,8 @@ alias ll='ls -lah'                 # Long format, showing all hidden files & rea
 alias l='ls -F'                    # Short format classified list
 alias la='ls -A'                   # Show hidden files, but skip . and ..
 
+alias fastfetch='clear && fastfetch'
+
 # Faster Directory Traversal
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -46,9 +48,10 @@ alias fm="uswm app -- dolphin"
 alias menu="uwsm app -- hyprlauncher"
 alias lock="uwsm app -- hyprlock"
 
-alias server="uwsm app -- dolphin ~/Videos/Server"
+alias server="uwsm app -- dolphin ~/M710q/Videos"
 
 alias edithypr="nano ~/.config/hypr/hyprland.lua"
+alias editkitty="nano ~/.config/kitty/kitty.conf"
 alias edittk="nano ~/.config/hypr/hyprtoolkit.conf"
 alias editdunst="nano ~/.config/dunst/dunstrc"
 alias editwaybar="nano ~/.config/waybar/config.jsonc"
@@ -69,6 +72,6 @@ alias checktimer="systemctl status paccache.timer paccache.service"
 alias update="sudo pacman -Syu"
 
 # dotfiles Git
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 
