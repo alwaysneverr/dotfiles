@@ -52,14 +52,26 @@ If checkout complains about existing files, move them aside and retry.
 
 ## What's tracked
 
-- `hypr/`: Hyprland config
-- `uwsm/env`: session environment (DPI scaling)
-- `hyprlauncher/style.css`: launcher theme
-- `mpv/mpv.conf`, `mpv/script-opts/`: mpv settings
-- `mimeapps.list`: default applications
-- Shell configs: `.zshrc`, `.bashrc`
+| Path | What it is |
+|------|------------|
+| `.config/hypr/hyprland.lua` | Hyprland config (Lua): autostart, binds, window rules, animations |
+| `.config/hypr/hypridle.conf` | idle actions: dim, power saver, lock, suspend |
+| `.config/hypr/hyprlock.conf` | lock screen |
+| `.config/hypr/hyprpaper.conf` | wallpaper |
+| `.config/hypr/hyprtoolkit.conf` | shared theme for Hypr apps |
+| `.config/hypr/screenshot.sh` | screenshot script (grim + slurp, with notification) |
+| `.config/hyprlauncher/style.css` | launcher theme |
+| `.config/waybar/` | bar config and style |
+| `.config/dunst/dunstrc` | notifications |
+| `.config/kitty/kitty.conf` | terminal |
+| `.config/fastfetch/config.jsonc` | system info |
+| `.config/uwsm/env` | session environment (DPI scaling) |
+| `.config/mpv/` | `mpv.conf`, `input.conf`, `script-opts/` |
+| `.config/mimeapps.list` | default applications |
+| `.zshrc`, `.bashrc` | shell config, aliases, prompt |
+| `Pictures/Wallpapers/hsin.jpg` | wallpaper |
 
-mpv scripts (`uosc`, `videoclip`) are not tracked. Reinstall them by hand.
+mpv scripts (`uosc`, `videoclip`) and fonts are not tracked. Reinstall them by hand.
 
 ## System-level notes (outside this repo)
 
