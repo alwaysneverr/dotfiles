@@ -39,6 +39,7 @@ hl.on("hyprland.start", function ()
     -- Dynamic backend environment check to prevent desktop load panel lockups
     if os.getenv("UWSM_ID") then
 	hl.exec_cmd("uwsm finalize")
+	hl.exec_cmd("systemctl --user start hyprpolkitagent")
 
 	hl.exec_cmd("uwsm app -- kitty")
 --        hl.exec_cmd("uwsm app -- quickshell") 
@@ -185,8 +186,6 @@ hl.bind(mainMod .. " + SHIFT + F", launch("firefox"))
 -- Stop and Log out safely matching session context hooks
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("uwsm stop || hyprctl dispatch exit"))
 
--- Connect to your Samba Media Server instantly
-hl.bind(mainMod .. " + SHIFT + V", launch("dolphin " .. os.getenv("HOME") .. "/Videos/Server"))
 
 -- Securely Lock Laptop Screen
 hl.bind(mainMod .. " + L", launch("hyprlock"))
@@ -296,3 +295,7 @@ hl.window_rule({
     },
     fullscreen = true,
 })
+
+-- Syncplay
+hl.bind(mainMod .. " + ALT + S", launch("/usr/bin/syncplay --clear-gui-data -g"))
+hl.window_rule({ name = "syncplay-float", match = { class = "^(syncplay)$" }, float = true })

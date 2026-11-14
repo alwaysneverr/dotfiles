@@ -43,12 +43,11 @@ fastfetch
 alias hlog="uwsm stop"
 alias hcheck="uwsm check may-start"
 
-alias ff="uswm app -- firefox"
-alias fm="uswm app -- dolphin"
+alias ff="uwsm app -- firefox"
+alias fm="uwsm app -- dolphin"
 alias menu="uwsm app -- hyprlauncher"
 alias lock="uwsm app -- hyprlock"
 
-alias server="uwsm app -- dolphin ~/M710q/Videos"
 
 alias edithypr="nano ~/.config/hypr/hyprland.lua"
 alias editkitty="nano ~/.config/kitty/kitty.conf"
@@ -63,7 +62,7 @@ alias reloadwaybar="killall waybar && uwsm app -- waybar &"
 alias reloadidle="killall hypridle && uwsm app -- hypridle &"
 alias reloadall="reloadlauncher && reloaddunst && reloadwaybar && reloadidle"
 
-alias testnotif="dunstify 'System Synced' 'Connected to Hsin Samba Server node safely.'"
+alias testnotif="dunstify 'System Synced' 'Notifications are working.'"
 alias testcrit="dunstify -u critical 'Battery Low' 'ASUS power matrix dropping below safe thresholds.'"
 
 alias cleanpkg="paccache -d -k 2"       # Safe simulation dry-run

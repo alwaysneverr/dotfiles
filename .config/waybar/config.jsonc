@@ -64,12 +64,12 @@
 
     "network": {
         "format-wifi": "  {signalStrength}%",
-        "format-ethernet": " 󰈁 {ipaddr}/{cidr}",
+        "format-ethernet": " 󰈁 Wired",
         "format-linked": " 󰈁 {ifname} (No IP)",
         "format-disconnected": " 󰖪  Disconnected",
         "format-icons": ["󰤟 ", "󰤢 ", "󰤥 ", "󰤨 ", "󰖩 "],
         "tooltip-format": "{ifname} via {gwaddr} ",
-        "tooltip-format-wifi": "SSID: {essid}"
+        "tooltip-format-wifi": "{signalStrength}%"
     },
 
     "battery": {
