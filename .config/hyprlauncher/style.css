@@ -1,0 +1,30 @@
+/* ~/.config/hyprlauncher/style.css */
+
+window {
+    background-color: rgba(18, 19, 38, 0.85); /* Deep translucent Hsin ink tint */
+    border: 2px solid #f4a261;                 /* Glowing Amber Gold framework perimeter */
+    border-radius: 12px;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+}
+
+#input {
+    background-color: rgba(30, 32, 46, 0.6);
+    border-bottom: 2px solid #d62828;          /* Crimson underline spark */
+    color: #e0e1dd;
+    font-size: 16px;
+    padding: 10px;
+    margin: 15px;
+    border-radius: 6px;
+}
+
+#entry:selected {
+    background-color: rgba(244, 162, 97, 0.2);
+    border-left: 4px solid #f4a261;            /* Amber active item flag */
+    color: #ffffff;
+}
+
+#entry {
+    color: #a8dedc;                             /* Pale silvery blue text fallback */
+    padding: 8px 15px;
+    transition: all 0.2s ease;
+}
