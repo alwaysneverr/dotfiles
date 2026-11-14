@@ -46,6 +46,7 @@ The launcher uses amber `#f4a261`, crimson `#d62828` and a dark translucent ink 
 | `Super+arrows` | move focus |
 | `Print` / `Super+Print` / `Super+X` | screenshot: region / full / window |
 | `Super+Alt+S` | Syncplay |
+| `Super+Shift+V` | media server folder (Dolphin) |
 
 ## Packages
 
