@@ -18,6 +18,7 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 | Lock and idle | hyprlock + hypridle |
 | Wallpaper | hyprpaper |
 | Screenshots | grim + slurp (`hypr/screenshot.sh`) |
+| Menus | fuzzel (Wi-Fi menu, dunst actions) |
 | Files | Dolphin |
 | Theming | adw-gtk3 (GTK), hyprqt6engine + `Hsin.colors` (Qt) |
 | Images | imv (`imv-folder` wrapper) |
@@ -73,7 +74,7 @@ sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
   fastfetch ttf-jetbrains-mono-nerd greetd greetd-tuigreet cifs-utils \
-  timeshift cronie syncplay steam adw-gtk-theme breeze imv
+  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel
 ```
 
 `steam` needs the `multilib` repo enabled in `/etc/pacman.conf`.
@@ -149,7 +150,9 @@ If checkout complains about existing files, move them aside and retry.
 | `.config/hypr/hyprtoolkit.conf` | shared theme for Hypr apps |
 | `.config/hypr/screenshot.sh` | screenshot script (grim + slurp, with notification) |
 | `.config/hyprlauncher/style.css` | launcher theme |
-| `.config/waybar/` | bar config and style |
+| `.config/waybar/` | bar config and style (Wi-Fi menu on click, nmtui on right click, calendar tooltip) |
+| `.local/bin/wifi-menu` | Wi-Fi picker (nmcli + fuzzel) |
+| `.config/fuzzel/fuzzel.ini` | menu theme |
 | `.config/dunst/dunstrc` | notifications |
 | `.config/kitty/kitty.conf` | terminal |
 | `.config/fastfetch/config.jsonc` | system info |
