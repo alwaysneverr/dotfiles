@@ -19,13 +19,28 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 | Wallpaper | hyprpaper |
 | Screenshots | grim + slurp (`hypr/screenshot.sh`) |
 | Files | Dolphin |
+| Theming | adw-gtk3 (GTK), hyprqt6engine + `Hsin.colors` (Qt) |
+| Images | imv (`imv-folder` wrapper) |
 | Shell | zsh (bash as fallback) |
 | Video | mpv with uosc and videoclip |
 | Snapshots | Timeshift (rsync, daily) |
 
 ## Palette
 
-The launcher uses amber `#f4a261`, crimson `#d62828` and a dark translucent ink background `rgba(18, 19, 38, 0.85)`.
+The launcher, dunst, GTK and Qt use amber `#f4a261`, crimson `#d62828` and a dark translucent ink background `rgba(18, 19, 38, 0.85)`.
+
+## Theming
+
+GTK uses adw-gtk3 with colour overrides in `gtk.css`. Qt apps (Dolphin included) use `hyprqt6engine` with the `Hsin.colors` scheme. These settings aren't stored in files, so run them once:
+
+```sh
+gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface accent-color 'orange'
+gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
+```
+
+`imv-folder.desktop` has my home path hardcoded; edit it on another machine.
 
 ## Keybindings
 
@@ -58,7 +73,7 @@ sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
   fastfetch ttf-jetbrains-mono-nerd greetd greetd-tuigreet cifs-utils \
-  timeshift cronie syncplay steam
+  timeshift cronie syncplay steam adw-gtk-theme breeze imv
 ```
 
 `steam` needs the `multilib` repo enabled in `/etc/pacman.conf`.
@@ -82,7 +97,7 @@ cd paru-bin && makepkg -si
 ### 3. AUR packages
 
 ```sh
-yay -S vesktop akyuu parsec-bin vita3k-git ttf-orbitron
+yay -S vesktop akyuu parsec-bin vita3k-git ttf-orbitron hyprqt6engine
 ```
 
 (`paru -S` takes the same arguments.)
@@ -93,7 +108,8 @@ yay -S vesktop akyuu parsec-bin vita3k-git ttf-orbitron
 | `akyuu` | anime tracker, a Taiga fork for Linux ([ligneo/akyuu](https://github.com/ligneo/akyuu)) |
 | `parsec-bin` | remote desktop |
 | `vita3k-git` | PS Vita emulator (fullscreen window rule) |
-| `ttf-orbitron` | font |
+| `ttf-orbitron` | font (lock screen clock) |
+| `hyprqt6engine` | Qt theme engine (Dolphin and other Qt apps follow `Hsin.colors`) |
 
 The mpv scripts `uosc` and `videoclip` are installed by hand.
 
@@ -137,9 +153,14 @@ If checkout complains about existing files, move them aside and retry.
 | `.config/dunst/dunstrc` | notifications |
 | `.config/kitty/kitty.conf` | terminal |
 | `.config/fastfetch/config.jsonc` | system info |
-| `.config/uwsm/env` | session environment (DPI scaling) |
+| `.config/uwsm/env` | session environment (DPI scaling, Qt theme) |
 | `.config/mpv/` | `mpv.conf`, `input.conf`, `script-opts/` |
 | `.config/mimeapps.list` | default applications |
+| `.config/gtk-3.0/gtk.css`, `.config/gtk-4.0/gtk.css` | GTK colour overrides |
+| `.config/hypr/hyprqt6engine.conf` | Qt theme (colour scheme, icons, style) |
+| `.local/share/color-schemes/Hsin.colors` | KDE/Qt colour scheme |
+| `.config/imv/config` | image viewer colours |
+| `.local/bin/imv-folder`, `.local/share/applications/imv-folder.desktop` | opens an image with its whole folder loaded |
 | `.zshrc`, `.bashrc` | shell config, aliases, prompt |
 | `Pictures/Wallpapers/hsin.jpg` | wallpaper |
 
@@ -158,8 +179,8 @@ Quotes on the lock screen are voice lines from Hsin in Wuthering Waves (© Kuro 
 
 ## Launcher icons
 
-hyprlauncher only reads icons from the system folders, and it ignores absolute `Icon=` paths. Fixes used here:
+hyprtoolkit 0.6.0 has two icon bugs: absolute `Icon=` paths that include a file extension fail ([hyprlauncher#152](https://github.com/hyprwm/hyprlauncher/issues/152)), and icons in `~/.local/share/icons` are missed (fixed upstream in [hyprtoolkit#157](https://github.com/hyprwm/hyprtoolkit/pull/157), not released yet). Fixes used here:
 
 - Copy the app's `.desktop` file to `~/.local/share/applications/` and set `Icon=` to a theme icon name.
-- Steam game icons live in `~/.local/share/icons/hicolor`; symlink them into `/usr/share/icons/hicolor` (see the loop in my notes) after adding a game.
+- Steam game icons live in `~/.local/share/icons/hicolor`; symlink them into `/usr/share/icons/hicolor` (see the loop in my notes) after adding a game. Not needed once hyprtoolkit 0.6.0 is replaced by a newer release.
 - Hide clutter (Wine entries and similar) with `NoDisplay=true` in a local copy.
