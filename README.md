@@ -155,3 +155,11 @@ mpv scripts (`uosc`, `videoclip`) and fonts are not tracked. Reinstall them by h
 - **Wallpaper:** `hsin.jpg` is game artwork, not mine.
 
 Quotes on the lock screen are voice lines from Hsin in Wuthering Waves (© Kuro Games), used for personal customization.
+
+## Launcher icons
+
+hyprlauncher only reads icons from the system folders, and it ignores absolute `Icon=` paths. Fixes used here:
+
+- Copy the app's `.desktop` file to `~/.local/share/applications/` and set `Icon=` to a theme icon name.
+- Steam game icons live in `~/.local/share/icons/hicolor`; symlink them into `/usr/share/icons/hicolor` (see the loop in my notes) after adding a game.
+- Hide clutter (Wine entries and similar) with `NoDisplay=true` in a local copy.
