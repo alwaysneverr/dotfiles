@@ -2,6 +2,8 @@
 
 Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Hsin (Wuthering Waves).
 
+Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1080p panel.
+
 ## Stack
 
 | Part | Choice |
@@ -24,6 +26,41 @@ Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and t
 ## Palette
 
 The launcher uses amber `#f4a261`, crimson `#d62828` and a dark translucent ink background `rgba(18, 19, 38, 0.85)`.
+
+## Keybindings
+
+`Super` is the main modifier.
+
+| Keys | Action |
+|------|--------|
+| `Super+Q` | terminal (kitty) |
+| `Super+E` | file manager (Dolphin) |
+| `Super+R` | launcher (hyprlauncher) |
+| `Super+Shift+F` | Firefox |
+| `Super+C` | close window |
+| `Super+V` / `Super+P` / `Super+J` | float / pseudo / toggle split |
+| `Super+L` | lock screen |
+| `Super+M` | log out (`uwsm stop`) |
+| `Super+1..0` / `Super+Shift+1..0` | go to / move window to workspace |
+| `Super+S` | scratchpad workspace |
+| `Super+arrows` | move focus |
+| `Print` / `Super+Print` / `Super+X` | screenshot: region / full / window |
+| `Super+Alt+S` | Syncplay |
+
+## Packages
+
+Everything the config expects (Arch names; some are AUR):
+
+```sh
+sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
+  hyprpolkitagent dunst kitty zsh zsh-autosuggestions zsh-syntax-highlighting \
+  grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
+  pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
+  fastfetch ttf-jetbrains-mono-nerd greetd greetd-tuigreet cifs-utils \
+  timeshift cronie
+```
+
+Also used: `steam`, `syncplay` and the mpv scripts `uosc` and `videoclip`.
 
 ## Layout
 
@@ -78,3 +115,6 @@ mpv scripts (`uosc`, `videoclip`) and fonts are not tracked. Reinstall them by h
 - **greetd:** `/etc/greetd/config.toml` runs `tuigreet` with `--remember --remember-session`, the session list from `/usr/share/wayland-sessions`, a yellow/gold theme and a matrix background. Logging in through uwsm is what makes autostart apps start.
 - **Snapshots:** Timeshift (rsync) on the root partition, `/home` excluded. `/boot` is a separate FAT partition, so a pacman hook (`95-bootbackup.hook`) copies it to `/.bootbackup` on every kernel change, and Timeshift picks that up.
 - **Cleanup routine:** `paccache.timer` is enabled, plus `fstrim.timer` and `reflector` for mirrors.
+- **Polkit agent:** `hyprpolkitagent` is enabled as a user service (`systemctl --user enable hyprpolkitagent`).
+- **Media server:** two CIFS automounts in `/etc/fstab` (`~/M710q/Videos`, `~/M710q/Documents`) over Tailscale, with `vers=3.1.1`. The credentials live in `~/.smbcredentials` (mode 600, not tracked).
+- **Wallpaper:** `hsin.jpg` is game artwork, not mine.
