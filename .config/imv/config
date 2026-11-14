@@ -1,0 +1,5 @@
+[options]
+background = 121326
+overlay_font = JetBrainsMono Nerd Font:10
+overlay_text_color = e6e6ee
+overlay_background_color = 121326

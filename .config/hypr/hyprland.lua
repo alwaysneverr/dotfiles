@@ -39,10 +39,8 @@ hl.on("hyprland.start", function ()
     -- Dynamic backend environment check to prevent desktop load panel lockups
     if os.getenv("UWSM_ID") then
 	hl.exec_cmd("uwsm finalize")
-	hl.exec_cmd("systemctl --user start hyprpolkitagent")
 
 	hl.exec_cmd("uwsm app -- kitty")
---        hl.exec_cmd("uwsm app -- quickshell") 
         hl.exec_cmd("uwsm app -- waybar")
         hl.exec_cmd("uwsm app -- hyprpaper")
         hl.exec_cmd("uwsm app -- hypridle")
@@ -54,7 +52,6 @@ hl.on("hyprland.start", function ()
         hl.exec_cmd("uwsm app -- sh -c 'sleep 2 && env GDK_BACKEND=wayland blueman-applet'")
     else
 	hl.exec_cmd("kitty")
---        hl.exec_cmd("quickshell &") 
         hl.exec_cmd("waybar &")
         hl.exec_cmd("hyprpaper &")
         hl.exec_cmd("hypridle &")

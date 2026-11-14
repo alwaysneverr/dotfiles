@@ -11,7 +11,7 @@ application/x-remmina=org.remmina.Remmina.desktop;
 
 [Default Applications]
 audio/flac=mpv.desktop;
-image/png=mpv.desktop;
+image/png=imv-folder.desktop
 text/plain=geany.desktop;
 video/matroska=mpv-2.desktop;
 x-scheme-handler/discord=vesktop.desktop
@@ -20,3 +20,7 @@ x-scheme-handler/spice=org.remmina.Remmina.desktop
 x-scheme-handler/vnc=org.remmina.Remmina.desktop
 x-scheme-handler/remmina=org.remmina.Remmina.desktop
 application/x-remmina=org.remmina.Remmina.desktop
+image/jpeg=imv-folder.desktop
+image/webp=imv-folder.desktop
+image/gif=imv-folder.desktop
+image/avif=imv-folder.desktop

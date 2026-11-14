@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=imv (folder)
+Exec=/home/alwaysnever/.local/bin/imv-folder %f
+Icon=multimedia-photo-viewer
+MimeType=image/png;image/jpeg;image/webp;image/gif;image/avif;
+NoDisplay=true

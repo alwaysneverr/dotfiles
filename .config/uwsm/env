@@ -1,3 +1,4 @@
 # Scales text for GTK apps (like Lutris) and Qt apps
 export XFT_DPI=120
 export QT_FONT_DPI=120
+export QT_QPA_PLATFORMTHEME=hyprqt6engine
