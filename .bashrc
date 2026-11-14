@@ -56,7 +56,7 @@ alias editdunst="nano ~/.config/dunst/dunstrc"
 alias editwaybar="nano ~/.config/waybar/config.jsonc"
 alias editwaybarcss="nano ~/.config/waybar/style.css"
 
-alias reloadlauncher="killall hyprlauncher && hyprlauncher -d"
+alias reloadlauncher="killall hyprlauncher 2>/dev/null; sleep 1; uwsm app -- hyprlauncher -d &"
 alias reloaddunst="killall dunst && uwsm app -- dunst &"
 alias reloadwaybar="killall waybar && uwsm app -- waybar &"
 alias reloadidle="killall hypridle && uwsm app -- hypridle &"
