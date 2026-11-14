@@ -1,6 +1,6 @@
 # dotfiles
 
-Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Hsin (9-nine-).
+Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Hsin (Wuthering Waves).
 
 ## Stack
 
