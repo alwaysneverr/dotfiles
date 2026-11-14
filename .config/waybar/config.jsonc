@@ -63,13 +63,16 @@
     },
 
     "network": {
-        "format-wifi": "  {signalStrength}%",
+        "format-wifi": "{icon} {signalStrength}%",
         "format-ethernet": " 󰈁 Wired",
         "format-linked": " 󰈁 {ifname} (No IP)",
         "format-disconnected": " 󰖪  Disconnected",
-        "format-icons": ["󰤟 ", "󰤢 ", "󰤥 ", "󰤨 ", "󰖩 "],
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "tooltip-format-wifi": "{signalStrength}%"
+        "format-icons": ["󰤟 ", "󰤢 ", "󰤥 ", "󰤨 "],
+        "tooltip-format-wifi": "{essid}  {signalStrength}%\n{ipaddr}\nLeft: networks   Right: nmtui",
+        "tooltip-format-ethernet": "{ifname}  {ipaddr}",
+        "tooltip-format-disconnected": "Not connected\nLeft: networks   Right: nmtui",
+        "on-click": "$HOME/.local/bin/wifi-menu",
+        "on-click-right": "kitty --class nmtui-float -o initial_window_width=80c -o initial_window_height=26c -o remember_window_size=no -e nmtui"
     },
 
     "battery": {
@@ -86,6 +89,27 @@
 
 
     "clock": {
-        "format": "   {:%a %d   %H:%M}"
+        "format": "   {:%a %d   %H:%M}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>\n<span color='#a8dedc'>Scroll: month   Click: year view   Middle: today</span>",
+        "calendar": {
+            "mode": "month",
+            "mode-mon-col": 3,
+            "first-day-of-week": 1,
+            "weeks-pos": "right",
+            "on-scroll": 1,
+            "format": {
+                "months":   "<span color='#f4a261'><b>{}</b></span>",
+                "weekdays": "<span color='#f4a261'>{}</span>",
+                "days":     "<span color='#e0e1dd'>{}</span>",
+                "weeks":    "<span color='#6c757d'><b>W{}</b></span>",
+                "today":    "<span color='#d62828'><b><u>{}</u></b></span>"
+            }
+        },
+        "actions": {
+            "on-click": "mode",
+            "on-click-middle": "shift_reset",
+            "on-scroll-up": "shift_up",
+            "on-scroll-down": "shift_down"
+        }
     }
 }

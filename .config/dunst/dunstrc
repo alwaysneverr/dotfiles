@@ -46,7 +46,7 @@
     max_icon_size = 64
     sticky_history = yes
     history_length = 20
-    dmenu = /usr/bin/hyprlauncher -m
+    dmenu = /usr/bin/fuzzel --dmenu --prompt "Action  "
     browser = /usr/bin/firefox -new-tab
     always_run_script = true
     title = Dunst

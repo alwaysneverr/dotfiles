@@ -1,0 +1,27 @@
+#!/bin/sh
+# wifi-menu: Wi-Fi picker using nmcli + fuzzel (ported from the E420's wofi version)
+menu() { fuzzel --dmenu --cache /dev/null "$@"; }
+nmcli radio wifi on >/dev/null 2>&1
+list=$(nmcli -t --escape no -f IN-USE,SIGNAL,SECURITY,SSID dev wifi list --rescan auto 2>/dev/null |
+  sort -t: -k2,2nr |
+  awk -F: '{ ssid=$4; for (i=5; i<=NF; i++) ssid=ssid ":" $i
+             if (ssid == "" || seen[ssid]++) next
+             mark = ($1 == "*") ? "*" : " "
+             lock = ($3 != "" && $3 != "--") ? "󰌾" : " "
+             printf "%s %3s%%  %s %s\n", mark, $2, lock, ssid }')
+choice=$(printf '%s\n%s\n%s\n%s\n' "$list" "── Disconnect" "── Rescan" "── nmtui" | menu --prompt "Wi-Fi  ") || exit 0
+case "$choice" in
+  "── Disconnect") nmcli dev disconnect "$(nmcli -t -f DEVICE,TYPE dev | awk -F: '$2=="wifi"{print $1; exit}')" ;;
+  "── Rescan")     nmcli dev wifi rescan; exec "$0" ;;
+  "── nmtui")      exec kitty --class nmtui-float -o initial_window_width=80c -o initial_window_height=26c -o remember_window_size=no -e nmtui ;;
+  "")              exit 0 ;;
+  *)
+    ssid=$(printf '%s' "$choice" | sed -E 's/^. +[0-9]+%  . //; s/ *$//')
+    if nmcli dev wifi connect "$ssid" >/dev/null 2>&1; then
+      notify-send "Wi-Fi" "Connected to $ssid"
+    else
+      pass=$(menu --password --lines 0 --prompt "Password for $ssid  ") || exit 0
+      nmcli dev wifi connect "$ssid" password "$pass" >/dev/null 2>&1 \
+        && notify-send "Wi-Fi" "Connected to $ssid" || notify-send -u critical "Wi-Fi" "Could not connect to $ssid"
+    fi ;;
+esac

@@ -277,12 +277,12 @@ hl.window_rule({
 -- Background management rules for silent Steam tracking in v0.56.2
 hl.window_rule({
     match = {
-        class = "^steam$"
+        class = "^steam$", title = "^Steam$"
     },
     float = true,
     -- Pass a string argument directly to apply specific engine behaviors
     suppress_event = "activate",
-    workspace = "silent"
+    workspace = "emptyn silent"
 })
 -- Force Vita3K into fullscreen upon launch
 hl.window_rule({
@@ -296,6 +296,9 @@ hl.window_rule({
 -- Syncplay
 hl.bind(mainMod .. " + ALT + S", launch("/usr/bin/syncplay --clear-gui-data -g"))
 hl.window_rule({ name = "syncplay-float", match = { class = "^(syncplay)$" }, float = true })
+
+-- wifi
+hl.window_rule({ name = "nmtui-float", match = { class = "^(nmtui-float)$" }, float = true })
 
 -- Media server (CIFS automount)
 hl.bind(mainMod .. " + SHIFT + V", launch("dolphin " .. os.getenv("HOME") .. "/M710q/Videos"))

@@ -137,3 +137,15 @@ window#waybar {
         color: #ffffff;
     }
 }
+
+/* Tooltips (calendar, network) */
+tooltip {
+    background-color: rgba(18, 19, 38, 0.95);
+    border: 1px solid @amber_gold;
+    border-radius: 10px;
+}
+
+tooltip label {
+    color: @text_main;
+    padding: 4px;
+}
