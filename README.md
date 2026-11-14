@@ -50,7 +50,7 @@ The launcher uses amber `#f4a261`, crimson `#d62828` and a dark translucent ink 
 
 ## Packages
 
-Everything the config expects (Arch names; some are AUR):
+### 1. Official packages
 
 ```sh
 sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
@@ -58,10 +58,44 @@ sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
   fastfetch ttf-jetbrains-mono-nerd greetd greetd-tuigreet cifs-utils \
-  timeshift cronie
+  timeshift cronie syncplay steam
 ```
 
-Also used: `steam`, `syncplay` and the mpv scripts `uosc` and `videoclip`.
+`steam` needs the `multilib` repo enabled in `/etc/pacman.conf`.
+
+### 2. An AUR helper
+
+The AUR packages below need a helper. I use [`yay`](https://github.com/Jguer/yay); [`paru`](https://github.com/Morganamilo/paru) works the same way. Both are built by hand once, then manage everything else:
+
+```sh
+sudo pacman -S --needed git base-devel
+
+# yay
+git clone https://aur.archlinux.org/yay-bin.git
+cd yay-bin && makepkg -si
+
+# or paru
+git clone https://aur.archlinux.org/paru-bin.git
+cd paru-bin && makepkg -si
+```
+
+### 3. AUR packages
+
+```sh
+yay -S vesktop akyuu parsec-bin vita3k-git ttf-orbitron
+```
+
+(`paru -S` takes the same arguments.)
+
+| Package | Used for |
+|---------|----------|
+| `vesktop` | Discord client (autostart, `discord://` links) |
+| `akyuu` | anime tracker, a Taiga fork for Linux ([ligneo/akyuu](https://github.com/ligneo/akyuu)) |
+| `parsec-bin` | remote desktop |
+| `vita3k-git` | PS Vita emulator (fullscreen window rule) |
+| `ttf-orbitron` | font |
+
+The mpv scripts `uosc` and `videoclip` are installed by hand.
 
 ## Layout
 
