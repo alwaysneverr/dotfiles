@@ -299,3 +299,6 @@ hl.window_rule({
 -- Syncplay
 hl.bind(mainMod .. " + ALT + S", launch("/usr/bin/syncplay --clear-gui-data -g"))
 hl.window_rule({ name = "syncplay-float", match = { class = "^(syncplay)$" }, float = true })
+
+-- Media server (CIFS automount)
+hl.bind(mainMod .. " + SHIFT + V", launch("dolphin " .. os.getenv("HOME") .. "/M710q/Videos"))
