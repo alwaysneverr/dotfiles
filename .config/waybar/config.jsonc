@@ -89,8 +89,9 @@
 
 
     "clock": {
-        "format": "   {:%a %d   %H:%M}",
-        "tooltip-format": "<tt><small>{calendar}</small></tt>\n<span color='#a8dedc'>Scroll: month   Click: year view   Middle: today</span>",
+        "format": "   {:%a %d %b %y   %H:%M}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>\n<span color='#a8dedc'>Scroll: month   Click: year view   Middle: today   Right: pin</span>",
+        "on-click-right": "zenity --calendar --title=Calendar",
         "calendar": {
             "mode": "month",
             "mode-mon-col": 3,

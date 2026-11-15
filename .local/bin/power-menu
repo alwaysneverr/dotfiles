@@ -1,0 +1,11 @@
+#!/bin/sh
+# power menu (fuzzel), bound to the MyASUS key (Fn+F12)
+choice=$(printf '%s\n' "󰌾  Lock" "󰍃  Log out" "󰤄  Suspend" "󰜉  Reboot" "󰐥  Shut down" |
+  fuzzel --dmenu --cache /dev/null --prompt "Power  " --lines 5 --width 24) || exit 0
+case "$choice" in
+  *Lock)       loginctl lock-session ;;
+  *"Log out")  uwsm stop ;;
+  *Suspend)    systemctl suspend ;;
+  *Reboot)     systemctl reboot ;;
+  *"Shut down") systemctl poweroff ;;
+esac

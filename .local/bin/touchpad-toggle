@@ -1,0 +1,10 @@
+#!/bin/sh
+# toggle the ASUS touchpad (bound to the Fn touchpad key)
+dev="asue1301:00-04f3:3128-touchpad"
+flag="${XDG_RUNTIME_DIR:-/tmp}/touchpad.off"
+set_tp() { hyprctl eval "hl.device({ name = \"$dev\", enabled = $1 })" >/dev/null; }
+if [ -e "$flag" ]; then
+  set_tp true && rm -f "$flag" && notify-send -t 1500 "Touchpad" "Enabled"
+else
+  set_tp false && touch "$flag" && notify-send -t 1500 "Touchpad" "Disabled"
+fi
