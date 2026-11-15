@@ -12,7 +12,7 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 | Compositor | Hyprland (Lua config), launched through uwsm |
 | Login | greetd + tuigreet (matrix background) |
 | Launcher | hyprlauncher (custom Hsin stylesheet) |
-| Bar | Waybar |
+| Bar | Waybar (app icons per workspace, icon-only status pill) |
 | Terminal | kitty |
 | Notifications | dunst |
 | Lock and idle | hyprlock + hypridle |
@@ -70,6 +70,20 @@ gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
 | `Fn+F12` (MyASUS key) | power menu: lock, log out, suspend, reboot, shut down |
 | touchpad key | toggle the touchpad |
 
+## Bar
+
+- **Left:** workspaces, shown as the icons of the apps open on them (an empty workspace shows a fox), then media.
+- **Center:** time.
+- **Right:** RAM, then one pill with brightness, volume, Wi-Fi, battery and tray (icons only, details on hover), then date and notifications.
+
+| Module | Click | Right click | Other |
+|--------|-------|-------------|-------|
+| Wi-Fi | network menu (fuzzel) | nmtui | |
+| Date | year view | pinned calendar (zenity) | scroll: change month, middle click: today |
+| Bell | notification history | do not disturb | |
+
+App icons are mapped by window class in `window-rewrite` (`.config/waybar/config.jsonc`). Unknown apps get a generic icon.
+
 ## Packages
 
 ### 1. Official packages
@@ -80,7 +94,7 @@ sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
   fastfetch ttf-jetbrains-mono-nerd greetd greetd-tuigreet cifs-utils \
-  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel cliphist
+  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel cliphist zenity
 ```
 
 `steam` needs the `multilib` repo enabled in `/etc/pacman.conf`.
@@ -156,7 +170,7 @@ If checkout complains about existing files, move them aside and retry.
 | `.config/hypr/hyprtoolkit.conf` | shared theme for Hypr apps |
 | `.config/hypr/screenshot.sh` | screenshot script (grim + slurp, with notification) |
 | `.config/hyprlauncher/style.css` | launcher theme |
-| `.config/waybar/` | bar config and style (Wi-Fi menu on click, nmtui on right click, calendar tooltip) |
+| `.config/waybar/` | bar config and style (see Bar) |
 | `.local/bin/wifi-menu` | Wi-Fi picker (nmcli + fuzzel) |
 | `.config/fuzzel/fuzzel.ini` | menu theme |
 | `.local/bin/power-menu` | power menu (fuzzel) |

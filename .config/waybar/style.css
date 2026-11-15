@@ -180,3 +180,7 @@ tooltip label {
     border-radius: 0;
     background-color: transparent;
 }
+
+#workspaces button {
+    font-size: 19px;
+}
