@@ -1,0 +1,5 @@
+#!/bin/sh
+# waybar: notification count + do-not-disturb state
+n=$(dunstctl count history 2>/dev/null || echo 0)
+if [ "$(dunstctl is-paused 2>/dev/null)" = true ]; then icon="󰂛"; cls="paused"; else icon="󰂚"; cls="normal"; fi
+printf '{"text":"%s %s","class":"%s","tooltip":"%s in history\\nLeft: history   Right: do not disturb"}\n' "$icon" "$n" "$cls" "$n"

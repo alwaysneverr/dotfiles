@@ -10,7 +10,7 @@
     // Added "memory" right after wireplumber
     "modules-left": ["hyprland/workspaces", "custom/media"],
     "modules-center": ["hyprland/window"],
-    "modules-right": ["backlight", "wireplumber", "memory", "cpu", "network", "battery", "tray", "clock"],
+    "modules-right": ["backlight", "wireplumber", "memory", "cpu", "network", "battery", "custom/notifications", "tray", "clock"],
 
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -82,6 +82,14 @@
         "format-icons": ["󰂎", "󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"]
     },
 
+    "custom/notifications": {
+        "exec": "$HOME/.local/bin/notif-status",
+        "return-type": "json",
+        "interval": 2,
+        "on-click": "$HOME/.local/bin/notif-center",
+        "on-click-right": "dunstctl set-paused toggle"
+    },
+
     "tray": {
     	"icon-size": 16,
     	"spacing": 10
@@ -89,7 +97,7 @@
 
 
     "clock": {
-        "format": "   {:%a %d %b %y   %H:%M}",
+        "format": "󰃭  {:%a %d %b   󰥔  %H:%M}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>\n<span color='#a8dedc'>Scroll: month   Click: year view   Middle: today   Right: pin</span>",
         "on-click-right": "zenity --calendar --title=Calendar",
         "calendar": {

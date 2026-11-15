@@ -45,6 +45,8 @@ hl.on("hyprland.start", function ()
         hl.exec_cmd("uwsm app -- hyprpaper")
         hl.exec_cmd("uwsm app -- hypridle")
         hl.exec_cmd("uwsm app -- dunst")
+        hl.exec_cmd("uwsm app -- wl-paste --type text --watch cliphist store")
+        hl.exec_cmd("uwsm app -- wl-paste --type image --watch cliphist store")
         hl.exec_cmd("uwsm app -- bluetoothctl power on")
         hl.exec_cmd("uwsm app -- hyprlauncher -d")
 
@@ -314,3 +316,7 @@ hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(shot_region))
 
 -- ASUS MyASUS key (Fn+F12)
 hl.bind("XF86Launch1", hl.dsp.exec_cmd("~/.local/bin/power-menu"))
+
+-- Clipboard history and notification center
+hl.bind(mainMod .. " + ALT + V", hl.dsp.exec_cmd("~/.local/bin/clip-menu"))
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("~/.local/bin/notif-center"))

@@ -1,0 +1,13 @@
+#!/bin/sh
+# notification history (dunst + fuzzel): pick one to show it again
+list=$(dunstctl history | jq -r '.data[0][] |
+  "\(.id.data)\t\(.appname.data): \(.summary.data)  \(.body.data | gsub("\n"; " "))"' | awk '{print substr($0,1,140)}')
+if [ "$(dunstctl is-paused)" = true ]; then dnd="── Do not disturb: on"; else dnd="── Do not disturb: off"; fi
+sel=$( { [ -n "$list" ] && printf '%s\n' "$list"; printf '%s\n' "── Clear all" "$dnd"; } |
+  fuzzel --dmenu --cache /dev/null --prompt "Notifications  " --width 60) || exit 0
+case "$sel" in
+  "") exit 0 ;;
+  "── Clear all") dunstctl history-clear ;;
+  "── Do not disturb"*) dunstctl set-paused toggle ;;
+  *) dunstctl history-pop "$(printf '%s' "$sel" | cut -f1)" ;;
+esac

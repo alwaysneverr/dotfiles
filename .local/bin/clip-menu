@@ -1,0 +1,9 @@
+#!/bin/sh
+# clipboard history picker (cliphist + fuzzel)
+sel=$( { cliphist list; echo "── Clear history"; } |
+  fuzzel --dmenu --cache /dev/null --prompt "Clipboard  " --width 60) || exit 0
+case "$sel" in
+  "") exit 0 ;;
+  "── Clear history") cliphist wipe && notify-send -t 1500 "Clipboard" "History cleared" ;;
+  *) printf '%s' "$sel" | cliphist decode | wl-copy ;;
+esac

@@ -18,7 +18,8 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 | Lock and idle | hyprlock + hypridle |
 | Wallpaper | hyprpaper |
 | Screenshots | grim + slurp (`hypr/screenshot.sh`) |
-| Menus | fuzzel (Wi-Fi menu, dunst actions) |
+| Menus | fuzzel (Wi-Fi, power, clipboard, notification history, dunst actions) |
+| Clipboard | cliphist |
 | Files | Dolphin |
 | Theming | adw-gtk3 (GTK), hyprqt6engine + `Hsin.colors` (Qt) |
 | Images | imv (`imv-folder` wrapper) |
@@ -63,6 +64,11 @@ gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
 | `Print` / `Super+Print` / `Super+X` | screenshot: region / full / window |
 | `Super+Alt+S` | Syncplay |
 | `Super+Shift+V` | media server folder (Dolphin) |
+| `Super+Alt+V` | clipboard history |
+| `Super+N` | notification history (also: click the bell in Waybar; right-click toggles do not disturb) |
+| `Fn+F11` | region screenshot (the key sends `Super+Shift+S`) |
+| `Fn+F12` (MyASUS key) | power menu: lock, log out, suspend, reboot, shut down |
+| touchpad key | toggle the touchpad |
 
 ## Packages
 
@@ -74,7 +80,7 @@ sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
   fastfetch ttf-jetbrains-mono-nerd greetd greetd-tuigreet cifs-utils \
-  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel
+  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel cliphist
 ```
 
 `steam` needs the `multilib` repo enabled in `/etc/pacman.conf`.
@@ -153,6 +159,10 @@ If checkout complains about existing files, move them aside and retry.
 | `.config/waybar/` | bar config and style (Wi-Fi menu on click, nmtui on right click, calendar tooltip) |
 | `.local/bin/wifi-menu` | Wi-Fi picker (nmcli + fuzzel) |
 | `.config/fuzzel/fuzzel.ini` | menu theme |
+| `.local/bin/power-menu` | power menu (fuzzel) |
+| `.local/bin/clip-menu` | clipboard history picker (cliphist + fuzzel) |
+| `.local/bin/notif-center`, `.local/bin/notif-status` | notification history picker and Waybar bell |
+| `.local/bin/touchpad-toggle` | touchpad on/off (`hyprctl eval hl.device`) |
 | `.config/dunst/dunstrc` | notifications |
 | `.config/kitty/kitty.conf` | terminal |
 | `.config/fastfetch/config.jsonc` | system info |

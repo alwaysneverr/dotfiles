@@ -149,3 +149,15 @@ tooltip label {
     color: @text_main;
     padding: 4px;
 }
+
+#custom-notifications {
+    padding: 0 12px;
+    margin: 4px 3px;
+    border-radius: 6px;
+    background-color: @bg_capsule;
+    color: @amber_gold;
+}
+
+#custom-notifications.paused {
+    color: @text_dim;
+}
