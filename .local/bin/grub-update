@@ -1,0 +1,5 @@
+#!/bin/sh
+# rebuild grub.cfg, then drop the "Loading Linux / initial ramdisk" echoes (quiet boot)
+sudo grub-mkconfig -o /boot/grub/grub.cfg &&
+sudo sed -i "/^[[:space:]]*echo[[:space:]].*'Loading /d" /boot/grub/grub.cfg &&
+echo "grub.cfg rebuilt (quiet)"

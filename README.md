@@ -9,6 +9,7 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 | Part | Choice |
 |------|--------|
 | OS | Arch Linux (systemd) |
+| Bootloader | GRUB, Wuthering-hsin theme, quiet boot |
 | Compositor | Hyprland (Lua config), launched through uwsm |
 | Login | greetd + tuigreet (matrix background) |
 | Launcher | hyprlauncher (custom Hsin stylesheet) |
@@ -177,6 +178,7 @@ If checkout complains about existing files, move them aside and retry.
 | `.local/bin/clip-menu` | clipboard history picker (cliphist + fuzzel) |
 | `.local/bin/notif-center`, `.local/bin/notif-status` | notification history picker and Waybar bell |
 | `.local/bin/touchpad-toggle` | touchpad on/off (`hyprctl eval hl.device`) |
+| `.local/bin/grub-update` | rebuild `grub.cfg` without the "Loading…" lines |
 | `.config/dunst/dunstrc` | notifications |
 | `.config/kitty/kitty.conf` | terminal |
 | `.config/fastfetch/config.jsonc` | system info |
@@ -200,6 +202,7 @@ mpv scripts (`uosc`, `videoclip`) and fonts are not tracked. Reinstall them by h
 - **Cleanup routine:** `paccache.timer` is enabled, plus `fstrim.timer` and `reflector` for mirrors.
 - **Polkit agent:** `hyprpolkitagent` is enabled as a user service (`systemctl --user enable hyprpolkitagent`).
 - **Media server:** two CIFS automounts in `/etc/fstab` (`~/M710q/Videos`, `~/M710q/Documents`) over Tailscale, with `vers=3.1.1`. The credentials live in `~/.smbcredentials` (mode 600, not tracked).
+- **GRUB:** Wuthering-hsin theme in `/boot/grub/themes/Wuthering-hsin` (copied from my E420; based on [vinceliuice/Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes), edited by me). In `/etc/default/grub`: `GRUB_THEME` points at its `theme.txt`, `GRUB_GFXMODE=1920x1080,auto`, and `GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 rd.udev.log_level=3 udev.log_level=3 vt.global_cursor_default=0"` for a quiet boot. Rebuild with `grub-update` (not `grub-mkconfig`), which also strips the "Loading…" lines.
 - **Wallpaper:** `hsin.jpg` is game artwork, not mine.
 
 Quotes on the lock screen are voice lines from Hsin in Wuthering Waves (© Kuro Games), used for personal customization.

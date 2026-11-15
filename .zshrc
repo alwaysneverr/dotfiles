@@ -101,3 +101,6 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 
 fastfetch
 alias server="uwsm app -- dolphin ~/M710q/Videos"
+setopt interactivecomments
+alias reloadbar='killall waybar; uwsm app -- waybar >/dev/null 2>&1 & disown'
+export PATH="$HOME/.local/bin:$PATH"
