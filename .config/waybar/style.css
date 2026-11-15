@@ -127,7 +127,6 @@ window#waybar {
 
 #clock {
     color: @text_main;
-    border-right: 2px solid @crimson; /* Small crimson maple leaf highlight slash */
 }
 
 /* Alert system flashing loop matrix for empty batteries */
@@ -156,8 +155,28 @@ tooltip label {
     border-radius: 6px;
     background-color: @bg_capsule;
     color: @amber_gold;
+    border-right: 2px solid @crimson;
 }
 
 #custom-notifications.paused {
     color: @text_dim;
+}
+
+/* One pill for the icon-only modules + tray */
+#status {
+    margin: 4px 3px;
+    padding: 0 6px;
+    border-radius: 6px;
+    background-color: @bg_capsule;
+}
+
+#status #backlight,
+#status #wireplumber,
+#status #network,
+#status #battery,
+#status #tray {
+    margin: 0;
+    padding: 0 7px;
+    border-radius: 0;
+    background-color: transparent;
 }

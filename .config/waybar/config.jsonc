@@ -9,8 +9,8 @@
 
     // Added "memory" right after wireplumber
     "modules-left": ["hyprland/workspaces", "custom/media"],
-    "modules-center": ["hyprland/window"],
-    "modules-right": ["backlight", "wireplumber", "memory", "cpu", "network", "battery", "custom/notifications", "tray", "clock"],
+    "modules-center": ["clock#time"],
+    "modules-right": ["memory", "group/status", "clock#date", "custom/notifications"],
 
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -26,7 +26,7 @@
 
     // NEW: Automated Background Music / Playerctl Metadata Module Wrapper
     "custom/media": {
-        "format": " 󰎇 {}",
+        "format": "󰎇  {}",
         "escape": true,
         "return-type": "json",
         "max-length": 40,
@@ -34,40 +34,35 @@
         "exec": "playerctl -a metadata --format '{\"text\": \"{{artist}} - {{title}}\", \"alt\": \"{{status}}\", \"class\": \"{{status}}\"}' -F"
     },
     
-    "hyprland/window": {
-        "format": " 󰖯 {title}",
-        "max-length": 45
-    },
 
     "backlight": {
         "device": "amd_backlight",
-        "format": " 󰃟  {percent}%"
+        "format": "{icon}",
+        "format-icons": ["󰃞", "󰃟", "󰃠"],
+        "tooltip-format": "Brightness {percent}%"
     },
 
     "wireplumber": {
-        "format": "   {volume}%",
-        "format-muted": "   Muted",
+        "format": "{icon}",
+        "tooltip-format": "Volume {volume}%\n{node_name}",
+        "format-icons": ["", "", ""],
+        "format-muted": "󰖁",
         "on-click": "uwsm app -- pavucontrol"
     },
 
     "memory": {
         "interval": 10,
-        "format": " {used:0.1f}G/{total:0.0f}G",
-        "tooltip-format": "RAM Usage: {percentage}%\nSwap Usage: {swapPercentage}%"
+        "format": "󰍛  {percentage}%",
+        "tooltip-format": "RAM   {used:0.1f}G / {total:0.1f}G  ({percentage}%)\nSwap  {swapUsed:0.1f}G / {swapTotal:0.1f}G"
     },
 
-    "cpu": {
-        "interval": 10,
-        "format": "  {usage}%",
-        "tooltip": true
-    },
 
     "network": {
-        "format-wifi": "{icon} {signalStrength}%",
-        "format-ethernet": " 󰈁 Wired",
-        "format-linked": " 󰈁 {ifname} (No IP)",
-        "format-disconnected": " 󰖪  Disconnected",
-        "format-icons": ["󰤟 ", "󰤢 ", "󰤥 ", "󰤨 "],
+        "format-wifi": "{icon}",
+        "format-ethernet": "󰈁",
+        "format-linked": "󰈁",
+        "format-disconnected": "󰖪",
+        "format-icons": ["󰤟", "󰤢", "󰤥", "󰤨"],
         "tooltip-format-wifi": "{essid}  {signalStrength}%\n{ipaddr}\nLeft: networks   Right: nmtui",
         "tooltip-format-ethernet": "{ifname}  {ipaddr}",
         "tooltip-format-disconnected": "Not connected\nLeft: networks   Right: nmtui",
@@ -77,9 +72,10 @@
 
     "battery": {
         "states": { "warning": 30, "critical": 15 },
-        "format": "{icon} {capacity}%",
-        "format-charging": " 󰂄 {capacity}%",
-        "format-icons": ["󰂎", "󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"]
+        "format": "{icon}",
+        "format-charging": "{icon}",
+        "format-icons": {"default": ["󰂎", "󰁺", "󰁼", "󰁾", "󰂀", "󰂂", "󰁹"], "charging": ["󰢟", "󰢜", "󰂆", "󰂇", "󰂈", "󰢝", "󰂉", "󰢞", "󰂊", "󰂋", "󰂅"]},
+        "tooltip-format": "{capacity}%  {timeTo}"
     },
 
     "custom/notifications": {
@@ -90,14 +86,24 @@
         "on-click-right": "dunstctl set-paused toggle"
     },
 
+    "group/status": {
+        "orientation": "horizontal",
+        "modules": ["backlight", "wireplumber", "network", "battery", "tray"]
+    },
+
     "tray": {
     	"icon-size": 16,
     	"spacing": 10
     },
 
 
-    "clock": {
-        "format": "󰃭  {:%a %d %b   󰥔  %H:%M}",
+    "clock#time": {
+        "format": "󰥔  {:%H:%M}",
+        "tooltip": false
+    },
+
+    "clock#date": {
+        "format": "󰃭  {:%a %d %b}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>\n<span color='#a8dedc'>Scroll: month   Click: year view   Middle: today   Right: pin</span>",
         "on-click-right": "zenity --calendar --title=Calendar",
         "calendar": {
