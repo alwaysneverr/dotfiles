@@ -250,9 +250,7 @@ mpv scripts (`uosc`, `videoclip`) and fonts are not tracked. Reinstall them by h
 - **GRUB:** Wuthering-hsin theme in `/boot/grub/themes/Wuthering-hsin` (copied from my E420; based on [vinceliuice/Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes), edited by me). In `/etc/default/grub`: `GRUB_THEME` points at its `theme.txt`, `GRUB_GFXMODE=1920x1080,auto`, and `GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 rd.udev.log_level=3 udev.log_level=3 vt.global_cursor_default=0"` for a quiet boot. Rebuild with `grub-update` (not `grub-mkconfig`), which also strips the "Loading…" lines.
 - **Watchdog:** `sp5100_tco` is blacklisted (`/etc/modprobe.d/no-watchdog.conf`) to silence "watchdog did not stop" at shutdown.
 - **Plymouth:** custom `hsin` theme (white fox logo fading in and out on black), installed in `/usr/share/plymouth/themes/hsin`. A copy is kept in `.local/share/plymouth-themes/hsin`. Set up with: the `plymouth` hook after `systemd` in `/etc/mkinitcpio.conf` (with `kms` for early graphics), `splash` in the kernel options, and `/etc/systemd/system/greetd.service.d/plymouth.conf` (`After=plymouth-quit.service plymouth-quit-wait.service`) so the greeter waits for the splash. After editing the theme, run `sudo mkinitcpio -P`.
-- **Wallpaper:** `hsin.jpg` is game artwork, not mine.
 
-Quotes on the lock screen are voice lines from Hsin in Wuthering Waves (© Kuro Games), used for personal customization.
 
 ## Launcher icons
 
@@ -262,4 +260,13 @@ hyprtoolkit 0.6.0 has two icon bugs: absolute `Icon=` paths that include a file 
 - Steam game icons live in `~/.local/share/icons/hicolor`; symlink them into `/usr/share/icons/hicolor` (see the loop in my notes) after adding a game. Not needed once hyprtoolkit 0.6.0 is replaced by a newer release.
 - Hide clutter (Wine entries and similar) with `NoDisplay=true` in a local copy.
 
-The lock screen background is from the Hsin trailer, and the base lock theme is from [qylock](https://github.com/Darkkal44/qylock) by Darkkal44.
+## Credits
+
+- **Hsin** and all Wuthering Waves material belong to Kuro Games, used here for personal customization:
+  - the wallpaper (`hsin.jpg`);
+  - the lock screen background, a loop cut from the Hsin trailer;
+  - the voice-line quotes on the hyprlock fallback;
+  - the Mengzhou emblem (the fox logo) in the Plymouth splash.
+- **Lock screen:** based on the Wuthering Waves theme from [qylock](https://github.com/Darkkal44/qylock) by Darkkal44 (recoloured and edited by me), with its Orbitron font.
+- **GRUB theme:** based on [Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes) by vinceliuice, edited by me.
+
