@@ -35,7 +35,17 @@ end
 -------------------
 ---- AUTOSTART ----
 -------------------
+-- Empty keymap used at autologin boot until the lock is up (reset by ~/.local/bin/autolock)
+hl.define_submap("bootlock", function()
+    hl.bind("F24", hl.dsp.exec_cmd("true"))
+end)
+
 hl.on("hyprland.start", function ()
+    local boot = io.open("/run/user/1000/autolock", "r")
+    if boot then
+        boot:close()
+        hl.dispatch(hl.dsp.submap("bootlock"))
+    end
     -- Dynamic backend environment check to prevent desktop load panel lockups
     if os.getenv("UWSM_FINALIZE_VARNAMES") then
 	hl.exec_cmd("uwsm finalize")

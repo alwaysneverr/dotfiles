@@ -9,7 +9,7 @@ Rectangle {
     // Wayland Cursor Fix
     MouseArea {
         anchors.fill: parent
-        cursorShape: Qt.ArrowCursor
+        cursorShape: Qt.ArrowCursor; hoverEnabled: true; onPositionChanged: if (bgVideoPlayer.playbackState !== MediaPlayer.PlayingState) bgVideoPlayer.play()
         z: -1
     }
     id: root
@@ -57,8 +57,8 @@ Rectangle {
     // Visuals
     Item {
         id: bgContainer; anchors.fill: parent; clip: true
-        MediaPlayer { id: bgVideoPlayer; source: "bg.mp4"; loops: MediaPlayer.Infinite; autoPlay: true; videoOutput: bgVideoOutput }
-        VideoOutput { id: bgVideoOutput; anchors.fill: parent; fillMode: VideoOutput.PreserveAspectCrop }
+        MediaPlayer { id: bgVideoPlayer; source: "bg.mp4"; loops: 20; autoPlay: true; videoOutput: bgVideoOutput }
+        VideoOutput { id: bgVideoOutput; anchors.fill: parent; fillMode: VideoOutput.PreserveAspectCrop; endOfStreamPolicy: VideoOutput.KeepLastFrame }
 
         Rectangle {
             anchors.fill: parent
@@ -166,7 +166,7 @@ Rectangle {
                 Row {
                     anchors.left: parent.left; anchors.leftMargin: 12 * s; anchors.verticalCenter: parent.verticalCenter; spacing: 8 * s
                     Rectangle { width: 6 * s; height: 6 * s; radius: 3 * s; color: root.wCyan; anchors.verticalCenter: parent.verticalCenter }
-                    Text { text: (typeof sessionModel !== "undefined" && sessionModel.count > root.sessionIndex && root.sessionIndex >= 0) ? sessionHelper.currentItem.sName : "Select Session"; font.family: mainFont.name; font.pixelSize: 12 * s; color: root.wSilver }
+                    Text { text: (typeof sessionModel !== "undefined" && sessionModel.count > root.sessionIndex && root.sessionIndex >= 0 && sessionHelper.currentItem) ? sessionHelper.currentItem.sName : "Select Session"; font.family: mainFont.name; font.pixelSize: 12 * s; color: root.wSilver }
                 }
                 MouseArea { id: sesMouse; anchors.fill: parent; hoverEnabled: true; onClicked: root.sessionPopupOpen = !root.sessionPopupOpen }
             }
@@ -291,6 +291,7 @@ Rectangle {
         ColorAnimation { target: passRect; property: "border.color"; to: "#44ffffff"; duration: 400 }
     }
 
+    Connections { target: passIn; function onTextChanged() { if (bgVideoPlayer.playbackState !== MediaPlayer.PlayingState) bgVideoPlayer.play() } }
     Timer { interval: 300; running: true; onTriggered: passIn.forceActiveFocus() }
-    Component.onCompleted: keyboard.numLock = true
+    Component.onCompleted: if (typeof keyboard !== "undefined") keyboard.numLock = true
 }

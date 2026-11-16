@@ -1,9 +1,11 @@
 #!/bin/sh
 # Runs on every login (autolock.service).
-# Autologin boot (flag from greetd): lock first. Then start the desktop apps, which hyprland.lua no longer starts.
+# Autologin boot (flag from greetd): lock first (hyprlock if qylock can't start),
+# then give the keybinds back. Then start the desktop apps.
 f="/run/user/$(id -u)/autolock"
 if [ -e "$f" ]; then
   rm -f "$f"
   "$HOME/.local/share/quickshell-lockscreen/lock.sh" || hyprlock
+  hyprctl dispatch 'hl.dsp.submap("reset")' >/dev/null 2>&1
 fi
 for app in hyprpaper waybar kitty; do uwsm app -t service -- "$app" >/dev/null 2>&1; done
