@@ -16,6 +16,10 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 
 ![Lock screen background loop](Pictures/readme/lock-bg.webp)
 
+**Boot menu** (GRUB, Wuthering-hsin theme)
+
+![GRUB](Pictures/readme/grub.png)
+
 **Boot splash** (Plymouth, `hsin` theme)
 
 ![Boot splash](Pictures/readme/plymouth.gif)
