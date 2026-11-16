@@ -4,6 +4,22 @@ Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and t
 
 Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1080p panel.
 
+## Preview
+
+**Wallpaper**
+
+![Wallpaper](Pictures/Wallpapers/hsin.jpg)
+
+**Lock screen** (qylock, `hsin` theme)
+
+![Lock screen](Pictures/readme/lock.png)
+
+![Lock screen background loop](Pictures/readme/lock-bg.webp)
+
+**Boot splash** (Plymouth, `hsin` theme)
+
+![Boot splash](Pictures/readme/plymouth.gif)
+
 ## Stack
 
 ### Core
