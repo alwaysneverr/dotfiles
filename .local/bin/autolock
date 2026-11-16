@@ -4,6 +4,6 @@
 f="/run/user/$(id -u)/autolock"
 if [ -e "$f" ]; then
   rm -f "$f"
-  "$HOME/.local/share/quickshell-lockscreen/lock.sh"
+  "$HOME/.local/share/quickshell-lockscreen/lock.sh" || hyprlock
 fi
 for app in hyprpaper waybar kitty; do uwsm app -t service -- "$app" >/dev/null 2>&1; done

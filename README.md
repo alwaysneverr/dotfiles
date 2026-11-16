@@ -147,6 +147,13 @@ XDG_SESSION_TYPE=x11 QS_TESTING=1 ~/.local/share/quickshell-lockscreen/lock.sh
 
 If the lock ever goes black: `misc.allow_session_lock_restore` is on, so switch to another console (Ctrl+Alt+F3), run `WAYLAND_DISPLAY=wayland-1 XDG_RUNTIME_DIR=/run/user/1000 hyprlock &`, go back to the session's console and type the password (even if the screen stays black). The usual cause is a theme that failed to load.
 
+**How locking works**
+
+- Every lock goes through `loginctl lock-session`, which runs hypridle's `lock_cmd`: idle after 5 minutes, `Super+L`, the power menu and suspend.
+- `lock_cmd = pgrep -f "[l]ock_shell.qml" || uwsm app -- …/lock.sh`. The guard stops a second lock from starting on top of the first, which caused Hyprland's red "lock app died" screen. The `[l]` keeps `pgrep` from matching its own command line.
+- `before_sleep_cmd = loginctl lock-session && sleep 6`: the lock takes about 5 seconds to load, so suspend waits for it. That needs `InhibitDelayMaxSec=10` in logind (see the system notes).
+- If locking ever stops working, check for a stuck instance with `pgrep -af '[l]ock_shell.qml'` and remove it with `pkill -f '[l]ock_shell.qml'`.
+
 ## Packages
 
 ### 1. Official packages
@@ -270,6 +277,7 @@ mpv scripts (`uosc`, `videoclip`) and fonts are not tracked. Reinstall them by h
 - **GRUB:** Wuthering-hsin theme in `/boot/grub/themes/Wuthering-hsin` (copied from my E420; based on [vinceliuice/Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes), edited by me). In `/etc/default/grub`: `GRUB_THEME` points at its `theme.txt`, `GRUB_GFXMODE=1920x1080,auto`, and `GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 rd.udev.log_level=3 udev.log_level=3 vt.global_cursor_default=0"` for a quiet boot. Rebuild with `grub-update` (not `grub-mkconfig`), which also strips the "Loading…" lines.
 - **Watchdog:** `sp5100_tco` is blacklisted (`/etc/modprobe.d/no-watchdog.conf`) to silence "watchdog did not stop" at shutdown.
 - **Plymouth:** custom `hsin` theme (white fox logo fading in and out on black), installed in `/usr/share/plymouth/themes/hsin`. A copy is kept in `.local/share/plymouth-themes/hsin`. Set up with: the `plymouth` hook after `systemd` in `/etc/mkinitcpio.conf` (with `kms` for early graphics), `splash` in the kernel options, and `/etc/systemd/system/greetd.service.d/plymouth.conf` (`After=plymouth-quit.service plymouth-quit-wait.service`) so the greeter waits for the splash. After editing the theme, run `sudo mkinitcpio -P`.
+- **logind:** `/etc/systemd/logind.conf.d/lock-delay.conf` sets `InhibitDelayMaxSec=10`, so hypridle can hold suspend until the lock screen is up.
 
 
 ## Launcher icons
