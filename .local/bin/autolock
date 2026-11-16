@@ -1,0 +1,9 @@
+#!/bin/sh
+# Runs on every login (autolock.service).
+# Autologin boot (flag from greetd): lock first. Then start the desktop apps, which hyprland.lua no longer starts.
+f="/run/user/$(id -u)/autolock"
+if [ -e "$f" ]; then
+  rm -f "$f"
+  "$HOME/.local/share/quickshell-lockscreen/lock.sh"
+fi
+for app in hyprpaper waybar kitty; do uwsm app -t service -- "$app" >/dev/null 2>&1; done

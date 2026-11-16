@@ -25,7 +25,7 @@ local shot_script = "~/.config/hypr/screenshot.sh"
 ----------------------------------
 -- Helper function to launch apps safely with or without a UWSM systemd tree context
 local function launch(cmd)
-    if os.getenv("UWSM_ID") then
+    if os.getenv("UWSM_FINALIZE_VARNAMES") then
         return hl.dsp.exec_cmd("uwsm app -- " .. cmd)
     else
         return hl.dsp.exec_cmd(cmd)
@@ -37,12 +37,9 @@ end
 -------------------
 hl.on("hyprland.start", function ()
     -- Dynamic backend environment check to prevent desktop load panel lockups
-    if os.getenv("UWSM_ID") then
+    if os.getenv("UWSM_FINALIZE_VARNAMES") then
 	hl.exec_cmd("uwsm finalize")
 
-	hl.exec_cmd("uwsm app -- kitty")
-        hl.exec_cmd("uwsm app -- waybar")
-        hl.exec_cmd("uwsm app -- hyprpaper")
         hl.exec_cmd("uwsm app -- hypridle")
         hl.exec_cmd("uwsm app -- dunst")
         hl.exec_cmd("uwsm app -- wl-paste --type text --watch cliphist store")
@@ -51,11 +48,7 @@ hl.on("hyprland.start", function ()
         hl.exec_cmd("uwsm app -- hyprlauncher -d")
 
         hl.exec_cmd("uwsm app -- steam -silent -nochatui -nofriendsui")
-        hl.exec_cmd("uwsm app -- sh -c 'sleep 2 && env GDK_BACKEND=wayland blueman-applet'")
     else
-	hl.exec_cmd("kitty")
-        hl.exec_cmd("waybar &")
-        hl.exec_cmd("hyprpaper &")
         hl.exec_cmd("hypridle &")
         hl.exec_cmd("dunst &")
         hl.exec_cmd("bluetoothctl power on &")
@@ -234,7 +227,7 @@ hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = tr
 ---- SCREENSHOTS ----
 ---------------------
 -- 1. Evaluated instantly at load-time (completely non-blocking on keypress)
-local is_uwsm = os.getenv("UWSM_ID") ~= nil
+local is_uwsm = os.getenv("UWSM_FINALIZE_VARNAMES") ~= nil
 
 -- 2. Build the target path commands cleanly without nested quote escaping
 local shot_region = is_uwsm and ("uwsm app -- " .. shot_script .. " region") or (shot_script .. " region")

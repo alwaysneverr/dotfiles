@@ -1,0 +1,11 @@
+[Unit]
+Description=Lock the session right after greetd autologin
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/autolock
+
+[Install]
+WantedBy=graphical-session.target
