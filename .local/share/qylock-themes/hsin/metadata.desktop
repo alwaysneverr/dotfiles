@@ -1,0 +1,8 @@
+[SddmGreeterTheme]
+Name=hsin
+Description=Hsin (Wuthering Waves) Qylock Theme
+Author=alwaysnever (based on the wuwa theme by Darkkal44)
+Type=sddm-theme
+MainScript=Main.qml
+ConfigFile=theme.conf
+QtVersion=6

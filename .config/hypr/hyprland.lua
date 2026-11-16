@@ -153,7 +153,7 @@ hl.config({
     dwindle = { preserve_split = true },
     master  = { new_status = "master" },
     scrolling = { fullscreen_on_one_column = true },
-    misc = { force_default_wallpaper = 0, disable_hyprland_logo = true, background_color = "0x12131a" },
+    misc = { allow_session_lock_restore = true, force_default_wallpaper = 0, disable_hyprland_logo = true, background_color = "0x12131a" },
 })
 
 ---------------
@@ -187,7 +187,7 @@ hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("uwsm stop || hyprctl dispatch exit")
 
 
 -- Securely Lock Laptop Screen
-hl.bind(mainMod .. " + L", launch("hyprlock"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
 
 -- Window Geometry Controls
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
