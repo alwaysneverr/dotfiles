@@ -146,7 +146,7 @@ hl.config({
     dwindle = { preserve_split = true },
     master  = { new_status = "master" },
     scrolling = { fullscreen_on_one_column = true },
-    misc = { allow_session_lock_restore = true, force_default_wallpaper = 0, disable_hyprland_logo = true, background_color = "0x12131a" },
+    misc = { allow_session_lock_restore = true, force_default_wallpaper = 0, disable_hyprland_logo = true, disable_splash_rendering = true, background_color = "0x12131a" },
 })
 
 ---------------
