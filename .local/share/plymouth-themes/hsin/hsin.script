@@ -1,0 +1,20 @@
+# Hsin plymouth theme: centered logo that fades in and out on a black screen
+
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
+
+logo.image = Image("logo.png");
+logo.sprite = Sprite(logo.image);
+logo.sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - logo.image.GetWidth() / 2);
+logo.sprite.SetY(Window.GetY() + Window.GetHeight() / 2 - logo.image.GetHeight() / 2);
+logo.sprite.SetOpacity(0);
+
+frame = 0;
+
+fun refresh_callback () {
+    # plymouth calls this ~50 times a second; one fade cycle is ~1.5 seconds
+    frame++;
+    logo.sprite.SetOpacity((1 - Math.Cos(frame * 0.08)) / 2);
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);

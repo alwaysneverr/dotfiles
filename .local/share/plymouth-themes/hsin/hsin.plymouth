@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Hsin
+Description=Logo in the center, fading in and out
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/hsin
+ScriptFile=/usr/share/plymouth/themes/hsin/hsin.script

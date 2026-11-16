@@ -6,27 +6,44 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 
 ## Stack
 
-| Part | Choice |
-|------|--------|
-| OS | Arch Linux (systemd) |
-| Bootloader | GRUB, Wuthering-hsin theme, quiet boot |
-| Compositor | Hyprland (Lua config), launched through uwsm |
-| Login | greetd + tuigreet (matrix background) |
-| Launcher | hyprlauncher (custom Hsin stylesheet) |
-| Bar | Waybar (app icons per workspace, icon-only status pill) |
-| Terminal | kitty |
-| Notifications | dunst |
-| Lock and idle | hyprlock + hypridle |
-| Wallpaper | hyprpaper |
-| Screenshots | grim + slurp (`hypr/screenshot.sh`) |
-| Menus | fuzzel (Wi-Fi, power, clipboard, notification history, dunst actions) |
-| Clipboard | cliphist |
-| Files | Dolphin |
-| Theming | adw-gtk3 (GTK), hyprqt6engine + `Hsin.colors` (Qt) |
-| Images | imv (`imv-folder` wrapper) |
-| Shell | zsh (bash as fallback) |
-| Video | mpv with uosc and videoclip |
-| Snapshots | Timeshift (rsync, daily) |
+### Core
+
+| Part | Packages | Notes |
+|------|----------|-------|
+| OS | `linux`, `linux-lts` | Arch Linux, systemd |
+| Bootloader | `grub` | Wuthering-hsin theme, quiet boot (`grub-update`) |
+| Boot splash | `plymouth` | `hsin` theme: fading fox logo |
+| Login | `greetd`, `greetd-tuigreet` | matrix background; session output goes to a log (`quiet-session`) |
+| Session | `uwsm` | starts Hyprland and autostart apps as systemd units |
+| Compositor | `hyprland` | Lua config |
+| Bar | `waybar` | app icons per workspace, icon-only status pill |
+| Launcher | `hyprlauncher` | custom Hsin stylesheet |
+| Notifications | `dunst` | click opens the app; history on `Super+N` |
+| Lock and idle | `quickshell`, `hypridle`, `hyprlock` | qylock with my `hsin` theme; hyprlock as fallback |
+| Wallpaper | `hyprpaper` | |
+| Polkit | `hyprpolkitagent` | user service |
+| Terminal | `kitty` | |
+| Shell | `zsh`, `zsh-autosuggestions`, `zsh-syntax-highlighting` | bash as fallback |
+| Theming | `adw-gtk-theme`, `breeze`, `hyprqt6engine` | Hsin palette for GTK and Qt |
+| Audio | `pipewire`, `wireplumber` | |
+| Network | `networkmanager` | |
+
+### Utilities
+
+| Part | Packages | Notes |
+|------|----------|-------|
+| Files | `dolphin` | |
+| Menus | `fuzzel` | Wi-Fi, power, clipboard, notification history |
+| Clipboard | `cliphist`, `wl-clipboard` | |
+| Screenshots | `grim`, `slurp` | `hypr/screenshot.sh` |
+| Images | `imv` | `imv-folder` opens the whole folder |
+| Video | `mpv` | uosc and videoclip, installed by hand |
+| Calendar | `zenity` | pinned calendar on right-click of the date |
+| Bluetooth | `bluez`, `blueman` | |
+| Hardware keys | `brightnessctl`, `playerctl` | |
+| Snapshots | `timeshift`, `cronie` | rsync, daily |
+| Media server | `cifs-utils`, `tailscale` | CIFS automounts |
+| System info | `fastfetch` | |
 
 ## Palette
 
@@ -85,6 +102,31 @@ gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
 
 App icons are mapped by window class in `window-rewrite` (`.config/waybar/config.jsonc`). Unknown apps get a generic icon.
 
+## Lock screen
+
+[qylock](https://github.com/Darkkal44/qylock) (Quickshell) with my own `hsin` theme, a recolour of qylock's Wuthering Waves theme. hypridle, `Super+L`, suspend and the power menu all lock through `loginctl lock-session`. hyprlock is still installed as a fallback.
+
+- **Program:** `~/.local/share/quickshell-lockscreen/` (only the `quickshell-lockscreen` folder from qylock, about 150 KB; the full repo is over 1 GB of themes).
+- **Theme:** `~/.local/share/qylock-themes/hsin/`, linked in as `themes_link`. The default theme name is in `~/.config/qylock/theme`.
+- **Background:** a 4.5 s loop from the Hsin trailer (4:56–4:57), cropped to 1920×1080, played forward then backward at about 60% speed.
+
+Install the program without the whole repo:
+
+```sh
+git clone --depth 1 --filter=blob:none --sparse https://github.com/Darkkal44/qylock /tmp/qylock
+git -C /tmp/qylock sparse-checkout set quickshell-lockscreen
+cp -r /tmp/qylock/quickshell-lockscreen ~/.local/share/quickshell-lockscreen && rm -rf /tmp/qylock
+ln -sfn ~/.local/share/qylock-themes ~/.local/share/quickshell-lockscreen/themes_link
+```
+
+To test a theme in a window, without locking:
+
+```sh
+XDG_SESSION_TYPE=x11 QS_TESTING=1 ~/.local/share/quickshell-lockscreen/lock.sh
+```
+
+If the lock ever goes black: `misc.allow_session_lock_restore` is on, so switch to another console (Ctrl+Alt+F3), run `WAYLAND_DISPLAY=wayland-1 XDG_RUNTIME_DIR=/run/user/1000 hyprlock &`, go back to the session's console and type the password (even if the screen stays black). The usual cause is a theme that failed to load.
+
 ## Packages
 
 ### 1. Official packages
@@ -95,7 +137,7 @@ sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
   fastfetch ttf-jetbrains-mono-nerd greetd greetd-tuigreet cifs-utils \
-  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel cliphist zenity
+  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel cliphist zenity plymouth
 ```
 
 `steam` needs the `multilib` repo enabled in `/etc/pacman.conf`.
@@ -119,7 +161,7 @@ cd paru-bin && makepkg -si
 ### 3. AUR packages
 
 ```sh
-yay -S vesktop akyuu parsec-bin vita3k-git ttf-orbitron hyprqt6engine
+yay -S vesktop akyuu parsec-bin vita3k-git ttf-orbitron hyprqt6engine quickshell
 ```
 
 (`paru -S` takes the same arguments.)
@@ -179,6 +221,9 @@ If checkout complains about existing files, move them aside and retry.
 | `.local/bin/notif-center`, `.local/bin/notif-status` | notification history picker and Waybar bell |
 | `.local/bin/touchpad-toggle` | touchpad on/off (`hyprctl eval hl.device`) |
 | `.local/bin/grub-update` | rebuild `grub.cfg` without the "Loading…" lines |
+| `.local/share/qylock-themes/hsin/` | lock screen theme (QML, background video, logo, font) |
+| `.config/qylock/theme` | default lock theme name |
+| `.local/share/plymouth-themes/hsin/` | backup of the Plymouth theme |
 | `.config/dunst/dunstrc` | notifications |
 | `.config/kitty/kitty.conf` | terminal |
 | `.config/fastfetch/config.jsonc` | system info |
@@ -204,6 +249,7 @@ mpv scripts (`uosc`, `videoclip`) and fonts are not tracked. Reinstall them by h
 - **Media server:** two CIFS automounts in `/etc/fstab` (`~/M710q/Videos`, `~/M710q/Documents`) over Tailscale, with `vers=3.1.1`. The credentials live in `~/.smbcredentials` (mode 600, not tracked).
 - **GRUB:** Wuthering-hsin theme in `/boot/grub/themes/Wuthering-hsin` (copied from my E420; based on [vinceliuice/Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes), edited by me). In `/etc/default/grub`: `GRUB_THEME` points at its `theme.txt`, `GRUB_GFXMODE=1920x1080,auto`, and `GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 rd.udev.log_level=3 udev.log_level=3 vt.global_cursor_default=0"` for a quiet boot. Rebuild with `grub-update` (not `grub-mkconfig`), which also strips the "Loading…" lines.
 - **Watchdog:** `sp5100_tco` is blacklisted (`/etc/modprobe.d/no-watchdog.conf`) to silence "watchdog did not stop" at shutdown.
+- **Plymouth:** custom `hsin` theme (white fox logo fading in and out on black), installed in `/usr/share/plymouth/themes/hsin`. A copy is kept in `.local/share/plymouth-themes/hsin`. Set up with: the `plymouth` hook after `systemd` in `/etc/mkinitcpio.conf` (with `kms` for early graphics), `splash` in the kernel options, and `/etc/systemd/system/greetd.service.d/plymouth.conf` (`After=plymouth-quit.service plymouth-quit-wait.service`) so the greeter waits for the splash. After editing the theme, run `sudo mkinitcpio -P`.
 - **Wallpaper:** `hsin.jpg` is game artwork, not mine.
 
 Quotes on the lock screen are voice lines from Hsin in Wuthering Waves (© Kuro Games), used for personal customization.
@@ -215,3 +261,5 @@ hyprtoolkit 0.6.0 has two icon bugs: absolute `Icon=` paths that include a file 
 - Copy the app's `.desktop` file to `~/.local/share/applications/` and set `Icon=` to a theme icon name.
 - Steam game icons live in `~/.local/share/icons/hicolor`; symlink them into `/usr/share/icons/hicolor` (see the loop in my notes) after adding a game. Not needed once hyprtoolkit 0.6.0 is replaced by a newer release.
 - Hide clutter (Wine entries and similar) with `NoDisplay=true` in a local copy.
+
+The lock screen background is from the Hsin trailer, and the base lock theme is from [qylock](https://github.com/Darkkal44/qylock) by Darkkal44.
