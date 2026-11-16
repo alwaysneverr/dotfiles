@@ -24,19 +24,16 @@ alias cp='cp -i'      # Prompt before overwriting a file during copy
 alias mv='mv -i'      # Prompt before overwriting a file during a move
 
 # ====================================================================
-# --- HSIN CRIMSON & GOLD PS1 TERMINAL PROMPT THEME ---
+# --- PROMPT (colours from the active theme) ---
 # ====================================================================
 
-# ANSI Color Token Definitions (Matching Hsin Palette)
-COLOR_CRIMSON="\[\033[38;2;214;40;40m\]"   # #d62828 (Hsin Crimson)
-COLOR_GOLD="\[\033[38;2;244;162;97m\]"     # #f4a261 (Amber Gold)
-COLOR_SILVER="\[\033[38;2;168;222;220m\]"   # #a8dedc (Pale Silvery Blue)
-COLOR_DARK="\[\033[38;2;42;45;61m\]"       # #2a2d3d (Alternate Base Slate)
-COLOR_RESET="\[\033[0m\]"
-
-# The Custom Prompt Layout (Clean, Single Line, Non-Spammy)
-# Shows: [username@hostname] [current_directory] ❯ 
-PS1="${COLOR_DARK}[${COLOR_GOLD}\u${COLOR_SILVER}@${COLOR_GOLD}\h${COLOR_DARK}] ${COLOR_SILVER}\w ${COLOR_CRIMSON}❯${COLOR_RESET} "
+# Colours come from the active theme (theme-switch), re-read before every prompt
+_theme_prompt() {
+    [ -r "$HOME/.config/themes/current/gen/prompt.sh" ] && . "$HOME/.config/themes/current/gen/prompt.sh"
+    _c() { printf '\\[\\033[38;2;%d;%d;%dm\\]' "0x${1:1:2}" "0x${1:3:2}" "0x${1:5:2}"; }
+    PS1="$(_c "$THEME_DIM")[$(_c "$THEME_USER")\u$(_c "$THEME_AT")@$(_c "$THEME_USER")\h$(_c "$THEME_DIM")] $(_c "$THEME_PATH")\w $(_c "$THEME_ARROW")❯\[\033[0m\] "
+}
+PROMPT_COMMAND="_theme_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 
 fastfetch
 

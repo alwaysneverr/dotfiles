@@ -42,7 +42,7 @@
             "class<blueman-manager>": "󰂯"
         },
         "format-icons": {
-            "empty": "󰮠",
+            "empty": "󱖉",
             "default": ""
         }
     },
@@ -127,7 +127,7 @@
 
     "clock#date": {
         "format": "󰃭 {:%a %d %b}",
-        "tooltip-format": "<tt><small>{calendar}</small></tt>\n<span color='#a8dedc'>Scroll: month   Click: year view   Middle: today   Right: pin</span>",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>\n<span color='#9ecbe7'>Scroll: month   Click: year view   Middle: today   Right: pin</span>",
         "on-click-right": "zenity --calendar --title=Calendar",
         "calendar": {
             "mode": "month",
@@ -136,11 +136,11 @@
             "weeks-pos": "right",
             "on-scroll": 1,
             "format": {
-                "months":   "<span color='#f4a261'><b>{}</b></span>",
-                "weekdays": "<span color='#f4a261'>{}</span>",
-                "days":     "<span color='#e0e1dd'>{}</span>",
-                "weeks":    "<span color='#6c757d'><b>W{}</b></span>",
-                "today":    "<span color='#d62828'><b><u>{}</u></b></span>"
+                "months":   "<span color='#55a6dc'><b>{}</b></span>",
+                "weekdays": "<span color='#55a6dc'>{}</span>",
+                "days":     "<span color='#d2e6f3'>{}</span>",
+                "weeks":    "<span color='#5f7f99'><b>W{}</b></span>",
+                "today":    "<span color='#e85d75'><b><u>{}</u></b></span>"
             }
         },
         "actions": {

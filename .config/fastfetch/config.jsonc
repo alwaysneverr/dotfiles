@@ -4,17 +4,17 @@
     "logo": {
         "type": "auto",
         "color": {
-            "1": "#d62828",   // Channel 1: Primary Arch shape -> Hsin Crimson
-            "2": "#f4a261"    // Channel 2: Core accent highlights -> Amber Gold
+            "1": "#9ecbe7",
+            "2": "#55a6dc"
         }
     },
     "display": {
         "separator": " ❯ ",
         
         "color": {
-            "keys": "#d62828",       // Hsin Crimson Labels
-            "title": "#f4a261",      // Amber Gold Username/Host
-            "separator": "#d62828"   // Crimson Arrow Pointer
+            "keys": "#9ecbe7",
+            "title": "#55a6dc",
+            "separator": "#9ecbe7"
         }
     },
 

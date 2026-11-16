@@ -1,11 +1,5 @@
-/* Color Palette Variables */
-@define-color bg_dark      rgba(18, 19, 26, 0.75);
-@define-color bg_capsule   rgba(30, 32, 46, 0.5);
-@define-color crimson      #d62828;
-@define-color amber_gold   #f4a261;
-@define-color silver_blue  #a8dedc;
-@define-color text_main    #e0e1dd;
-@define-color text_dim     #6c757d;
+/* Colours come from the active theme (theme-switch) */
+@import url("file:///home/alwaysnever/.config/themes/current/gen/waybar.css");
 
 * {
     border: none;
@@ -19,7 +13,7 @@
 /* Core Bar Track Window */
 window#waybar {
     background-color: @bg_dark;
-    border-bottom: 2px solid rgba(244, 162, 97, 0.25); /* Subtly catch the moon's glow */
+    border-bottom: 2px solid alpha(@accent, 0.25); /* Subtly catch the moon's glow */
     color: @text_main;
 }
 
@@ -33,13 +27,13 @@ window#waybar {
 }
 
 #workspaces button.active {
-    color: @amber_gold;
-    border-bottom: 2px solid @crimson;
-    text-shadow: 0 0 6px rgba(244, 162, 97, 0.6);
+    color: @accent;
+    border-bottom: 2px solid @alert;
+    text-shadow: 0 0 6px alpha(@accent, 0.6);
 }
 
 #workspaces button:hover {
-    background-color: rgba(214, 40, 40, 0.2);
+    background-color: alpha(@alert, 0.2);
     color: @text_main;
 }
 
@@ -48,8 +42,8 @@ window#waybar {
     margin: 4px 6px;
     border-radius: 8px;
     background-color: @bg_capsule;
-    color: @amber_gold;
-    border-left: 2px solid @crimson; /* Balanced mirror accent marker */
+    color: @accent;
+    border-left: 2px solid @alert; /* Balanced mirror accent marker */
 }
 
 /* Center Section: Active Window (Clean Ink Capsule) */
@@ -58,7 +52,7 @@ window#waybar {
     margin: 4px 0;
     border-radius: 8px;
     background-color: @bg_capsule;
-    color: @silver_blue;
+    color: @secondary;
 }
 
 /* Right Section: System Hardware Blocks */
@@ -79,15 +73,15 @@ window#waybar {
 
 /* Custom individual module highlights matching the artwork */
 #backlight {
-    color: @silver_blue;
+    color: @secondary;
 }
 
 #wireplumber {
-    color: @amber_gold;
+    color: @accent;
 }
 
 #memory {
-    color: @silver_blue;
+    color: @secondary;
 }
 
 #cpu {
@@ -96,28 +90,28 @@ window#waybar {
 
 /* Custom Homelab Tailscale Connection Link State */
 #custom-tailscale {
-    color: @amber_gold;
+    color: @accent;
 }
 
 #network {
-    color: @silver_blue;
+    color: @secondary;
 }
 
 #network.disconnected {
-    color: @crimson;
+    color: @alert;
 }
 
 #battery {
-    color: #a7c957; /* Soft nature green default */
+    color: @good; /* Soft nature green default */
 }
 
 #battery.charging {
-    color: @amber_gold;
+    color: @accent;
 }
 
 #battery.warning:not(.charging),
 #battery.critical:not(.charging) {
-    color: @crimson;
+    color: @alert;
     animation-name: blink;
     animation-duration: 0.6s;
     animation-timing-function: linear;
@@ -132,15 +126,15 @@ window#waybar {
 /* Alert system flashing loop matrix for empty batteries */
 @keyframes blink {
     to {
-        background-color: rgba(214, 40, 40, 0.4);
-        color: #ffffff;
+        background-color: alpha(@alert, 0.4);
+        color: @text_bright;
     }
 }
 
 /* Tooltips (calendar, network) */
 tooltip {
-    background-color: rgba(18, 19, 38, 0.95);
-    border: 1px solid @amber_gold;
+    background-color: alpha(@bg_alt, 0.95);
+    border: 1px solid @accent;
     border-radius: 10px;
 }
 
@@ -154,8 +148,8 @@ tooltip label {
     margin: 4px 3px;
     border-radius: 6px;
     background-color: @bg_capsule;
-    color: @amber_gold;
-    border-right: 2px solid @crimson;
+    color: @accent;
+    border-right: 2px solid @alert;
 }
 
 #custom-notifications.paused {

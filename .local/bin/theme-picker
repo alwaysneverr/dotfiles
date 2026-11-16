@@ -1,0 +1,18 @@
+#!/bin/sh
+# theme-picker: fuzzel menu to choose a theme, then whether to include boot visuals
+T="$HOME/.config/themes"
+cur=$(basename "$(readlink -f "$T/current")")
+names=$(for d in "$T"/*/; do n=$(basename "$d"); [ "$n" = current ] && continue; [ -f "$d/theme.ini" ] && echo "$n"; done)
+choice=$(for n in $names; do
+    title=$(sed -n 's/^name = //p' "$T/$n/theme.ini" | head -1)
+    mark=""; [ "$n" = "$cur" ] && mark="  (current)"
+    printf '%s%s\0icon\037%s\n' "$title" "$mark" "$T/$n/logo.png"
+  done | fuzzel --dmenu --cache /dev/null --prompt "Theme  " --lines 6 --width 32 --index) || exit 0
+name=$(echo "$names" | sed -n "$((choice + 1))p")
+[ -n "$name" ] || exit 0
+mode=$(printf '%s\n' "Desktop only" "Desktop + boot (asks for password)" |
+  fuzzel --dmenu --cache /dev/null --prompt "Apply  " --lines 2 --width 40) || exit 0
+case "$mode" in
+  Desktop\ +*) exec "$HOME/.local/bin/theme-switch" "$name" --boot ;;
+  *)           exec "$HOME/.local/bin/theme-switch" "$name" ;;
+esac

@@ -55,21 +55,10 @@
 ### --- System Event Priority Color Palettes ---
 
 [urgency_low]
-    background = "#121326D9"
-    foreground = "#A8DEDC"
-    frame_color = "#1E202E"
     timeout = 4
 
 [urgency_normal]
-    background = "#121326D9"
-    foreground = "#FFFFFF"
-    frame_color = "#F4A261"
-    highlight = "#F4A261"
     timeout = 8
 
 [urgency_critical]
-    background = "#121326E6"
-    foreground = "#FFFFFF"
-    frame_color = "#D62828"
-    highlight = "#D62828"
     timeout = 0

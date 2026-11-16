@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+"""theme-migrate-shell: ONE-TIME. Make the bash and zsh prompts take their colours from the active theme.
+Open terminals pick up a theme switch at their next prompt."""
+import pathlib, re, shutil
+H = pathlib.Path.home()
+GEN = "$HOME/.config/themes/current/gen/prompt.sh"
+
+z = H / ".zshrc"; s = z.read_text(encoding="utf-8")
+if "themes/current" not in s:
+    shutil.copyfile(z, H / ".zshrc.before-theme")
+    new = ("# colours come from the active theme (theme-switch), re-read before every prompt\n"
+           f"_theme_prompt() {{ [ -r \"{GEN}\" ] && . \"{GEN}\"; }}\n"
+           "precmd_functions+=(_theme_prompt)\n_theme_prompt\n"
+           "PROMPT='%F{${THEME_DIM}}[%F{${THEME_USER}}%n%F{${THEME_AT}}@%F{${THEME_USER}}%m%F{${THEME_DIM}}] %F{${THEME_PATH}}%~ %F{${THEME_ARROW}}❯%f '")
+    s2, n = re.subn(r"^PROMPT='%F\{#2a2d3d\}.*$", lambda m: new, s, count=1, flags=re.M)
+    print("zshrc:", "edited" if n else "PROMPT line not found, unchanged")
+    if n: z.write_text(s2.replace("# --- HSIN CRIMSON & GOLD PROMPT THEME ---", "# --- PROMPT (colours from the active theme) ---"), encoding="utf-8")
+
+b = H / ".bashrc"; s = b.read_text(encoding="utf-8")
+if "themes/current" not in s:
+    shutil.copyfile(b, H / ".bashrc.before-theme")
+    new = r'''# Colours come from the active theme (theme-switch), re-read before every prompt
+_theme_prompt() {
+    [ -r "$HOME/.config/themes/current/gen/prompt.sh" ] && . "$HOME/.config/themes/current/gen/prompt.sh"
+    _c() { printf '\\[\\033[38;2;%d;%d;%dm\\]' "0x${1:1:2}" "0x${1:3:2}" "0x${1:5:2}"; }
+    PS1="$(_c "$THEME_DIM")[$(_c "$THEME_USER")\u$(_c "$THEME_AT")@$(_c "$THEME_USER")\h$(_c "$THEME_DIM")] $(_c "$THEME_PATH")\w $(_c "$THEME_ARROW")❯\[\033[0m\] "
+}
+PROMPT_COMMAND="_theme_prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+'''
+    s2, n = re.subn(r"# ANSI Color Token Definitions.*?\nPS1=\"[^\n]*\n", lambda m: new, s, count=1, flags=re.S)
+    print("bashrc:", "edited" if n else "prompt block not found, unchanged")
+    if n: b.write_text(s2.replace("# --- HSIN CRIMSON & GOLD PS1 TERMINAL PROMPT THEME ---", "# --- PROMPT (colours from the active theme) ---"), encoding="utf-8")
+
+f = H / ".config/fastfetch/config.jsonc"
+if f.exists():
+    t = f.read_text(encoding="utf-8")
+    t2 = re.sub(r'^(\s*"(1|2|keys|title|separator)":\s*"#[0-9a-fA-F]{6}",?)\s*//[^\n]*$', r"\1", t, flags=re.M)
+    if t2 != t: f.write_text(t2, encoding="utf-8"); print("fastfetch: removed Hsin-specific colour comments")

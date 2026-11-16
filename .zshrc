@@ -30,12 +30,16 @@ bindkey "^[[H" beginning-of-line
 bindkey "^[[F" end-of-line
 
 # ====================================================================
-# --- HSIN CRIMSON & GOLD PROMPT THEME ---
+# --- PROMPT (colours from the active theme) ---
 # ====================================================================
 setopt PROMPT_SUBST
 
 # Zsh requires %F{#hex} ... %f for truecolor prompt formatting
-PROMPT='%F{#2a2d3d}[%F{#f4a261}%n%F{#a8dedc}@%F{#f4a261}%m%F{#2a2d3d}] %F{#a8dedc}%~ %F{#d62828}❯%f '
+# colours come from the active theme (theme-switch), re-read before every prompt
+_theme_prompt() { [ -r "$HOME/.config/themes/current/gen/prompt.sh" ] && . "$HOME/.config/themes/current/gen/prompt.sh"; }
+precmd_functions+=(_theme_prompt)
+_theme_prompt
+PROMPT='%F{${THEME_DIM}}[%F{${THEME_USER}}%n%F{${THEME_AT}}@%F{${THEME_USER}}%m%F{${THEME_DIM}}] %F{${THEME_PATH}}%~ %F{${THEME_ARROW}}❯%f '
 
 # ====================================================================
 # --- ALIASES ---

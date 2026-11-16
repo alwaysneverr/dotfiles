@@ -1,26 +1,28 @@
 # dotfiles
 
-Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Hsin (Wuthering Waves).
+Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Wuthering Waves, with switchable desktop themes (Hsin and Shorekeeper).
 
 Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1080p panel.
 
 ## Preview
 
-**Wallpaper**
+**Wallpapers** (Hsin and Shorekeeper themes)
 
-![Wallpaper](Pictures/Wallpapers/hsin.jpg)
+![Hsin wallpaper](.config/themes/hsin/wallpaper.jpg)
 
-**Lock screen** (qylock, `hsin` theme)
+![Shorekeeper wallpaper](.config/themes/shorekeeper/wallpaper.jpg)
+
+**Lock screen** (qylock, Hsin theme)
 
 ![Lock screen](Pictures/readme/lock.png)
 
 ![Lock screen background loop](Pictures/readme/lock-bg.webp)
 
-**Boot menu** (GRUB, Wuthering-hsin theme)
+**Boot menu** (GRUB, Hsin theme)
 
 ![GRUB](Pictures/readme/grub.png)
 
-**Boot splash** (Plymouth, `hsin` theme)
+**Boot splash** (Plymouth, Hsin theme)
 
 ![Boot splash](Pictures/readme/plymouth.gif)
 
@@ -31,20 +33,21 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 | Part | Packages | Notes |
 |------|----------|-------|
 | OS | `linux`, `linux-lts` | Arch Linux, systemd |
-| Bootloader | `grub` | Wuthering-hsin theme, quiet boot (`grub-update`) |
-| Boot splash | `plymouth` | `hsin` theme: fading fox logo |
-| Login | `greetd`, `greetd-tuigreet` | matrix background; session output goes to a log (`quiet-session`) |
+| Bootloader | `grub` | Wuthering theme per desktop theme, quiet boot (`grub-update`) |
+| Boot splash | `plymouth` | the theme's emblem fading in and out |
+| Login | `greetd`, `greetd-tuigreet` | matrix background in theme colours; session output goes to a log (`quiet-session`) |
 | Session | `uwsm` | starts Hyprland and autostart apps as systemd units |
 | Compositor | `hyprland` | Lua config |
 | Bar | `waybar` | app icons per workspace, icon-only status pill |
-| Launcher | `hyprlauncher` | custom Hsin stylesheet |
+| Launcher | `hyprlauncher` | follows the theme |
 | Notifications | `dunst` | click opens the app; history on `Super+N` |
-| Lock and idle | `quickshell`, `hypridle`, `hyprlock` | qylock with my `hsin` theme; hyprlock as fallback |
+| Lock and idle | `quickshell`, `hypridle`, `hyprlock` | qylock with one theme per desktop theme; hyprlock as fallback |
 | Wallpaper | `hyprpaper` | |
 | Polkit | `hyprpolkitagent` | user service |
 | Terminal | `kitty` | |
 | Shell | `zsh`, `zsh-autosuggestions`, `zsh-syntax-highlighting` | bash as fallback |
-| Theming | `adw-gtk-theme`, `breeze`, `hyprqt6engine` | Hsin palette for GTK and Qt |
+| Theming | `adw-gtk-theme`, `breeze`, `hyprqt6engine` | current theme's palette for GTK and Qt |
+| Theme switcher | `python`, `quickshell` | `theme-switch`, picker on `Super+T` (see Themes) |
 | Audio | `pipewire`, `wireplumber` | |
 | Network | `networkmanager` | |
 
@@ -67,11 +70,16 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 
 ## Palette
 
-The launcher, dunst, GTK and Qt use amber `#f4a261`, crimson `#d62828` and a dark translucent ink background `rgba(18, 19, 38, 0.85)`.
+Every colour comes from the active theme's `theme.ini` (see Themes).
+
+| Theme | Accent | Secondary | Alert | Background |
+|-------|--------|-----------|-------|------------|
+| Hsin | amber `#f4a261` | `#a8dedc` | crimson `#d62828` | ink `#12131a` |
+| Shorekeeper | sky blue `#55a6dc` | `#9ecbe7` | coral `#e85d75` | deep sea `#0a1424` |
 
 ## Theming
 
-GTK uses adw-gtk3 with colour overrides in `gtk.css`. Qt apps (Dolphin included) use `hyprqt6engine` with the `Hsin.colors` scheme. These settings aren't stored in files, so run them once:
+GTK uses adw-gtk3 with colour overrides in `gtk.css`. Qt apps (Dolphin included) use `hyprqt6engine` with the current theme's generated `qt.colors` scheme. These settings aren't stored in files, so run them once:
 
 ```sh
 gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
@@ -96,6 +104,7 @@ gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
 | `Super+V` / `Super+P` / `Super+J` | float / pseudo / toggle split |
 | `Super+L` | lock screen |
 | `Super+M` | log out (`uwsm stop`) |
+| `Super+T` / `Super+Shift+T` | theme picker (Quickshell / fuzzel fallback) |
 | `Super+1..0` / `Super+Shift+1..0` | go to / move window to workspace |
 | `Super+S` | scratchpad workspace |
 | `Super+arrows` | move focus |
@@ -110,7 +119,7 @@ gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
 
 ## Bar
 
-- **Left:** workspaces, shown as the icons of the apps open on them (an empty workspace shows a fox), then media.
+- **Left:** workspaces, shown as the icons of the apps open on them (an empty workspace shows the theme's icon: a fox for Hsin), then media.
 - **Center:** time.
 - **Right:** RAM, then one pill with brightness, volume, Wi-Fi, battery and tray (icons only, details on hover), then date and notifications.
 
@@ -124,11 +133,11 @@ App icons are mapped by window class in `window-rewrite` (`.config/waybar/config
 
 ## Lock screen
 
-[qylock](https://github.com/Darkkal44/qylock) (Quickshell) with my own `hsin` theme, a recolour of qylock's Wuthering Waves theme. hypridle, `Super+L`, suspend and the power menu all lock through `loginctl lock-session`. hyprlock is still installed as a fallback.
+[qylock](https://github.com/Darkkal44/qylock) (Quickshell) with my own themes, one per desktop theme, all built on a config-driven recolour of qylock's Wuthering Waves theme. hypridle, `Super+L`, suspend and the power menu all lock through `loginctl lock-session`. hyprlock is still installed as a fallback.
 
 - **Program:** `~/.local/share/quickshell-lockscreen/` (only the `quickshell-lockscreen` folder from qylock, about 150 KB; the full repo is over 1 GB of themes).
-- **Theme:** `~/.local/share/qylock-themes/hsin/`, linked in as `themes_link`. The default theme name is in `~/.config/qylock/theme`.
-- **Background:** a 4.5 s loop from the Hsin trailer (4:56–4:57), cropped to 1920×1080, played forward then backward at about 60% speed.
+- **Themes:** `~/.local/share/qylock-themes/`, linked in as `themes_link`. `_shared/` holds the common `Main.qml` and font; the per-theme folders are generated by `theme-gen` (video, emblem, `theme.conf`). `theme-switch` writes the active name to `~/.config/qylock/theme`.
+- **Backgrounds:** short ping-pong loops (played forward then backward at about 60% speed, 1080p): Hsin from her trailer (4:56–4:57), Shorekeeper from hers (0:16–0:18).
 
 Install the program without the whole repo:
 
@@ -164,7 +173,7 @@ sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
   fastfetch ttf-jetbrains-mono-nerd greetd greetd-tuigreet cifs-utils \
-  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel cliphist zenity plymouth
+  timeshift cronie syncplay steam adw-gtk-theme breeze imv fuzzel cliphist zenity plymouth python
 ```
 
 `steam` needs the `multilib` repo enabled in `/etc/pacman.conf`.
@@ -199,8 +208,9 @@ yay -S vesktop akyuu parsec-bin vita3k-git ttf-orbitron hyprqt6engine quickshell
 | `akyuu` | anime tracker, a Taiga fork for Linux ([ligneo/akyuu](https://github.com/ligneo/akyuu)) |
 | `parsec-bin` | remote desktop |
 | `vita3k-git` | PS Vita emulator (fullscreen window rule) |
-| `ttf-orbitron` | font (lock screen clock) |
-| `hyprqt6engine` | Qt theme engine (Dolphin and other Qt apps follow `Hsin.colors`) |
+| `ttf-orbitron` | font (lock screen clock, theme picker) |
+| `quickshell` | lock screen and theme picker |
+| `hyprqt6engine` | Qt theme engine (Dolphin and other Qt apps follow the theme's `qt.colors`) |
 
 The mpv scripts `uosc` and `videoclip` are installed by hand.
 
@@ -225,7 +235,11 @@ git clone --bare git@github.com:alwaysneverr/dotfiles.git $HOME/.cfg
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 config checkout
 config config status.showUntrackedFiles no
+sudo install -m 755 ~/.config/themes/theme-boot /usr/local/bin/
+theme-switch hsin
 ```
+
+`theme-switch` builds the generated files that aren't tracked (`gen/`, `current`, the lock theme folders).
 
 If checkout complains about existing files, move them aside and retry.
 
@@ -237,7 +251,7 @@ If checkout complains about existing files, move them aside and retry.
 | `.config/hypr/hypridle.conf` | idle actions: dim, power saver, lock, suspend |
 | `.config/hypr/hyprlock.conf` | lock screen |
 | `.config/hypr/hyprpaper.conf` | wallpaper |
-| `.config/hypr/hyprtoolkit.conf` | shared theme for Hypr apps |
+| `.config/hypr/hyprtoolkit.conf` | shared theme for Hypr apps (link to the theme's generated file) |
 | `.config/hypr/screenshot.sh` | screenshot script (grim + slurp, with notification) |
 | `.config/hyprlauncher/style.css` | launcher theme |
 | `.config/waybar/` | bar config and style (see Bar) |
@@ -248,10 +262,12 @@ If checkout complains about existing files, move them aside and retry.
 | `.local/bin/notif-center`, `.local/bin/notif-status` | notification history picker and Waybar bell |
 | `.local/bin/touchpad-toggle` | touchpad on/off (`hyprctl eval hl.device`) |
 | `.local/bin/grub-update` | rebuild `grub.cfg` without the "Loading…" lines |
-| `.local/share/qylock-themes/hsin/` | lock screen theme (QML, background video, logo, font) |
-| `.config/qylock/theme` | default lock theme name |
+| `.config/themes/` | themes: `theme.ini`, wallpaper, emblem, lock video, GRUB image, quotes; copy of `theme-boot` |
+| `.local/bin/theme-*` | `theme-gen`, `theme-switch`, `theme-list`, pickers, one-time migration scripts |
+| `.config/quickshell/theme-picker/` | Quickshell theme picker |
+| `.local/share/qylock-themes/_shared/` | shared lock screen QML and font |
 | `.local/share/plymouth-themes/hsin/` | backup of the Plymouth theme |
-| `.config/dunst/dunstrc` | notifications |
+| `.config/dunst/dunstrc`, `.config/dunst/dunstrc.d/` | notifications (theme colours via `dunstrc.d`) |
 | `.config/kitty/kitty.conf` | terminal |
 | `.config/fastfetch/config.jsonc` | system info |
 | `.config/uwsm/env` | session environment (DPI scaling, Qt theme) |
@@ -259,26 +275,24 @@ If checkout complains about existing files, move them aside and retry.
 | `.config/mimeapps.list` | default applications |
 | `.config/gtk-3.0/gtk.css`, `.config/gtk-4.0/gtk.css` | GTK colour overrides |
 | `.config/hypr/hyprqt6engine.conf` | Qt theme (colour scheme, icons, style) |
-| `.local/share/color-schemes/Hsin.colors` | KDE/Qt colour scheme |
 | `.config/imv/config` | image viewer colours |
 | `.local/bin/imv-folder`, `.local/share/applications/imv-folder.desktop` | opens an image with its whole folder loaded |
 | `.zshrc`, `.bashrc` | shell config, aliases, prompt |
-| `Pictures/Wallpapers/hsin.jpg` | wallpaper |
 
 mpv scripts (`uosc`, `videoclip`) and fonts are not tracked. Reinstall them by hand.
 
 ## System-level notes (outside this repo)
 
-- **greetd:** `/etc/greetd/config.toml` runs `tuigreet` with `--remember --remember-session`, the session list from `/usr/share/wayland-sessions`, a yellow/gold theme and a matrix background. Logging in through uwsm is what makes autostart apps start. Sessions start through `/usr/local/bin/quiet-session` (tuigreet `--session-wrapper`), which sends uwsm's startup output to `~/.local/state/session-start.log` instead of the screen.
+- **greetd:** `/etc/greetd/config.toml` runs `tuigreet` with `--remember --remember-session`, the session list from `/usr/share/wayland-sessions`, a matrix background, and colours that `theme-boot` sets per theme. Logging in through uwsm is what makes autostart apps start. Sessions start through `/usr/local/bin/quiet-session` (tuigreet `--session-wrapper`), which sends uwsm's startup output to `~/.local/state/session-start.log` instead of the screen.
 - **Snapshots:** Timeshift (rsync) on the root partition, `/home` excluded. `/boot` is a separate FAT partition, so a pacman hook (`95-bootbackup.hook`) copies it to `/.bootbackup` on every kernel change, and Timeshift picks that up.
 - **Cleanup routine:** `paccache.timer` is enabled, plus `fstrim.timer` and `reflector` for mirrors.
 - **Polkit agent:** `hyprpolkitagent` is enabled as a user service (`systemctl --user enable hyprpolkitagent`).
 - **Media server:** two CIFS automounts in `/etc/fstab` (`~/M710q/Videos`, `~/M710q/Documents`) over Tailscale, with `vers=3.1.1`. The credentials live in `~/.smbcredentials` (mode 600, not tracked).
-- **GRUB:** Wuthering-hsin theme in `/boot/grub/themes/Wuthering-hsin` (copied from my E420; based on [vinceliuice/Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes), edited by me). In `/etc/default/grub`: `GRUB_THEME` points at its `theme.txt`, `GRUB_GFXMODE=1920x1080,auto`, and `GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 rd.udev.log_level=3 udev.log_level=3 vt.global_cursor_default=0"` for a quiet boot. Rebuild with `grub-update` (not `grub-mkconfig`), which also strips the "Loading…" lines.
+- **GRUB:** Wuthering-hsin theme in `/boot/grub/themes/Wuthering-hsin` (copied from my E420; based on [vinceliuice/Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes), edited by me). `theme-boot` copies it as `Wuthering-<theme>` with the theme's `grub.jpg`. In `/etc/default/grub`: `GRUB_THEME` points at its `theme.txt`, `GRUB_GFXMODE=1920x1080,auto`, and `GRUB_CMDLINE_LINUX_DEFAULT="quiet loglevel=3 rd.udev.log_level=3 udev.log_level=3 vt.global_cursor_default=0 splash"` for a quiet boot. Rebuild with `grub-update` (not `grub-mkconfig`), which also strips the "Loading…" lines.
 - **Watchdog:** `sp5100_tco` is blacklisted (`/etc/modprobe.d/no-watchdog.conf`) to silence "watchdog did not stop" at shutdown.
-- **Plymouth:** custom `hsin` theme (white fox logo fading in and out on black), installed in `/usr/share/plymouth/themes/hsin`. A copy is kept in `.local/share/plymouth-themes/hsin`. Set up with: the `plymouth` hook after `systemd` in `/etc/mkinitcpio.conf` (with `kms` for early graphics), `splash` in the kernel options, and `/etc/systemd/system/greetd.service.d/plymouth.conf` (`After=plymouth-quit.service plymouth-quit-wait.service`) so the greeter waits for the splash. After editing the theme, run `sudo mkinitcpio -P`.
+- **Plymouth:** custom script theme (the emblem fading in and out on black), installed in `/usr/share/plymouth/themes/hsin`; `theme-boot` copies it per theme with that theme's `logo.png`. A copy is kept in `.local/share/plymouth-themes/hsin`. Set up with: the `plymouth` hook after `systemd` in `/etc/mkinitcpio.conf` (with `kms` for early graphics), `splash` in the kernel options, and `/etc/systemd/system/greetd.service.d/plymouth.conf` (`After=plymouth-quit.service plymouth-quit-wait.service`) so the greeter waits for the splash. After editing the theme, run `sudo mkinitcpio -P`.
+- **Theme switcher:** `/usr/local/bin/theme-boot` (root, via pkexec) switches GRUB, Plymouth and tuigreet for `theme-switch NAME --boot`. A copy is kept in `.config/themes/theme-boot`.
 - **logind:** `/etc/systemd/logind.conf.d/lock-delay.conf` sets `InhibitDelayMaxSec=10`, so hypridle can hold suspend until the lock screen is up.
-
 
 ## Launcher icons
 
@@ -288,13 +302,64 @@ hyprtoolkit 0.6.0 has two icon bugs: absolute `Icon=` paths that include a file 
 - Steam game icons live in `~/.local/share/icons/hicolor`; symlink them into `/usr/share/icons/hicolor` (see the loop in my notes) after adding a game. Not needed once hyprtoolkit 0.6.0 is replaced by a newer release.
 - Hide clutter (Wine entries and similar) with `NoDisplay=true` in a local copy.
 
+## Themes
+
+The whole desktop switches between themes at once: colours, wallpaper, lock screen, prompt and fastfetch. GRUB, Plymouth and tuigreet can optionally switch too. Two themes ship: **Hsin** (amber on navy) and **Shorekeeper** (sky blue on deep sea), both from Wuthering Waves.
+
+### Switching
+
+After a fresh clone, run `theme-switch hsin` once: generated files (`gen/`, `current`, lock theme folders) are not tracked.
+
+| How | What |
+|---|---|
+| `Super+T` | Quickshell picker with wallpaper previews, palette swatches and taglines. `←/→` to choose, `Enter` to apply, `Shift+Enter` to apply with boot visuals, `Esc` to close |
+| `Super+Shift+T` | fuzzel picker (fallback if Quickshell breaks) |
+| `theme-switch` | List themes (`*` marks the current one) |
+| `theme-switch NAME` | Switch the desktop |
+| `theme-switch NAME --boot` | Also switch GRUB, Plymouth and tuigreet (asks for your password, takes about 30 s) |
+
+Kitty, Waybar, Dunst, fuzzel, Hyprland, hyprpaper, hyprlauncher and GTK apps reload live. Qt apps (Dolphin) update after a restart. Shells update at the next prompt.
+
+### How it works
+
+```
+~/.config/themes/
+├── current -> hsin            active theme (symlink)
+├── hsin/
+│   ├── theme.ini              palette, ANSI colours, lock texts, boot theme names
+│   ├── wallpaper.jpg  logo.png  lock.mp4  quotes.txt  grub.jpg
+│   └── gen/                   generated by theme-gen, don't edit
+└── shorekeeper/
+```
+
+- Each app's config **includes** a file from `current/gen/` (`kitty.conf`, `waybar.css`, `dunst.conf`, `fuzzel.ini`, `hyprlock.conf`, `hyprland.lua`, `gtk.css`, `qt.colors`, `prompt.sh`…), so switching is just regenerating and moving the symlink.
+- Waybar's `config.jsonc` (calendar colours, empty-workspace icon) and fastfetch's config are edited in place.
+- The lock screen (qylock) gets a theme folder in `~/.local/share/qylock-themes/<name>/` that shares one config-driven `Main.qml` and font; only the video, emblem and `theme.conf` differ.
+- `theme-boot` (runs as root via pkexec) copies the GRUB and Plymouth themes, swaps in `grub.jpg` and the emblem, edits tuigreet's colours, then runs `grub-mkconfig` and `mkinitcpio -P`.
+
+| Script | Job |
+|---|---|
+| `theme-gen` | Writes `gen/*` and the qylock theme from `theme.ini` |
+| `theme-switch` | Runs theme-gen, moves the symlink, reloads apps |
+| `theme-list` | Prints all themes as JSON for the Quickshell picker |
+| `theme-picker-qs` / `theme-picker` | The two pickers |
+| `/usr/local/bin/theme-boot` | Boot visuals (root) |
+
+### Adding a theme
+
+1. `cp -r ~/.config/themes/shorekeeper ~/.config/themes/NAME`, then delete its `gen/`.
+2. Edit `theme.ini`: `[meta]` name and boot theme names, `[colors]`, `[ansi]`, `[lock]` texts.
+3. Replace `wallpaper.jpg` (16:9), `logo.png` (emblem, ~256 px, transparent), `lock.mp4` (1080p loop), `grub.jpg` (1920×1080, baseline JPEG) and `quotes.txt`.
+4. `theme-switch NAME`, then `theme-switch NAME --boot` once happy.
+
 ## Credits
 
-- **Hsin** and all Wuthering Waves material belong to Kuro Games, used here for personal customization:
-  - the wallpaper (`hsin.jpg`);
+- **Hsin**, **Shorekeeper** and all Wuthering Waves material belong to Kuro Games, used here for personal customization:
+  - the Hsin wallpaper;
   - the lock screen background, a loop cut from the Hsin trailer;
-  - the voice-line quotes on the hyprlock fallback;
-  - the Mengzhou emblem (the fox logo) in the Plymouth splash.
+  - the voice-line quotes on the hyprlock fallback (both characters);
+  - the Mengzhou emblem (the fox logo);
+  - the Shorekeeper wallpaper (Tethys) and the Black Shores emblem;
+  - the Shorekeeper lock screen background, a loop cut from her trailer.
 - **Lock screen:** based on the Wuthering Waves theme from [qylock](https://github.com/Darkkal44/qylock) by Darkkal44 (recoloured and edited by me), with its Orbitron font.
 - **GRUB theme:** based on [Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes) by vinceliuice, edited by me.
-

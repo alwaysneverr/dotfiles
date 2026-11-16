@@ -1,0 +1,40 @@
+#!/bin/sh
+# theme-switch NAME [--boot]   switch the desktop theme (and with --boot: GRUB, Plymouth, tuigreet)
+# theme-switch                 list themes
+T="$HOME/.config/themes"
+if [ -z "$1" ]; then
+  cur=$(basename "$(readlink -f "$T/current")")
+  for d in "$T"/*/; do n=$(basename "$d"); [ "$n" = current ] && continue; [ -f "$d/theme.ini" ] || continue
+    [ "$n" = "$cur" ] && echo "* $n" || echo "  $n"; done
+  exit 0
+fi
+name=$1
+[ -f "$T/$name/theme.ini" ] || { echo "theme-switch: no theme '$name'" >&2; exit 1; }
+
+"$HOME/.local/bin/theme-gen" "$name" || exit 1
+ln -sfn "$T/$name" "$T/current"
+mkdir -p "$HOME/.config/qylock" && echo "$name" > "$HOME/.config/qylock/theme"
+
+# reload what can be reloaded live
+hyprctl reload >/dev/null 2>&1
+pkill -USR2 -x waybar
+dunstctl reload >/dev/null 2>&1
+pkill -USR1 -x kitty
+pkill -x hyprpaper; uwsm app -t service -- hyprpaper >/dev/null 2>&1
+pkill -x hyprlauncher; sleep 0.5; uwsm app -t service -- hyprlauncher -d >/dev/null 2>&1
+# nudge running GTK apps to re-read gtk.css
+g=$(gsettings get org.gnome.desktop.interface gtk-theme)
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita'; sleep 0.3
+gsettings set org.gnome.desktop.interface gtk-theme "$(echo "$g" | tr -d "'")"
+
+title=$(sed -n 's/^name = //p' "$T/$name/theme.ini" | head -1)
+notify-send -i "$T/$name/logo.png" "Theme: $title" "Desktop switched. Restart Qt apps (Dolphin) to update them."
+
+if [ "$2" = "--boot" ]; then
+  notify-send -i "$T/$name/logo.png" "Theme: $title" "Updating GRUB, Plymouth and the login screen (about 30 s)..."
+  if pkexec /usr/local/bin/theme-boot "$name" "$T/$name"; then
+    notify-send -i "$T/$name/logo.png" "Theme: $title" "Boot visuals updated."
+  else
+    notify-send -u critical "Theme: $title" "Boot visuals were not updated (cancelled or failed)."
+  fi
+fi

@@ -1,0 +1,4 @@
+#!/bin/sh
+# theme-picker-qs: toggle the Quickshell theme picker (fuzzel version: theme-picker)
+if pgrep -f "[-]c theme-picker" >/dev/null; then pkill -f "[-]c theme-picker"; exit 0; fi
+exec qs -c theme-picker

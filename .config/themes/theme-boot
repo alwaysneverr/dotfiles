@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+"""theme-boot NAME THEMEDIR  (run as root via pkexec from theme-switch --boot)
+Switches GRUB theme, Plymouth theme and tuigreet colours to theme NAME."""
+import configparser, os, re, shutil, subprocess, sys
+from pathlib import Path
+
+if os.geteuid() != 0:
+    sys.exit("theme-boot: must run as root")
+if len(sys.argv) != 3 or not re.fullmatch(r"[a-z0-9-]+", sys.argv[1]):
+    sys.exit("usage: theme-boot NAME THEMEDIR")
+name, tdir = sys.argv[1], Path(sys.argv[2]).resolve()
+if not re.fullmatch(r"/home/[^/]+/\.config/themes/[a-z0-9-]+", str(tdir)) or tdir.name != name:
+    sys.exit(f"theme-boot: refusing theme dir {tdir}")
+cp = configparser.RawConfigParser(delimiters=("=",)); cp.read(tdir / "theme.ini", encoding="utf-8")
+meta = cp["meta"]
+
+# --- Plymouth ---------------------------------------------------------------
+ply = meta["plymouth_theme"]; pdir = Path("/usr/share/plymouth/themes") / ply
+if not pdir.exists():
+    src = Path("/usr/share/plymouth/themes/hsin")
+    pdir.mkdir(parents=True)
+    for ext in ("plymouth", "script"):
+        txt = (src / f"hsin.{ext}").read_text().replace("/hsin", f"/{ply}").replace("hsin.script", f"{ply}.script")
+        txt = txt.replace("Name=Hsin", f"Name={meta['name']}")
+        (pdir / f"{ply}.{ext}").write_text(txt)
+shutil.copyfile(tdir / "logo.png", pdir / "logo.png")
+subprocess.run(["plymouth-set-default-theme", ply], check=True)
+
+# --- GRUB -------------------------------------------------------------------
+gname = meta["grub_theme"]; gdir = Path("/boot/grub/themes") / gname
+if not gdir.exists():
+    shutil.copytree("/boot/grub/themes/Wuthering-hsin", gdir)
+if (tdir / "grub.jpg").exists():
+    theme_txt = (gdir / "theme.txt").read_text()
+    m = re.search(r'desktop-image\s*:\s*"([^"]+)"', theme_txt)
+    img = m.group(1) if m else "background.jpg"
+    shutil.copyfile(tdir / "grub.jpg", gdir / img)
+g = Path("/etc/default/grub"); s = g.read_text()
+s = re.sub(r'^GRUB_THEME=.*$', f'GRUB_THEME="{gdir}/theme.txt"', s, flags=re.M)
+g.write_text(s)
+subprocess.run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"], check=True)
+cfg = Path("/boot/grub/grub.cfg"); cfg.write_text(re.sub(r"^[ \t]*echo[ \t].*'Loading .*\n", "", cfg.read_text(), flags=re.M))
+
+# --- tuigreet (login screen after a logout) ---------------------------------
+gt = Path("/etc/greetd/config.toml"); s = gt.read_text()
+s = re.sub(r"--theme '[^']*'", f"--theme '{meta['tuigreet_theme']}'", s)
+s = re.sub(r"--matrix-colors '[^']*'", f"--matrix-colors '{meta['tuigreet_matrix']}'", s)
+gt.write_text(s)
+
+# --- initramfs last (Plymouth theme lives in it) ----------------------------
+subprocess.run(["mkinitcpio", "-P"], check=True, stdout=subprocess.DEVNULL)
+print(f"theme-boot: {name} applied")

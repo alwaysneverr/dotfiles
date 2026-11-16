@@ -14,18 +14,20 @@ Rectangle {
     }
     id: root
     width: Screen.width; height: Screen.height
-    color: "#121326"
+    color: config.bg || "#121326"
     readonly property real s: (Screen.height / 768) * 0.75
 
     // Colors
-    readonly property color wCyan:       "#f4a261"
-    readonly property color wCyanDim:    "#c47a3a"
-    readonly property color wCyanGlow:   "#ffd6a0"
-    readonly property color wSilver:     "#e6e2dc"
-    readonly property color wGhost:      "#9a8f86"
-    readonly property color wPanel:      "#1e202e"
-    readonly property color wPanelLight: "#262838"
-    readonly property color wWhite:      "#f5efe8"
+    readonly property color wCyan:       config.accent || "#f4a261"
+    readonly property color wCyanDim:    config.accent_dim || "#c47a3a"
+    readonly property color wCyanGlow:   config.accent_glow || "#ffd6a0"
+    readonly property color wSilver:     config.silver || "#e6e2dc"
+    readonly property color wGhost:      config.ghost || "#9a8f86"
+    readonly property color wPanel:      config.panel || "#1e202e"
+    readonly property color wPanelLight: config.panel_light || "#262838"
+    readonly property color wAlert:      config.alert || "#d62828"
+    readonly property string wShade:     config.shade || "0b0c18"
+    readonly property color wWhite:      config.white || "#f5efe8"
 
     // Quickshell
     property bool isQuickshell: typeof sddm === "undefined" || sddm.hostName === undefined
@@ -64,8 +66,8 @@ Rectangle {
             anchors.fill: parent
             gradient: Gradient {
                 orientation: Gradient.Horizontal
-                GradientStop { position: 0.0;  color: "#cc0b0c18" }
-                GradientStop { position: 0.28; color: "#660b0c18" }
+                GradientStop { position: 0.0;  color: "#cc" + root.wShade }
+                GradientStop { position: 0.28; color: "#66" + root.wShade }
                 GradientStop { position: 0.45; color: "transparent" }
             }
         }
@@ -75,14 +77,14 @@ Rectangle {
             gradient: Gradient {
                 orientation: Gradient.Horizontal
                 GradientStop { position: 0.65; color: "transparent" }
-                GradientStop { position: 0.82; color: "#550b0c18" }
-                GradientStop { position: 1.0;  color: "#aa0b0c18" }
+                GradientStop { position: 0.82; color: "#55" + root.wShade }
+                GradientStop { position: 1.0;  color: "#aa" + root.wShade }
             }
         }
 
         Rectangle {
             anchors.fill: parent
-            gradient: Gradient { GradientStop { position: 0.8; color: "transparent" } GradientStop { position: 1.0; color: "#880b0c18" } }
+            gradient: Gradient { GradientStop { position: 0.8; color: "transparent" } GradientStop { position: 1.0; color: "#88" + root.wShade } }
         }
 
         Repeater {
@@ -113,7 +115,7 @@ Rectangle {
 
         Text {
             anchors.right: parent.right; anchors.rightMargin: 44 * s; anchors.top: parent.top; anchors.topMargin: 36 * s
-            text: "ASUSM415D  ·  HSIN"; font.family: mainFont.name; font.pixelSize: 11 * s; color: root.wGhost; opacity: 0.5; font.letterSpacing: 0.5 * s
+            text: config.product || "ASUSM415D  ·  HSIN"; font.family: mainFont.name; font.pixelSize: 11 * s; color: root.wGhost; opacity: 0.5; font.letterSpacing: 0.5 * s
         }
 
         Column {
@@ -158,7 +160,7 @@ Rectangle {
                 }
             }
 
-            Text { id: errText; height: 14 * s; text: ""; color: "#d62828"; font.family: mainFont.name; font.pixelSize: 12 * s; font.letterSpacing: 1 * s }
+            Text { id: errText; height: 14 * s; text: ""; color: root.wAlert; font.family: mainFont.name; font.pixelSize: 12 * s; font.letterSpacing: 1 * s }
 
             Item {
                 width: parent.width; height: 34 * s; visible: !root.isQuickshell
@@ -198,7 +200,7 @@ Rectangle {
 
         Text {
             anchors.left: parent.left; anchors.leftMargin: 44 * s; anchors.bottom: parent.bottom; anchors.bottomMargin: 26 * s
-            text: "Hsin  ·  Wuthering Waves (Kuro Games)"; font.family: mainFont.name; font.pixelSize: 11 * s; color: root.wGhost; opacity: 0.5; font.letterSpacing: 0.5 * s
+            text: config.footer || "Hsin  ·  Wuthering Waves (Kuro Games)"; font.family: mainFont.name; font.pixelSize: 11 * s; color: root.wGhost; opacity: 0.5; font.letterSpacing: 0.5 * s
         }
 
         Row {
@@ -220,7 +222,7 @@ Rectangle {
                     width: 14 * s; height: 14 * s; anchors.verticalCenter: parent.verticalCenter
                     onPaint: { var ctx = getContext("2d"); ctx.clearRect(0, 0, width, height); var cx = width / 2, cy = height / 2; var outer = width * 0.48; var inner = width * 0.12; ctx.fillStyle = "#bbcccccc"; ctx.beginPath(); ctx.moveTo(cx, cy - outer); ctx.lineTo(cx + inner, cy - inner); ctx.lineTo(cx + outer, cy); ctx.lineTo(cx + inner, cy + inner); ctx.lineTo(cx, cy + outer); ctx.lineTo(cx - inner, cy + inner); ctx.lineTo(cx - outer, cy); ctx.lineTo(cx - inner, cy - inner); ctx.closePath(); ctx.fill(); }
                 }
-                Text { text: "Does this please you?"; font.family: mainFont.name; font.pixelSize: 15 * s; font.letterSpacing: 1.2 * s; color: "#ccffffff"; anchors.verticalCenter: parent.verticalCenter }
+                Text { text: config.tagline || "Does this please you?"; font.family: mainFont.name; font.pixelSize: 15 * s; font.letterSpacing: 1.2 * s; color: "#ccffffff"; anchors.verticalCenter: parent.verticalCenter }
                 Canvas {
                     width: 14 * s; height: 14 * s; anchors.verticalCenter: parent.verticalCenter
                     onPaint: { var ctx = getContext("2d"); ctx.clearRect(0, 0, width, height); var cx = width / 2, cy = height / 2; var outer = width * 0.48; var inner = width * 0.12; ctx.fillStyle = "#bbcccccc"; ctx.beginPath(); ctx.moveTo(cx, cy - outer); ctx.lineTo(cx + inner, cy - inner); ctx.lineTo(cx + outer, cy); ctx.lineTo(cx + inner, cy + inner); ctx.lineTo(cx, cy + outer); ctx.lineTo(cx - inner, cy + inner); ctx.lineTo(cx - outer, cy); ctx.lineTo(cx - inner, cy - inner); ctx.closePath(); ctx.fill(); }
@@ -237,7 +239,7 @@ Rectangle {
         Item {
             id: sessionBlade; width: 300 * s; anchors.left: parent.left; anchors.leftMargin: 44 * s; anchors.bottom: parent.bottom; anchors.bottomMargin: 290 * s; property real bladeH: (typeof sessionModel !== "undefined") ? (Math.min(sessionModel.count, 5) * 52 * s + 56 * s) : 56 * s
             Rectangle {
-                width: parent.width; height: sessionBlade.bladeH; anchors.bottom: parent.bottom; radius: 8 * s; clip: true; color: "#e6121326"; border.color: root.wCyanDim; border.width: 1 * s
+                width: parent.width; height: sessionBlade.bladeH; anchors.bottom: parent.bottom; radius: 8 * s; clip: true; color: "#e6" + (config.bg || "#121326").slice(1); border.color: root.wCyanDim; border.width: 1 * s
                 Rectangle { width: parent.width * 0.7; height: 1 * s; anchors.top: parent.top; anchors.horizontalCenter: parent.horizontalCenter; gradient: Gradient { orientation: Gradient.Horizontal; GradientStop { position: 0.0; color: "transparent" } GradientStop { position: 0.5; color: root.wCyan } GradientStop { position: 1.0; color: "transparent" } } }
                 Column {
                     anchors.fill: parent; anchors.margins: 12 * s; spacing: 4 * s
@@ -281,12 +283,12 @@ Rectangle {
 
     Connections {
         target: typeof sddm !== "undefined" ? sddm : null
-        function onLoginFailed() { errText.text = "Insolence..."; passIn.text = ""; passIn.forceActiveFocus(); passFailAnim.start() }
+        function onLoginFailed() { errText.text = config.failtext || "Insolence..."; passIn.text = ""; passIn.forceActiveFocus(); passFailAnim.start() }
     }
 
     SequentialAnimation {
         id: passFailAnim
-        ColorAnimation { target: passRect; property: "border.color"; to: "#d62828"; duration: 200 }
+        ColorAnimation { target: passRect; property: "border.color"; to: root.wAlert; duration: 200 }
         PauseAnimation { duration: 1000 }
         ColorAnimation { target: passRect; property: "border.color"; to: "#44ffffff"; duration: 400 }
     }

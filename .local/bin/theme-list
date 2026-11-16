@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+# theme-list: print every theme in ~/.config/themes as JSON (used by the Quickshell picker)
+import configparser, json, os, sys
+T = os.path.expanduser("~/.config/themes")
+cur = os.path.basename(os.path.realpath(os.path.join(T, "current")))
+keys = ("bg", "bg_alt", "surface", "surface_hi", "text", "text_bright", "text_dim",
+        "accent", "secondary", "alert", "good")
+out = []
+for n in sorted(os.listdir(T)):
+    d = os.path.join(T, n)
+    ini = os.path.join(d, "theme.ini")
+    if n == "current" or os.path.islink(d) or not os.path.isfile(ini):
+        continue
+    c = configparser.RawConfigParser(delimiters=("=",))
+    c.read(ini, encoding="utf-8")
+    f = lambda name: os.path.join(d, name) if os.path.isfile(os.path.join(d, name)) else ""
+    out.append({
+        "id": n,
+        "name": c.get("meta", "name", fallback=n),
+        "current": n == cur,
+        "wallpaper": f("wallpaper.jpg"),
+        "logo": f("logo.png"),
+        "tagline": c.get("lock", "tagline", fallback=""),
+        "colors": {k: c.get("colors", k, fallback="#888888") for k in keys},
+    })
+json.dump(out, sys.stdout)

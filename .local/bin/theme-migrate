@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+"""theme-migrate: ONE-TIME. Points every app's colours at ~/.config/themes/current.
+Backs up everything it touches to ~/.config/themes/pre-migrate-backup.tar.gz first."""
+import os, re, sys, tarfile, time, pathlib
+H = pathlib.Path.home(); C = H / ".config"; CUR = f"{H}/.config/themes/current"
+files = {k: C / v for k, v in {
+    "kitty": "kitty/kitty.conf", "waybar": "waybar/style.css", "dunst": "dunst/dunstrc", "fuzzel": "fuzzel/fuzzel.ini",
+    "hyprlock": "hypr/hyprlock.conf", "quote": "hypr/lockquote.sh", "paper": "hypr/hyprpaper.conf",
+    "qt": "hypr/hyprqt6engine.conf", "gtk3": "gtk-3.0/gtk.css", "gtk4": "gtk-4.0/gtk.css",
+    "toolkit": "hypr/hyprtoolkit.conf", "hypr": "hypr/hyprland.lua"}.items()}
+problems = []
+
+backup = C / "themes/pre-migrate-backup.tar.gz"
+if not backup.exists():
+    with tarfile.open(backup, "w:gz") as tf:
+        for p in files.values():
+            if p.exists() and not p.is_symlink():
+                tf.add(p, arcname=str(p.relative_to(H)))
+    print("backup:", backup)
+
+def edit(key, fn):
+    p = files[key]; s = p.read_text(encoding="utf-8"); n = fn(s)
+    if n != s: p.write_text(n, encoding="utf-8"); print("edited:", p.relative_to(H))
+    else: print("unchanged:", p.relative_to(H))
+
+def must(s, old, new):
+    if old not in s: problems.append(f"not found: {old[:60]!r}"); return s
+    return s.replace(old, new)
+
+# kitty: drop colour lines, include the theme
+def kitty(s):
+    if "themes/current" in s: return s
+    keys = r"(background|foreground|selection_background|selection_foreground|url_color|cursor|cursor_text_color|active_border_color|inactive_border_color|color\d+)"
+    s = re.sub(rf"^{keys}\s+#[0-9a-fA-F]{{6}}\s*\n", "", s, flags=re.M)
+    return s.rstrip() + f"\n\n# colours come from the active theme (theme-switch)\ninclude {CUR}/gen/kitty.conf\n"
+edit("kitty", kitty)
+
+# waybar: colour variables from the theme, theme-neutral names, no literal palette colours
+def waybar(s):
+    if "themes/current" in s: return s
+    s = re.sub(r"/\* Color Palette Variables \*/\n(@define-color[^\n]*\n)+",
+               f'/* Colours come from the active theme (theme-switch) */\n@import url("file://{CUR}/gen/waybar.css");\n', s)
+    for a, b in [("@amber_gold", "@accent"), ("@crimson", "@alert"), ("@silver_blue", "@secondary"),
+                 ("rgba(244, 162, 97, 0.25)", "alpha(@accent, 0.25)"), ("rgba(244, 162, 97, 0.6)", "alpha(@accent, 0.6)"),
+                 ("rgba(214, 40, 40, 0.2)", "alpha(@alert, 0.2)"), ("rgba(214, 40, 40, 0.4)", "alpha(@alert, 0.4)"),
+                 ("color: #a7c957;", "color: @good;"), ("color: #ffffff;", "color: @text_bright;"),
+                 ("rgba(18, 19, 38, 0.95)", "alpha(@bg_alt, 0.95)")]:
+        s = s.replace(a, b)
+    return s
+edit("waybar", waybar)
+
+# dunst: colours move to a drop-in
+def dunst(s):
+    return re.sub(r'^\s*(background|foreground|frame_color|highlight)\s*=\s*"#[0-9A-Fa-f]{6,8}"\s*\n', "", s, flags=re.M)
+edit("dunst", dunst)
+d = C / "dunst/dunstrc.d"; d.mkdir(exist_ok=True); l = d / "50-theme.conf"
+if l.is_symlink() or l.exists(): l.unlink()
+l.symlink_to(f"{CUR}/gen/dunst.conf")
+
+# fuzzel: include the theme, drop [colors]
+def fuzzel(s):
+    if "themes/current" in s: return s
+    s = re.sub(r"\n\[colors\]\n([^\[]*)", "\n", s)
+    return s.replace("[main]\n", f"[main]\ninclude={CUR}/gen/fuzzel.ini\n", 1)
+edit("fuzzel", fuzzel)
+
+# hyprlock: variables from the theme
+def hyprlock(s):
+    if "themes/current" in s: return s
+    s = f"source = {CUR}/gen/hyprlock.conf\n" + s
+    for a, b in [("color = rgba(18, 19, 26, 1.0)", "color = $bg"), ("color = rgba(244, 162, 97, 1.0)", "color = $accent"),
+                 ("color = rgba(168, 222, 220, 1.0)", "color = $secondary"), ("color = rgba(224, 225, 221, 0.9)", "color = $text90"),
+                 ("outer_color = rgb(244, 162, 97)", "outer_color = $accent"), ("inner_color = rgba(18, 19, 26, 0.75)", "inner_color = $inner"),
+                 ("font_color = rgb(224, 225, 221)", "font_color = $text"), ("check_color = rgb(168, 222, 220)", "check_color = $secondary"),
+                 ("fail_color = rgb(214, 40, 40)", "fail_color = $alert"), ("capslock_color = rgb(244, 162, 97)", "capslock_color = $accent"),
+                 ("color = rgba(168, 222, 220, 0.8)", "color = $secondary80"),
+                 ("placeholder_text = <i>Does this please you?</i>", "placeholder_text = <i>$placeholder</i>"),
+                 ("fail_text = <i>Insolence... ($ATTEMPTS)</i>", "fail_text = <i>$failtext ($ATTEMPTS)</i>")]:
+        s = must(s, a, b)
+    return s
+edit("hyprlock", hyprlock)
+
+edit("quote", lambda s: s.replace('f="$HOME/.config/hypr/hsin-quotes.txt"', 'f="$HOME/.config/themes/current/quotes.txt"'))
+edit("paper", lambda s: re.sub(r"^(\s*path\s*=\s*).*$", rf"\g<1>{CUR}/wallpaper.jpg", s, flags=re.M))
+edit("qt", lambda s: re.sub(r"^(\s*color_scheme\s*=\s*).*$", rf"\g<1>{CUR}/gen/qt.colors", s, flags=re.M))
+for k in ("gtk3", "gtk4"):
+    files[k].write_text(f'/* colours come from the active theme (theme-switch) */\n@import url("file://{CUR}/gen/gtk.css");\n'); print("wrote:", files[k].relative_to(H))
+t = files["toolkit"]
+if not t.is_symlink():
+    t.unlink(); t.symlink_to(f"{CUR}/gen/hyprtoolkit.conf"); print("linked:", t.relative_to(H))
+
+# hyprland.lua: borders/background from the theme, Super+T opens the picker
+def hypr(s):
+    if "themes/current" in s: return s
+    s = must(s, 'local shot_script = "~/.config/hypr/screenshot.sh"\n',
+             'local shot_script = "~/.config/hypr/screenshot.sh"\n\n-- colours from the active theme (theme-switch)\n'
+             'local theme = dofile(os.getenv("HOME") .. "/.config/themes/current/gen/hyprland.lua")\n')
+    s = re.sub(r'active_border\s*=\s*\{ colors = \{"rgba\(d62828ee\)", "rgba\(f4a261ee\)"\}, angle = 45 \},[^\n]*',
+               'active_border   = { colors = { theme.border_a, theme.border_b }, angle = 45 },', s)
+    s = re.sub(r'inactive_border = "rgba\(1e202eee\)",[^\n]*', 'inactive_border = theme.border_inactive,', s)
+    s = must(s, 'background_color = "0x12131a"', 'background_color = theme.background')
+    return s.rstrip() + '\n\n-- Theme picker\nhl.bind(mainMod .. " + T", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/theme-picker"))\n'
+edit("hypr", hypr)
+
+print("\nPROBLEMS:\n  " + "\n  ".join(problems) if problems else "\nall edits applied")

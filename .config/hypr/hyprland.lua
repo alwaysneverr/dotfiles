@@ -20,6 +20,9 @@ local fileManager = "dolphin"
 local menu        = "hyprlauncher"
 local shot_script = "~/.config/hypr/screenshot.sh"
 
+-- colours from the active theme (theme-switch)
+local theme = dofile(os.getenv("HOME") .. "/.config/themes/current/gen/hyprland.lua")
+
 ----------------------------------
 ---- ENVIRONMENT RUN HELPER ------
 ----------------------------------
@@ -92,8 +95,8 @@ hl.config({
         gaps_out = 15,
         border_size = 2,
         col = {
-            active_border   = { colors = {"rgba(d62828ee)", "rgba(f4a261ee)"}, angle = 45 }, -- Hsin Crimson & Gold
-            inactive_border = "rgba(1e202eee)", -- Midnight Ink
+            active_border   = { colors = { theme.border_a, theme.border_b }, angle = 45 },
+            inactive_border = theme.border_inactive,
         },
         resize_on_border = false,
         allow_tearing = false,
@@ -156,7 +159,7 @@ hl.config({
     dwindle = { preserve_split = true },
     master  = { new_status = "master" },
     scrolling = { fullscreen_on_one_column = true },
-    misc = { allow_session_lock_restore = true, force_default_wallpaper = 0, disable_hyprland_logo = true, disable_splash_rendering = true, background_color = "0x12131a" },
+    misc = { allow_session_lock_restore = true, force_default_wallpaper = 0, disable_hyprland_logo = true, disable_splash_rendering = true, background_color = theme.background },
 })
 
 ---------------
@@ -323,3 +326,7 @@ hl.bind("XF86Launch1", hl.dsp.exec_cmd("~/.local/bin/power-menu"))
 -- Clipboard history and notification center
 hl.bind(mainMod .. " + ALT + V", hl.dsp.exec_cmd("~/.local/bin/clip-menu"))
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("~/.local/bin/notif-center"))
+
+-- Theme picker
+hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/theme-picker-qs"))
+hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/theme-picker"))
