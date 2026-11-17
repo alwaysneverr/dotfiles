@@ -34,6 +34,7 @@ Rectangle {
 
     // State
     property real uiOpacity: 0
+    property bool live: bgVideoPlayer.playbackState === MediaPlayer.PlayingState
     property int sessionIndex: (typeof sessionModel !== "undefined" && sessionModel.lastIndex >= 0) ? sessionModel.lastIndex : 0
     property int userIndex: (typeof userModel !== "undefined" && userModel.lastIndex >= 0) ? userModel.lastIndex : 0
     property bool sessionPopupOpen: false
@@ -96,8 +97,8 @@ Rectangle {
                 x: px; y: py
                 Rectangle {
                     width: sz; height: width; radius: width / 2; color: Math.random() > 0.4 ? root.wCyan : root.wWhite; opacity: 0
-                    SequentialAnimation on opacity { loops: Animation.Infinite; PauseAnimation { duration: Math.random() * 4000 } NumberAnimation { from: 0; to: 0.5; duration: 2500 } NumberAnimation { from: 0.5; to: 0; duration: 3000 } }
-                    NumberAnimation on y { from: 0; to: -180 * s; duration: 9000 + Math.random() * 7000; loops: Animation.Infinite }
+                    SequentialAnimation on opacity { loops: Animation.Infinite; running: root.live; PauseAnimation { duration: Math.random() * 4000 } NumberAnimation { from: 0; to: 0.5; duration: 2500 } NumberAnimation { from: 0.5; to: 0; duration: 3000 } }
+                    NumberAnimation on y { from: 0; to: -180 * s; duration: 9000 + Math.random() * 7000; loops: Animation.Infinite; running: root.live }
                 }
             }
         }
@@ -110,7 +111,7 @@ Rectangle {
 
         Image {
             source: "logo.png"; width: 200 * s; fillMode: Image.PreserveAspectFit; anchors.left: parent.left; anchors.leftMargin: 44 * s; anchors.top: parent.top; anchors.topMargin: 32 * s; opacity: 0.92
-            SequentialAnimation on opacity { loops: Animation.Infinite; NumberAnimation { from: 0.8; to: 0.96; duration: 4000 } NumberAnimation { from: 0.96; to: 0.8; duration: 4000 } }
+            SequentialAnimation on opacity { loops: Animation.Infinite; running: root.live; NumberAnimation { from: 0.8; to: 0.96; duration: 4000 } NumberAnimation { from: 0.96; to: 0.8; duration: 4000 } }
         }
 
         Text {
@@ -125,7 +126,7 @@ Rectangle {
                 Rectangle { width: userRow.width + 32 * s; height: parent.height; anchors.left: parent.left; color: uMouse.containsMouse ? "#88000000" : "#66000000"; radius: 16 * s }
                 Row {
                     id: userRow; anchors.left: parent.left; anchors.leftMargin: 16 * s; anchors.verticalCenter: parent.verticalCenter; spacing: 12 * s
-                    Rectangle { width: 8 * s; height: 8 * s; rotation: 45; color: root.wCyan; anchors.verticalCenter: parent.verticalCenter; SequentialAnimation on rotation { loops: Animation.Infinite; NumberAnimation { from: 45; to: 90;  duration: 4000 } NumberAnimation { from: 90; to: 45;  duration: 4000 } } }
+                    Rectangle { width: 8 * s; height: 8 * s; rotation: 45; color: root.wCyan; anchors.verticalCenter: parent.verticalCenter; SequentialAnimation on rotation { loops: Animation.Infinite; running: root.live; NumberAnimation { from: 45; to: 90;  duration: 4000 } NumberAnimation { from: 90; to: 45;  duration: 4000 } } }
                     Text {
                         id: userNameText
                         text: {
@@ -228,7 +229,7 @@ Rectangle {
                     onPaint: { var ctx = getContext("2d"); ctx.clearRect(0, 0, width, height); var cx = width / 2, cy = height / 2; var outer = width * 0.48; var inner = width * 0.12; ctx.fillStyle = "#bbcccccc"; ctx.beginPath(); ctx.moveTo(cx, cy - outer); ctx.lineTo(cx + inner, cy - inner); ctx.lineTo(cx + outer, cy); ctx.lineTo(cx + inner, cy + inner); ctx.lineTo(cx, cy + outer); ctx.lineTo(cx - inner, cy + inner); ctx.lineTo(cx - outer, cy); ctx.lineTo(cx - inner, cy - inner); ctx.closePath(); ctx.fill(); }
                 }
             }
-            SequentialAnimation on opacity { loops: Animation.Infinite; NumberAnimation { from: 0.6; to: 1.0; duration: 2200 } NumberAnimation { from: 1.0; to: 0.6; duration: 2200 } }
+            SequentialAnimation on opacity { loops: Animation.Infinite; running: root.live; NumberAnimation { from: 0.6; to: 1.0; duration: 2200 } NumberAnimation { from: 1.0; to: 0.6; duration: 2200 } }
             MouseArea { anchors.fill: parent; onClicked: passIn.forceActiveFocus() }
         }
     }
@@ -271,7 +272,7 @@ Rectangle {
 
     Rectangle {
         anchors.fill: parent; color: "transparent"
-        Rectangle { width: parent.width; height: 1 * s; color: root.wCyan; opacity: 0.03; NumberAnimation on y { from: 0; to: root.height; duration: 9000; loops: Animation.Infinite } }
+        Rectangle { width: parent.width; height: 1 * s; color: root.wCyan; opacity: 0.03; NumberAnimation on y { from: 0; to: root.height; duration: 9000; loops: Animation.Infinite; running: root.live } }
     }
 
     // Action
