@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=@NAME@
+Description=@NAME@ emblem fading in and out
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/@ID@
+ScriptFile=/usr/share/plymouth/themes/@ID@/@ID@.script

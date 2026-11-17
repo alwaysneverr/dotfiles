@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """theme-boot NAME THEMEDIR  (run as root via pkexec from theme-switch --boot)
-Switches GRUB theme, Plymouth theme and tuigreet colours to theme NAME."""
+Switches the GRUB theme, Plymouth theme and tuigreet colours to theme NAME.
+Missing boot themes are built from ~/.config/themes/_base; any part this
+machine doesn't use (no GRUB, no Plymouth, no tuigreet) is skipped."""
 import configparser, os, re, shutil, subprocess, sys
 from pathlib import Path
 
@@ -11,42 +13,74 @@ if len(sys.argv) != 3 or not re.fullmatch(r"[a-z0-9-]+", sys.argv[1]):
 name, tdir = sys.argv[1], Path(sys.argv[2]).resolve()
 if not re.fullmatch(r"/home/[^/]+/\.config/themes/[a-z0-9-]+", str(tdir)) or tdir.name != name:
     sys.exit(f"theme-boot: refusing theme dir {tdir}")
+base = tdir.parent / "_base"
 cp = configparser.RawConfigParser(delimiters=("=",)); cp.read(tdir / "theme.ini", encoding="utf-8")
 meta = cp["meta"]
+done, skipped = [], []
+
+def have(cmd): return shutil.which(cmd) is not None
 
 # --- Plymouth ---------------------------------------------------------------
-ply = meta["plymouth_theme"]; pdir = Path("/usr/share/plymouth/themes") / ply
-if not pdir.exists():
-    src = Path("/usr/share/plymouth/themes/hsin")
-    pdir.mkdir(parents=True)
-    for ext in ("plymouth", "script"):
-        txt = (src / f"hsin.{ext}").read_text().replace("/hsin", f"/{ply}").replace("hsin.script", f"{ply}.script")
-        txt = txt.replace("Name=Hsin", f"Name={meta['name']}")
-        (pdir / f"{ply}.{ext}").write_text(txt)
-shutil.copyfile(tdir / "logo.png", pdir / "logo.png")
-subprocess.run(["plymouth-set-default-theme", ply], check=True)
+ply = meta.get("plymouth_theme", "")
+if ply and re.fullmatch(r"[a-z0-9-]+", ply) and have("plymouth-set-default-theme"):
+    pdir = Path("/usr/share/plymouth/themes") / ply
+    tpl = base / "plymouth"
+    if not pdir.exists() and (tpl / "template.plymouth").exists():
+        pdir.mkdir(parents=True)
+        txt = (tpl / "template.plymouth").read_text().replace("@ID@", ply).replace("@NAME@", meta.get("name", ply))
+        (pdir / f"{ply}.plymouth").write_text(txt)
+        shutil.copyfile(tpl / "template.script", pdir / f"{ply}.script")
+    if pdir.exists():
+        shutil.copyfile(tdir / "logo.png", pdir / "logo.png")
+        subprocess.run(["plymouth-set-default-theme", ply], check=True)
+        done.append("Plymouth")
+    else:
+        skipped.append("Plymouth (no base template in _base/plymouth)")
+else:
+    skipped.append("Plymouth (not installed)")
 
 # --- GRUB -------------------------------------------------------------------
-gname = meta["grub_theme"]; gdir = Path("/boot/grub/themes") / gname
-if not gdir.exists():
-    shutil.copytree("/boot/grub/themes/Wuthering-hsin", gdir)
-if (tdir / "grub.jpg").exists():
-    theme_txt = (gdir / "theme.txt").read_text()
-    m = re.search(r'desktop-image\s*:\s*"([^"]+)"', theme_txt)
-    img = m.group(1) if m else "background.jpg"
-    shutil.copyfile(tdir / "grub.jpg", gdir / img)
-g = Path("/etc/default/grub"); s = g.read_text()
-s = re.sub(r'^GRUB_THEME=.*$', f'GRUB_THEME="{gdir}/theme.txt"', s, flags=re.M)
-g.write_text(s)
-subprocess.run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"], check=True)
-cfg = Path("/boot/grub/grub.cfg"); cfg.write_text(re.sub(r"^[ \t]*echo[ \t].*'Loading .*\n", "", cfg.read_text(), flags=re.M))
+gname = meta.get("grub_theme", "")
+g = Path("/etc/default/grub")
+if gname and re.fullmatch(r"[A-Za-z0-9-]+", gname) and have("grub-mkconfig") and g.exists():
+    groot = Path("/boot/grub/themes")
+    gdir = groot / gname
+    if not gdir.exists() and (base / "grub" / "theme.txt").exists():
+        shutil.copytree(base / "grub", gdir)
+    if gdir.exists():
+        m = re.search(r'desktop-image\s*:\s*"([^"]+)"', (gdir / "theme.txt").read_text())
+        img = m.group(1) if m else "background.jpg"
+        if (tdir / "grub.jpg").exists():
+            shutil.copyfile(tdir / "grub.jpg", gdir / img)
+        elif not (gdir / img).exists():
+            print(f"theme-boot: {name} has no grub.jpg, GRUB will show a plain background")
+        s = g.read_text()
+        line = f'GRUB_THEME="{gdir}/theme.txt"'
+        s = re.sub(r'^#?GRUB_THEME=.*$', line, s, flags=re.M) if re.search(r'^#?GRUB_THEME=', s, re.M) else s.rstrip() + "\n" + line + "\n"
+        g.write_text(s)
+        subprocess.run(["grub-mkconfig", "-o", "/boot/grub/grub.cfg"], check=True)
+        cfg = Path("/boot/grub/grub.cfg")
+        cfg.write_text(re.sub(r"^[ \t]*echo[ \t].*'Loading .*\n", "", cfg.read_text(), flags=re.M))
+        done.append("GRUB")
+    else:
+        skipped.append("GRUB (no base theme in _base/grub)")
+else:
+    skipped.append("GRUB (not installed)")
 
 # --- tuigreet (login screen after a logout) ---------------------------------
-gt = Path("/etc/greetd/config.toml"); s = gt.read_text()
-s = re.sub(r"--theme '[^']*'", f"--theme '{meta['tuigreet_theme']}'", s)
-s = re.sub(r"--matrix-colors '[^']*'", f"--matrix-colors '{meta['tuigreet_matrix']}'", s)
-gt.write_text(s)
+gt = Path("/etc/greetd/config.toml")
+if gt.exists() and "tuigreet" in (s := gt.read_text()):
+    s = re.sub(r"--theme '[^']*'", f"--theme '{meta.get('tuigreet_theme', '')}'", s)
+    s = re.sub(r"--matrix-colors '[^']*'", f"--matrix-colors '{meta.get('tuigreet_matrix', '')}'", s)
+    gt.write_text(s)
+    done.append("tuigreet")
+else:
+    skipped.append("tuigreet (not used)")
 
 # --- initramfs last (Plymouth theme lives in it) ----------------------------
-subprocess.run(["mkinitcpio", "-P"], check=True, stdout=subprocess.DEVNULL)
-print(f"theme-boot: {name} applied")
+if "Plymouth" in done and have("mkinitcpio"):
+    subprocess.run(["mkinitcpio", "-P"], check=True, stdout=subprocess.DEVNULL)
+
+print(f"theme-boot: {name} applied to {', '.join(done) or 'nothing'}")
+if skipped:
+    print("theme-boot: skipped " + "; ".join(skipped))

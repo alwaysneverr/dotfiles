@@ -103,11 +103,10 @@ If checkout complains about existing files, move them aside and retry.
 | `.local/bin/notif-center`, `.local/bin/notif-status` | notification history picker and Waybar bell |
 | `.local/bin/touchpad-toggle` | touchpad on/off (`hyprctl eval hl.device`) |
 | `.local/bin/grub-update` | rebuild `grub.cfg` without the "Loading…" lines |
-| `.config/themes/` | themes: `theme.ini`, wallpaper, emblem, lock video, GRUB image, quotes; copy of `theme-boot` |
+| `.config/themes/` | themes: `theme.ini`, wallpaper, emblem, lock video, GRUB image, quotes; `_base/` boot theme bases; copy of `theme-boot` |
 | `.local/bin/theme-*` | `theme-gen`, `theme-switch`, `theme-list`, pickers, one-time migration scripts |
 | `.config/quickshell/theme-picker/` | Quickshell theme picker |
 | `.local/share/qylock-themes/_shared/` | shared lock screen QML and font |
-| `.local/share/plymouth-themes/hsin/` | backup of the Plymouth theme |
 | `.config/dunst/dunstrc`, `.config/dunst/dunstrc.d/` | notifications (theme colours via `dunstrc.d`) |
 | `.config/kitty/kitty.conf` | terminal |
 | `.config/fastfetch/config.jsonc` | system info |
