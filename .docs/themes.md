@@ -16,7 +16,7 @@ After a fresh clone, run `theme-switch hsin` once: generated files (`gen/`, `cur
 | `theme-switch NAME` | Switch the desktop |
 | `theme-switch NAME --boot` | Also switch GRUB, Plymouth and tuigreet (asks for your password, takes about 30 s) |
 
-Kitty, Waybar, Dunst, fuzzel, Hyprland, hyprpaper, hyprlauncher and GTK apps reload live. Qt apps (Dolphin) update after a restart. Shells update at the next prompt.
+Kitty, Waybar, Dunst, fuzzel, Hyprland, the wallpaper (with a transition), hyprlauncher and GTK apps reload live. Qt apps (Dolphin) update after a restart. Shells update at the next prompt.
 
 ## How it works
 
@@ -42,6 +42,7 @@ Kitty, Waybar, Dunst, fuzzel, Hyprland, hyprpaper, hyprlauncher and GTK apps rel
 |---|---|
 | `theme-gen` | Writes `gen/*` and the qylock theme from `theme.ini` |
 | `theme-switch` | Runs theme-gen, moves the symlink, reloads apps |
+| `wallpaper-set` | Sets the wallpaper via awww (`WALL_TRANSITION`, `WALL_POS`, `WALL_DURATION`) |
 | `theme-list` | Prints all themes as JSON for the Quickshell picker |
 | `theme-picker-qs` / `theme-picker` | The two pickers |
 | `/usr/local/bin/theme-boot` | Boot visuals (root) |
@@ -50,7 +51,7 @@ Kitty, Waybar, Dunst, fuzzel, Hyprland, hyprpaper, hyprlauncher and GTK apps rel
 
 1. `cp -r ~/.config/themes/shorekeeper ~/.config/themes/NAME`, then delete its `gen/`.
 2. Edit `theme.ini`: `[meta]` name and boot theme names, `[colors]`, `[ansi]`, `[lock]` texts.
-3. Replace `wallpaper.jpg` (16:9), `logo.png` (emblem, ~256 px, transparent), `lock.mp4` (1080p loop), `grub.jpg` (1920×1080, baseline JPEG) and `quotes.txt`.
+3. Replace `wallpaper.jpg` (16:9; add `wallpaper.gif` for an animated one, the `.jpg` stays as its still version), `logo.png` (emblem, ~256 px, transparent), `lock.mp4` (1080p loop), `grub.jpg` (1920×1080, baseline JPEG) and `quotes.txt`.
 4. `theme-switch NAME`, then `theme-switch NAME --boot` once happy.
 
 ## Palette

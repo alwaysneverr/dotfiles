@@ -20,7 +20,7 @@ hyprctl reload >/dev/null 2>&1
 pkill -USR2 -x waybar
 dunstctl reload >/dev/null 2>&1
 pkill -USR1 -x kitty
-pkill -x hyprpaper; uwsm app -t service -- hyprpaper >/dev/null 2>&1
+"$HOME/.local/bin/wallpaper-set" >/dev/null 2>&1 &
 pkill -x hyprlauncher; sleep 0.5; uwsm app -t service -- hyprlauncher -d >/dev/null 2>&1
 # nudge running GTK apps to re-read gtk.css
 g=$(gsettings get org.gnome.desktop.interface gtk-theme)

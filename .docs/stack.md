@@ -16,7 +16,7 @@
 | Launcher | `hyprlauncher` | follows the theme |
 | Notifications | `dunst` | click opens the app; history on `Super+N` |
 | Lock and idle | `quickshell`, `hypridle`, `hyprlock` | qylock with one theme per desktop theme; hyprlock as fallback |
-| Wallpaper | `hyprpaper` | |
+| Wallpaper | `awww` | animated transitions on theme switch, GIF wallpapers (`wallpaper-set`) |
 | Polkit | `hyprpolkitagent` | user service |
 | Terminal | `kitty` | |
 | Shell | `zsh`, `zsh-autosuggestions`, `zsh-syntax-highlighting` | bash as fallback |

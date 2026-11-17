@@ -9,7 +9,7 @@ Packages, how the bare repo works, and what it tracks.
 ### 1. Official packages
 
 ```sh
-sudo pacman -S hyprland uwsm waybar hyprpaper hypridle hyprlock hyprlauncher \
+sudo pacman -S hyprland uwsm waybar awww hypridle hyprlock hyprlauncher \
   hyprpolkitagent dunst kitty zsh zsh-autosuggestions zsh-syntax-highlighting \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \
@@ -91,7 +91,7 @@ If checkout complains about existing files, move them aside and retry.
 | `.config/hypr/hyprland.lua` | Hyprland config (Lua): autostart, binds, window rules, animations |
 | `.config/hypr/hypridle.conf` | idle actions: dim, power saver, lock, suspend |
 | `.config/hypr/hyprlock.conf` | lock screen |
-| `.config/hypr/hyprpaper.conf` | wallpaper |
+| `.local/bin/wallpaper-set` | sets the wallpaper through awww, with a transition |
 | `.config/hypr/hyprtoolkit.conf` | shared theme for Hypr apps (link to the theme's generated file) |
 | `.config/hypr/screenshot.sh` | screenshot script (grim + slurp, with notification) |
 | `.config/hyprlauncher/style.css` | launcher theme |

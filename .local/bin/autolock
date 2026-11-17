@@ -8,4 +8,5 @@ if [ -e "$f" ]; then
   "$HOME/.local/share/quickshell-lockscreen/lock.sh" || hyprlock
   hyprctl dispatch 'hl.dsp.submap("reset")' >/dev/null 2>&1
 fi
-for app in hyprpaper waybar kitty; do uwsm app -t service -- "$app" >/dev/null 2>&1; done
+for app in waybar kitty; do uwsm app -t service -- "$app" >/dev/null 2>&1; done
+WALL_TRANSITION=fade "$HOME/.local/bin/wallpaper-set" >/dev/null 2>&1
