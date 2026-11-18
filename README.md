@@ -6,13 +6,17 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 
 ## Preview
 
-| | Hsin | Shorekeeper |
-|---|---|---|
-| **Wallpaper** | ![Hsin wallpaper](.config/themes/hsin/wallpaper.jpg) | ![Shorekeeper wallpaper](.config/themes/shorekeeper/wallpaper.jpg) |
-| **Lock screen** | ![Hsin lock screen](Pictures/readme/lock-hsin.png) | ![Shorekeeper lock screen](Pictures/readme/lock-shorekeeper.png) |
-| **Lock background** | ![Hsin lock loop](Pictures/readme/lock-bg-hsin.webp) | ![Shorekeeper lock loop](Pictures/readme/lock-bg-shorekeeper.webp) |
-| **Boot menu** (GRUB) | ![Hsin GRUB](Pictures/readme/grub-hsin.png) | ![Shorekeeper GRUB](Pictures/readme/grub-shorekeeper.png) |
-| **Boot splash** (Plymouth) | ![Hsin Plymouth](Pictures/readme/plymouth-hsin.gif) | ![Shorekeeper Plymouth](Pictures/readme/plymouth-shorekeeper.gif) |
+Shown: **Shorekeeper**. Every theme, side by side: [theme gallery](.docs/gallery.md).
+
+![Shorekeeper wallpaper](.config/themes/shorekeeper/wallpaper.jpg)
+
+| Lock screen | Lock background |
+|---|---|
+| ![Lock screen](Pictures/readme/lock-shorekeeper.png) | ![Lock background loop](Pictures/readme/lock-bg-shorekeeper.webp) |
+
+| Boot menu (GRUB) | Boot splash (Plymouth) |
+|---|---|
+| ![GRUB](Pictures/readme/grub-shorekeeper.png) | ![Plymouth](Pictures/readme/plymouth-shorekeeper.gif) |
 
 ## At a glance
 
@@ -28,6 +32,7 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 |-----|--------------|
 | [Stack](.docs/stack.md) | every part and the packages behind it |
 | [Themes](.docs/themes.md) | switching, how it works, options, adding a theme, palettes |
+| [Gallery](.docs/gallery.md) | every theme compared: palettes, wallpapers, lock screens, boot visuals |
 | [Desktop](.docs/desktop.md) | GTK/Qt setup, keybindings, bar, launcher icon fixes |
 | [Lock screen](.docs/lock-screen.md) | qylock setup, how locking works, recovery |
 | [Install](.docs/install.md) | packages, bare repo layout, new machine, what's tracked |
