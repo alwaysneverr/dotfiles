@@ -63,7 +63,7 @@ Install the packages first and see [Install](.docs/install.md) for the full step
 
 - **Hsin**, **Shorekeeper**, **Aemeath** and all Wuthering Waves material belong to Kuro Games, used here for personal customization:
   - the Hsin wallpaper;
-  - the lock screen background, a loop cut from the Hsin trailer;
+  - the lock screen background, a loop cut from official Hsin footage;
   - the voice-line quotes on the hyprlock fallback (both characters);
   - the Mengzhou emblem (the fox logo);
   - the Shorekeeper wallpaper (Tethys) and the Black Shores emblem;
