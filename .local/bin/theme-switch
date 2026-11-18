@@ -30,7 +30,9 @@ gsettings set org.gnome.desktop.interface gtk-theme "$(echo "$g" | tr -d "'")"
 title=$(sed -n 's/^name = //p' "$T/$name/theme.ini" | head -1)
 notify-send -i "$T/$name/logo.png" "Theme: $title" "Desktop switched. Restart Qt apps (Dolphin) to update them."
 
-if [ "$2" = "--boot" ]; then
+if [ "$2" = "--boot" ] && grep -qiE '^boot *= *(no|false|0) *$' "$T/$name/theme.ini"; then
+  notify-send -i "$T/$name/logo.png" "Theme: $title" "Desktop-only theme: boot visuals left as they are."
+elif [ "$2" = "--boot" ]; then
   notify-send -i "$T/$name/logo.png" "Theme: $title" "Updating GRUB, Plymouth and the login screen (about 30 s)..."
   if pkexec /usr/local/bin/theme-boot "$name" "$T/$name"; then
     notify-send -i "$T/$name/logo.png" "Theme: $title" "Boot visuals updated."

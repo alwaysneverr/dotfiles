@@ -2,3 +2,6 @@
 current
 pre-migrate-backup.tar.gz
 *.before-switcher
+*/wallpaper.gif
+.still
+*/wallpaper.gif

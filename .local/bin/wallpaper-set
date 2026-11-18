@@ -6,7 +6,9 @@
 T="$HOME/.config/themes/current"
 f=$1
 if [ -z "$f" ]; then
-  for c in "$T/wallpaper.gif" "$T/wallpaper.jpg" "$T/wallpaper.png"; do
+  # ~/.config/themes/.still (set by wallpaper-anim) keeps animated wallpapers still
+  anim="$T/wallpaper.gif"; [ -e "$HOME/.config/themes/.still" ] && anim=""
+  for c in $anim "$T/wallpaper.jpg" "$T/wallpaper.png"; do
     [ -f "$c" ] && { f=$c; break; }
   done
 fi

@@ -19,7 +19,9 @@ for n in sorted(os.listdir(T)):
         "name": c.get("meta", "name", fallback=n),
         "current": n == cur,
         "wallpaper": f("wallpaper.jpg"),
+        "anim": f("wallpaper.gif"),
         "logo": f("logo.png"),
+        "boot": c.get("meta", "boot", fallback="yes").strip().lower() not in ("no", "false", "0"),
         "tagline": c.get("lock", "tagline", fallback=""),
         "colors": {k: c.get("colors", k, fallback="#888888") for k in keys},
     })

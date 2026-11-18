@@ -10,6 +10,7 @@ choice=$(for n in $names; do
   done | fuzzel --dmenu --cache /dev/null --prompt "Theme  " --lines 6 --width 32 --index) || exit 0
 name=$(echo "$names" | sed -n "$((choice + 1))p")
 [ -n "$name" ] || exit 0
+grep -qiE '^boot *= *(no|false|0) *$' "$T/$name/theme.ini" && exec "$HOME/.local/bin/theme-switch" "$name"
 mode=$(printf '%s\n' "Desktop only" "Desktop + boot (asks for password)" |
   fuzzel --dmenu --cache /dev/null --prompt "Apply  " --lines 2 --width 40) || exit 0
 case "$mode" in

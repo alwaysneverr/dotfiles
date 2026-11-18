@@ -39,7 +39,7 @@ ShellRoot {
         const t = themes[sel]
         if (!t) return
         const cmd = [home + "/.local/bin/theme-switch", t.id]
-        if (boot) cmd.push("--boot")
+        if (boot && t.boot) cmd.push("--boot")
         Quickshell.execDetached(cmd)
         Qt.quit()
     }
@@ -107,12 +107,32 @@ ShellRoot {
                     color: root.cText
                 }
 
-                Row {
+                ListView {   // carousel: scrolls when there are more themes than fit
+                    id: cards
                     anchors.horizontalCenter: parent.horizontalCenter
+                    width: Math.min(Math.max(root.themes.length, 1) * 406 + 14, win.width - 160)
+                    height: 370
+                    orientation: ListView.Horizontal
                     spacing: 26
+                    leftMargin: 20; rightMargin: 20
+                    clip: true
+                    interactive: false
+                    model: root.themes
+                    currentIndex: root.sel
+                    highlightRangeMode: ListView.ApplyRange
+                    preferredHighlightBegin: width / 2 - 200
+                    preferredHighlightEnd: width / 2 + 200
+                    highlightMoveDuration: 260
 
-                    Repeater {
-                        model: root.themes
+                    WheelHandler {
+                        onWheel: e => {
+                            const n = root.themes.length
+                            if (!n) return
+                            const d = (e.angleDelta.y || e.angleDelta.x) < 0 ? 1 : -1
+                            root.sel = Math.max(0, Math.min(n - 1, root.sel + d))
+                        }
+                    }
+
                         delegate: Item {
                             id: card
                             required property var modelData
@@ -120,6 +140,7 @@ ShellRoot {
                             readonly property bool picked: index === root.sel
                             readonly property var c: modelData.colors
                             width: 380; height: 330
+                            y: (ListView.view.height - height) / 2
                             scale: picked ? 1.04 : (hover.containsMouse ? 1.02 : 0.97)
                             opacity: picked ? 1 : 0.75
                             Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
@@ -148,6 +169,16 @@ ShellRoot {
                                         sourceSize.width: 720
                                         fillMode: Image.PreserveAspectCrop
                                         asynchronous: true
+                                    }
+                                    Loader {   // animated wallpapers play while the card is selected or hovered
+                                        anchors.fill: parent
+                                        active: !!card.modelData.anim && (card.picked || hover.containsMouse)
+                                        sourceComponent: AnimatedImage {
+                                            source: "file://" + card.modelData.anim
+                                            fillMode: Image.PreserveAspectCrop
+                                            asynchronous: true
+                                            playing: true
+                                        }
                                     }
                                     Rectangle {   // fade so the emblem reads
                                         anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
@@ -217,7 +248,6 @@ ShellRoot {
                                 onDoubleClicked: { root.sel = card.index; root.apply(false) }
                             }
                         }
-                    }
                 }
 
                 Row {
@@ -227,6 +257,9 @@ ShellRoot {
                         model: [{ label: "Apply", boot: false }, { label: "Apply + boot", boot: true }]
                         Rectangle {
                             required property var modelData
+                            // "Apply + boot" is greyed out for desktop-only themes
+                            readonly property bool off: modelData.boot && !(root.themes[root.sel] || {}).boot
+                            opacity: off ? 0.35 : 1
                             width: 170; height: 40; radius: 10
                             color: btn.containsMouse ? root.a(root.cAccent, 0.25) : root.a(root.cSurface, 0.85)
                             border.color: modelData.boot ? root.a(root.cAccent, 0.5) : root.cAccent
@@ -240,6 +273,7 @@ ShellRoot {
                                 id: btn
                                 anchors.fill: parent
                                 hoverEnabled: true
+                                enabled: !parent.off
                                 onClicked: root.apply(parent.modelData.boot)
                             }
                         }
@@ -248,7 +282,7 @@ ShellRoot {
 
                 Text {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: "←/→ choose   ·   Enter apply   ·   Shift+Enter apply + boot (asks for password)   ·   Esc close"
+                    text: (root.themes.length ? (root.sel + 1) + " / " + root.themes.length + "   ·   " : "") + "←/→ choose   ·   Enter apply   ·   Shift+Enter apply + boot (asks for password)   ·   Esc close"
                     font.pixelSize: 12
                     color: root.cDim
                 }

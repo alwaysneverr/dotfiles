@@ -16,6 +16,8 @@ if not re.fullmatch(r"/home/[^/]+/\.config/themes/[a-z0-9-]+", str(tdir)) or tdi
 base = tdir.parent / "_base"
 cp = configparser.RawConfigParser(delimiters=("=",)); cp.read(tdir / "theme.ini", encoding="utf-8")
 meta = cp["meta"]
+if meta.get("boot", "yes").strip().lower() in ("no", "false", "0"):
+    sys.exit(f"theme-boot: {name} is a desktop-only theme (boot = no), nothing changed")
 done, skipped = [], []
 
 def have(cmd): return shutil.which(cmd) is not None
@@ -36,6 +38,8 @@ if ply and re.fullmatch(r"[a-z0-9-]+", ply) and have("plymouth-set-default-theme
         done.append("Plymouth")
     else:
         skipped.append("Plymouth (no base template in _base/plymouth)")
+elif not ply:
+    skipped.append("Plymouth (no plymouth_theme in theme.ini)")
 else:
     skipped.append("Plymouth (not installed)")
 
@@ -64,16 +68,22 @@ if gname and re.fullmatch(r"[A-Za-z0-9-]+", gname) and have("grub-mkconfig") and
         done.append("GRUB")
     else:
         skipped.append("GRUB (no base theme in _base/grub)")
+elif not gname:
+    skipped.append("GRUB (no grub_theme in theme.ini)")
 else:
     skipped.append("GRUB (not installed)")
 
 # --- tuigreet (login screen after a logout) ---------------------------------
 gt = Path("/etc/greetd/config.toml")
-if gt.exists() and "tuigreet" in (s := gt.read_text()):
-    s = re.sub(r"--theme '[^']*'", f"--theme '{meta.get('tuigreet_theme', '')}'", s)
-    s = re.sub(r"--matrix-colors '[^']*'", f"--matrix-colors '{meta.get('tuigreet_matrix', '')}'", s)
+if gt.exists() and "tuigreet" in (s := gt.read_text()) and (meta.get("tuigreet_theme") or meta.get("tuigreet_matrix")):
+    if meta.get("tuigreet_theme"):
+        s = re.sub(r"--theme '[^']*'", f"--theme '{meta['tuigreet_theme']}'", s)
+    if meta.get("tuigreet_matrix"):
+        s = re.sub(r"--matrix-colors '[^']*'", f"--matrix-colors '{meta['tuigreet_matrix']}'", s)
     gt.write_text(s)
     done.append("tuigreet")
+elif gt.exists() and "tuigreet" in s:
+    skipped.append("tuigreet (no colours in theme.ini)")
 else:
     skipped.append("tuigreet (not used)")
 

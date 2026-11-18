@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- original emblem: a lit sparkler -->
+  <defs>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffd2dc" stop-opacity="0.9"/>
+      <stop offset="0.45" stop-color="#e0607a" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#e0607a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- wire -->
+  <line x1="58" y1="214" x2="150" y2="106" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+  <!-- unburnt coating -->
+  <line x1="104" y1="160" x2="146" y2="111" stroke="#fff" stroke-width="15" stroke-linecap="round"/>
+  <!-- glow -->
+  <circle cx="160" cy="96" r="72" fill="url(#glow)"/>
+  <!-- sparks: long rays -->
+  <g stroke="#fff" stroke-width="5" stroke-linecap="round">
+    <line x1="160" y1="96" x2="160" y2="30"/>
+    <line x1="160" y1="96" x2="226" y2="96"/>
+    <line x1="160" y1="96" x2="206" y2="50"/>
+    <line x1="160" y1="96" x2="210" y2="146"/>
+    <line x1="160" y1="96" x2="112" y2="48"/>
+  </g>
+  <!-- short rays -->
+  <g stroke="#e0607a" stroke-width="4" stroke-linecap="round">
+    <line x1="160" y1="96" x2="186" y2="34"/>
+    <line x1="160" y1="96" x2="222" y2="72"/>
+    <line x1="160" y1="96" x2="224" y2="122"/>
+    <line x1="160" y1="96" x2="186" y2="156"/>
+    <line x1="160" y1="96" x2="130" y2="36"/>
+  </g>
+  <!-- flying spark dots -->
+  <g fill="#fff">
+    <circle cx="236" cy="40" r="4"/><circle cx="96" cy="70" r="3.5"/>
+    <circle cx="232" cy="168" r="3.5"/><circle cx="140" cy="22" r="3"/>
+  </g>
+  <g fill="#ffb3c1"><circle cx="242" cy="104" r="3"/><circle cx="200" cy="18" r="3"/></g>
+  <!-- hot core -->
+  <circle cx="160" cy="96" r="13" fill="#fff"/>
+</svg>

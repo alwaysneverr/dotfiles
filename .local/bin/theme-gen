@@ -158,8 +158,18 @@ THEME_ARROW='{c['border_a']}'
 
     # qylock lock theme folder: shared layout + this theme's video, logo and settings
     q = QYLOCK / name; q.mkdir(parents=True, exist_ok=True)
+    td = THEMES / name
+    # lock background: lock.mp4 (video), else lock.jpg/lock.png, else the wallpaper (still image)
+    if (td / "lock.mp4").exists():
+        media, kind = ("bg.mp4", td / "lock.mp4"), "video"
+    else:
+        img = next((td / f for f in ("lock.jpg", "lock.png", "wallpaper.jpg", "wallpaper.png") if (td / f).exists()), td / "wallpaper.jpg")
+        media, kind = ("bg.jpg", img), "image"
+    for stale in ("bg.mp4", "bg.jpg"):
+        if stale != media[0] and (q / stale).is_symlink():
+            (q / stale).unlink()
     links = {"Main.qml": QYLOCK / "_shared/Main.qml", "font": QYLOCK / "_shared/font",
-             "bg.mp4": THEMES / name / "lock.mp4", "logo.png": THEMES / name / "logo.png"}
+             media[0]: media[1], "logo.png": td / "logo.png"}
     for f, target in links.items():
         p = q / f
         if p.is_symlink() or p.exists():
@@ -168,7 +178,7 @@ THEME_ARROW='{c['border_a']}'
             p.unlink()
         p.symlink_to(target)
     (q / "theme.conf").write_text(
-        "[General]\nbackground=bg.mp4\ntype=video\n"
+        f"[General]\nbackground={media[0]}\ntype={kind}\n"
         f"bg={c['bg_alt']}\naccent={c['accent']}\nalert={c['alert']}\n"
         + "".join(f"{k}={L[k]}\n" for k in ("accent_dim", "accent_glow", "silver", "ghost", "panel", "panel_light", "white",
                                             "shade", "tagline", "failtext", "footer", "product")), encoding="utf-8")

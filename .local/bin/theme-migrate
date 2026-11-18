@@ -19,7 +19,9 @@ if not backup.exists():
     print("backup:", backup)
 
 def edit(key, fn):
-    p = files[key]; s = p.read_text(encoding="utf-8"); n = fn(s)
+    p = files[key]
+    if not p.exists(): print("skipped (missing):", p.relative_to(H)); return
+    s = p.read_text(encoding="utf-8"); n = fn(s)
     if n != s: p.write_text(n, encoding="utf-8"); print("edited:", p.relative_to(H))
     else: print("unchanged:", p.relative_to(H))
 
@@ -99,7 +101,7 @@ def hypr(s):
                'active_border   = { colors = { theme.border_a, theme.border_b }, angle = 45 },', s)
     s = re.sub(r'inactive_border = "rgba\(1e202eee\)",[^\n]*', 'inactive_border = theme.border_inactive,', s)
     s = must(s, 'background_color = "0x12131a"', 'background_color = theme.background')
-    return s.rstrip() + '\n\n-- Theme picker\nhl.bind(mainMod .. " + T", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/theme-picker"))\n'
+    return s.rstrip() + '\n\n-- Theme picker\nhl.bind(mainMod .. " + T", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/theme-picker-qs"))\nhl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/theme-picker"))\n'
 edit("hypr", hypr)
 
 print("\nPROBLEMS:\n  " + "\n  ".join(problems) if problems else "\nall edits applied")

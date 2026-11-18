@@ -1,0 +1,12 @@
+#!/bin/sh
+# wallpaper-anim [on|off|toggle]   animated wallpapers on or off (all themes), default: toggle
+F="$HOME/.config/themes/.still"
+case "${1:-toggle}" in
+  on) rm -f "$F" ;;
+  off) touch "$F" ;;
+  toggle) if [ -e "$F" ]; then rm -f "$F"; else touch "$F"; fi ;;
+  *) echo "usage: wallpaper-anim [on|off|toggle]" >&2; exit 1 ;;
+esac
+if [ -e "$F" ]; then msg="Still image"; else msg="Animated (if the theme has one)"; fi
+WALL_TRANSITION=fade WALL_DURATION=0.6 "$HOME/.local/bin/wallpaper-set" >/dev/null 2>&1
+notify-send -t 1500 "Wallpaper" "$msg"

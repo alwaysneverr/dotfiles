@@ -9,7 +9,7 @@ Rectangle {
     // Wayland Cursor Fix
     MouseArea {
         anchors.fill: parent
-        cursorShape: Qt.ArrowCursor; hoverEnabled: true; onPositionChanged: if (bgVideoPlayer.playbackState !== MediaPlayer.PlayingState) bgVideoPlayer.play()
+        cursorShape: Qt.ArrowCursor; hoverEnabled: true; onPositionChanged: root.poke()
         z: -1
     }
     id: root
@@ -34,7 +34,14 @@ Rectangle {
 
     // State
     property real uiOpacity: 0
-    property bool live: bgVideoPlayer.playbackState === MediaPlayer.PlayingState
+    readonly property bool imageMode: config.type === "image"
+    property bool recent: true
+    property bool live: imageMode ? recent : bgVideoPlayer.playbackState === MediaPlayer.PlayingState
+    function poke() {
+        if (imageMode) { recent = true; idleTimer.restart() }
+        else if (bgVideoPlayer.playbackState !== MediaPlayer.PlayingState) bgVideoPlayer.play()
+    }
+    Timer { id: idleTimer; interval: 60000; running: root.imageMode; onTriggered: root.recent = false }
     property int sessionIndex: (typeof sessionModel !== "undefined" && sessionModel.lastIndex >= 0) ? sessionModel.lastIndex : 0
     property int userIndex: (typeof userModel !== "undefined" && userModel.lastIndex >= 0) ? userModel.lastIndex : 0
     property bool sessionPopupOpen: false
@@ -60,8 +67,9 @@ Rectangle {
     // Visuals
     Item {
         id: bgContainer; anchors.fill: parent; clip: true
-        MediaPlayer { id: bgVideoPlayer; source: "bg.mp4"; loops: 20; autoPlay: true; videoOutput: bgVideoOutput }
-        VideoOutput { id: bgVideoOutput; anchors.fill: parent; fillMode: VideoOutput.PreserveAspectCrop; endOfStreamPolicy: VideoOutput.KeepLastFrame }
+        MediaPlayer { id: bgVideoPlayer; source: root.imageMode ? "" : "bg.mp4"; loops: 20; autoPlay: !root.imageMode; videoOutput: bgVideoOutput }
+        VideoOutput { id: bgVideoOutput; anchors.fill: parent; fillMode: VideoOutput.PreserveAspectCrop; endOfStreamPolicy: VideoOutput.KeepLastFrame; visible: !root.imageMode }
+        Image { anchors.fill: parent; visible: root.imageMode; source: root.imageMode ? "bg.jpg" : ""; fillMode: Image.PreserveAspectCrop; asynchronous: true }
 
         Rectangle {
             anchors.fill: parent
@@ -294,7 +302,7 @@ Rectangle {
         ColorAnimation { target: passRect; property: "border.color"; to: "#44ffffff"; duration: 400 }
     }
 
-    Connections { target: passIn; function onTextChanged() { if (bgVideoPlayer.playbackState !== MediaPlayer.PlayingState) bgVideoPlayer.play() } }
+    Connections { target: passIn; function onTextChanged() { root.poke() } }
     Timer { interval: 300; running: true; onTriggered: passIn.forceActiveFocus() }
     Component.onCompleted: if (typeof keyboard !== "undefined") keyboard.numLock = true
 }
