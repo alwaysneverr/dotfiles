@@ -6,17 +6,27 @@ Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1
 
 ## Preview
 
-Shown: **Shorekeeper**. Every theme, side by side: [theme gallery](.docs/gallery.md).
+Shown: **Shorekeeper**. Every theme: [theme gallery](.docs/gallery.md).
+
+**Wallpaper**
 
 ![Shorekeeper wallpaper](.config/themes/shorekeeper/wallpaper.jpg)
 
-| Lock screen | Lock background |
-|---|---|
-| ![Lock screen](Pictures/readme/lock-shorekeeper.png) | ![Lock background loop](Pictures/readme/lock-bg-shorekeeper.webp) |
+**Lock screen**
 
-| Boot menu (GRUB) | Boot splash (Plymouth) |
-|---|---|
-| ![GRUB](Pictures/readme/grub-shorekeeper.png) | ![Plymouth](Pictures/readme/plymouth-shorekeeper.gif) |
+![Lock screen](Pictures/readme/lock-shorekeeper.png)
+
+**Lock background**
+
+![Lock background loop](Pictures/readme/lock-bg-shorekeeper.webp)
+
+**Boot menu (GRUB)**
+
+![GRUB](Pictures/readme/grub-shorekeeper.png)
+
+**Boot splash (Plymouth)**
+
+![Plymouth](Pictures/readme/plymouth-shorekeeper.gif)
 
 ## At a glance
 

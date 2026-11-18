@@ -59,13 +59,13 @@ for t in themes:
     d = t["dir"]; i = t["id"]
     L += ["", f'<a id="{i}"></a>', "", f'## {t["name"]}', ""]
     if t["tagline"]: L += [f'> {t["tagline"]}', ""]
-    L += [img(P / f"palette-{i}.svg", f'{t["name"]} palette', 280), "",
-          "| Wallpaper | Lock screen |", "|---|---|",
-          f'| {img(d / "wallpaper.jpg", t["name"] + " wallpaper")} | {img(P / f"lock-{i}.png", t["name"] + " lock screen")} |',
-          "", "| Lock background | Emblem |", "|---|---|",
-          f'| {img(P / f"lock-bg-{i}.webp", t["name"] + " lock loop")} | {img(d / "logo.png", t["name"] + " emblem", 120)} |']
+    # one picture per row: GitHub shrinks images that share a table row
+    L += [img(P / f"palette-{i}.svg", f'{t["name"]} palette', 280), ""]
+    shots = [("Wallpaper", d / "wallpaper.jpg"), ("Lock screen", P / f"lock-{i}.png"),
+             ("Lock background", P / f"lock-bg-{i}.webp"), ("Emblem", d / "logo.png")]
     if t["boot"]:
-        L += ["", "| Boot menu (GRUB) | Boot splash (Plymouth) |", "|---|---|",
-              f'| {img(P / f"grub-{i}.png", t["name"] + " GRUB")} | {img(P / f"plymouth-{i}.gif", t["name"] + " Plymouth")} |']
-OUT.write_text("\n".join(L) + "\n", encoding="utf-8")
+        shots += [("Boot menu (GRUB)", P / f"grub-{i}.png"), ("Boot splash (Plymouth)", P / f"plymouth-{i}.gif")]
+    for label, path in shots:
+        L += [f"**{label}**", "", img(path, f'{t["name"]} {label.lower()}', 160 if label == "Emblem" else None), ""]
+OUT.write_text("\n".join(L).rstrip() + "\n", encoding="utf-8")
 print(f"theme-gallery: {len(themes)} themes -> {OUT}")
