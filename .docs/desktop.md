@@ -32,6 +32,7 @@ gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
 | `Super+L` | lock screen |
 | `Super+M` | log out (`uwsm stop`) |
 | `Super+T` / `Super+Shift+T` | theme picker (Quickshell / fuzzel fallback) |
+| `Super+Shift+W` | animated wallpaper on/off |
 | `Super+1..0` / `Super+Shift+1..0` | go to / move window to workspace |
 | `Super+S` | scratchpad workspace |
 | `Super+arrows` | move focus |

@@ -2,7 +2,7 @@
 
 # Themes
 
-The whole desktop switches between themes at once: colours, wallpaper, lock screen, prompt and fastfetch. GRUB, Plymouth and tuigreet can optionally switch too. Two themes ship: **Hsin** (amber on navy) and **Shorekeeper** (sky blue on deep sea), both from Wuthering Waves.
+The whole desktop switches between themes at once: colours, wallpaper, lock screen, prompt and fastfetch. GRUB, Plymouth and tuigreet can optionally switch too. Three themes ship: **Hsin** (amber on navy) and **Shorekeeper** (sky blue on deep sea) from Wuthering Waves, with boot visuals, and **Reze** (crimson glow on dusk blue) from Chainsaw Man, desktop-only with a video wallpaper.
 
 ## Switching
 
@@ -62,3 +62,4 @@ Every colour comes from the active theme's `theme.ini`.
 |-------|--------|-----------|-------|------------|
 | Hsin | amber `#f4a261` | `#a8dedc` | crimson `#d62828` | ink `#12131a` |
 | Shorekeeper | sky blue `#55a6dc` | `#9ecbe7` | coral `#e85d75` | deep sea `#0a1424` |
+| Reze | crimson pink `#e0607a` | `#8fa6c8` | orange-red `#ff5a4f` | dusk `#151a24` |

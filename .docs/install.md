@@ -91,7 +91,8 @@ If checkout complains about existing files, move them aside and retry.
 | `.config/hypr/hyprland.lua` | Hyprland config (Lua): autostart, binds, window rules, animations |
 | `.config/hypr/hypridle.conf` | idle actions: dim, power saver, lock, suspend |
 | `.config/hypr/hyprlock.conf` | lock screen |
-| `.local/bin/wallpaper-set` | sets the wallpaper through awww, with a transition |
+| `.local/bin/wallpaper-set`, `.local/bin/wallpaper-anim` | sets the wallpaper (awww for stills and GIFs, mpvpaper for videos) with a transition; animation on/off |
+| `.config/waybar/theme.jsonc.in` | Waybar's themed keys (calendar colours, empty-workspace icon), rendered per theme and included by `config.jsonc` |
 | `.config/hypr/hyprtoolkit.conf` | shared theme for Hypr apps (link to the theme's generated file) |
 | `.config/hypr/screenshot.sh` | screenshot script (grim + slurp, with notification) |
 | `.config/hyprlauncher/style.css` | launcher theme |
