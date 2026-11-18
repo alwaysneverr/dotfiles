@@ -1,6 +1,6 @@
 # dotfiles
 
-Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Wuthering Waves, with switchable desktop themes (Hsin, Shorekeeper and Reze).
+Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Wuthering Waves, with switchable desktop themes (Hsin, Shorekeeper, Aemeath and Reze).
 
 Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1080p panel.
 
@@ -21,7 +21,7 @@ Shown: **Shorekeeper**. Every theme, side by side: [theme gallery](.docs/gallery
 ## At a glance
 
 - **Hyprland** (Lua config) through **uwsm**, autologin with **greetd** that boots straight into the lock screen
-- **Switchable themes** (Hsin, Shorekeeper, Reze): one command or `Super+T` recolours the desktop, lock screen, shell and fastfetch, and optionally GRUB, Plymouth and the greeter
+- **Switchable themes** (Hsin, Shorekeeper, Aemeath, Reze): one command or `Super+T` recolours the desktop, lock screen, shell and fastfetch, and optionally GRUB, Plymouth and the greeter
 - **Animated wallpapers:** video (mpvpaper) or GIF (awww) per theme, with a transition on every switch; `Super+Shift+W` toggles to the still image
 - **Quickshell** lock screen (qylock) and theme picker, **Waybar** with app icons per workspace, **fuzzel** menus for Wi-Fi, power, clipboard and notifications
 - Quiet boot: themed GRUB, Plymouth splash, no console text
@@ -51,13 +51,14 @@ Install the packages first and see [Install](.docs/install.md) for the full step
 
 ## Credits
 
-- **Hsin**, **Shorekeeper** and all Wuthering Waves material belong to Kuro Games, used here for personal customization:
+- **Hsin**, **Shorekeeper**, **Aemeath** and all Wuthering Waves material belong to Kuro Games, used here for personal customization:
   - the Hsin wallpaper;
   - the lock screen background, a loop cut from the Hsin trailer;
   - the voice-line quotes on the hyprlock fallback (both characters);
   - the Mengzhou emblem (the fox logo);
   - the Shorekeeper wallpaper (Tethys) and the Black Shores emblem;
-  - the Shorekeeper lock screen background, a loop cut from her trailer.
+  - the Shorekeeper lock screen background, a loop cut from her trailer;
+  - the Aemeath wallpaper, splash art (GRUB background) and emblem, and her lock screen loop, cut from her trailer.
 - **Reze** (Chainsaw Man) belongs to Tatsuki Fujimoto / Shueisha, used here for personal customization: the lock screen loop is cut from the MAPPA anime, and the animated "Last Summer" wallpaper is fan art found on vsthemes.org. The sparkler emblem is my own.
 - **Lock screen:** based on the Wuthering Waves theme from [qylock](https://github.com/Darkkal44/qylock) by Darkkal44 (recoloured and edited by me), with its Orbitron font.
 - **GRUB theme:** based on [Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes) by vinceliuice, edited by me.
