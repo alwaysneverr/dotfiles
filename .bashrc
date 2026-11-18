@@ -11,7 +11,7 @@ alias ll='ls -lah'                 # Long format, showing all hidden files & rea
 alias l='ls -F'                    # Short format classified list
 alias la='ls -A'                   # Show hidden files, but skip . and ..
 
-alias fastfetch='clear && fastfetch'
+alias fastfetch='clear && fastfetch -c "$HOME/.config/themes/current/gen/fastfetch.jsonc"'
 
 # Faster Directory Traversal
 alias ..='cd ..'

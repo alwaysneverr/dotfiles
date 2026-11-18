@@ -9,7 +9,7 @@ Packages, how the bare repo works, and what it tracks.
 ### 1. Official packages
 
 ```sh
-sudo pacman -S hyprland uwsm waybar awww hypridle hyprlock hyprlauncher \
+sudo pacman -S hyprland uwsm waybar awww mpvpaper hypridle hyprlock hyprlauncher \
   hyprpolkitagent dunst kitty zsh zsh-autosuggestions zsh-syntax-highlighting \
   grim slurp wl-clipboard jq libnotify brightnessctl playerctl wireplumber \
   pavucontrol bluez blueman power-profiles-daemon mpv dolphin firefox \

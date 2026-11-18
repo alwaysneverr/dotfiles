@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+"""One-time: stop theme switches from rewriting Waybar's config.jsonc and fastfetch's config.jsonc.
+- Waybar: the themed keys (calendar colours, calendar tooltip, empty-workspace icon) move into
+  ~/.config/waybar/theme.jsonc.in (a template); theme-gen renders it to current/gen/waybar.jsonc,
+  which config.jsonc includes.
+- fastfetch: config.jsonc stays the base; theme-gen writes a coloured copy to current/gen/fastfetch.jsonc
+  and the shell alias runs fastfetch with it."""
+import json, re, shutil
+from pathlib import Path
+
+H = Path.home(); C = H / ".config"
+W = C / "waybar/config.jsonc"; TPL = C / "waybar/theme.jsonc.in"
+GEN = C / "themes/current/gen"
+ROLES = ("months", "weekdays", "days", "weeks", "today")
+
+def strip_jsonc(s):
+    out, i, q = [], 0, False
+    while i < len(s):
+        ch = s[i]
+        if q:
+            out.append(ch)
+            if ch == "\\": out.append(s[i + 1]); i += 1
+            elif ch == '"': q = False
+        elif ch == '"': q = True; out.append(ch)
+        elif s.startswith("//", i):
+            while i < len(s) and s[i] != "\n": i += 1
+            continue
+        elif s.startswith("/*", i):
+            i = s.index("*/", i) + 2; continue
+        else: out.append(ch)
+        i += 1
+    return re.sub(r",(\s*[}\]])", r"\1", "".join(out))
+
+# ---- Waybar ----
+if TPL.exists():
+    print("waybar: already migrated")
+else:
+    text = W.read_text(encoding="utf-8")
+    cfg = json.loads(strip_jsonc(text))
+    bar = cfg[0] if isinstance(cfg, list) else cfg
+    tpl = {}
+    for mod, val in bar.items():
+        if not isinstance(val, dict): continue
+        fi = val.get("format-icons")
+        if isinstance(fi, dict) and "empty" in fi:
+            tpl.setdefault(mod, {})["format-icons"] = {"empty": "@empty_icon@"}
+        fmt = val.get("calendar", {}).get("format") if isinstance(val.get("calendar"), dict) else None
+        if isinstance(fmt, dict) and any(r in fmt for r in ROLES):
+            tpl.setdefault(mod, {})["calendar"] = {"format": {
+                r: re.sub(r"#[0-9a-fA-F]{6}", f"@{r}@", fmt[r], count=1) for r in ROLES if r in fmt}}
+            tt = val.get("tooltip-format", "")
+            if "Scroll: month" in tt:
+                tpl[mod]["tooltip-format"] = re.sub(r"#[0-9a-fA-F]{6}(?='>Scroll: month)", "@secondary@", tt)
+    if not tpl:
+        raise SystemExit("waybar: no themed keys found, nothing changed")
+    shutil.copy(W, W.with_suffix(".jsonc.before-includes"))
+    TPL.write_text(json.dumps(tpl, indent=4, ensure_ascii=False) + "\n", encoding="utf-8")
+    lines, out, empty_done = text.split("\n"), [], False
+    for l in lines:
+        k = re.match(r'\s*"([^"]+)"\s*:', l)
+        key = k.group(1) if k else None
+        if key in ROLES and "<span" in l: continue
+        if key == "tooltip-format" and "Scroll: month" in l: continue
+        if key == "empty" and not empty_done: empty_done = True; continue
+        out.append(l)
+    text = re.sub(r",(\s*[}\]])", r"\1", "\n".join(out))
+    inc = f'"include": ["{GEN}/waybar.jsonc"],'
+    i = text.index("{") + 1
+    text = text[:i] + "\n    " + inc + text[i:]
+    W.write_text(text, encoding="utf-8")
+    print("waybar: themed keys moved to", TPL.relative_to(H))
+
+# ---- fastfetch: alias uses the generated config ----
+for rc in (H / ".zshrc", H / ".bashrc"):
+    if not rc.exists(): continue
+    s = rc.read_text(encoding="utf-8")
+    if "gen/fastfetch.jsonc" in s: print(rc.name + ": already migrated"); continue
+    n = re.sub(r"(alias fastfetch='[^']*?)\bfastfetch'", r'\1fastfetch -c "$HOME/.config/themes/current/gen/fastfetch.jsonc"' + "'", s, count=1)
+    if n == s:
+        n = s.rstrip() + "\nalias fastfetch='fastfetch -c \"$HOME/.config/themes/current/gen/fastfetch.jsonc\"'\n"
+    rc.write_text(n, encoding="utf-8"); print(rc.name + ": fastfetch alias uses the theme")

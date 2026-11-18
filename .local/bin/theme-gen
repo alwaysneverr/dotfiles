@@ -185,7 +185,8 @@ THEME_ARROW='{c['border_a']}'
     (q / "metadata.desktop").write_text(f"[SddmGreeterTheme]\nName={name}\nDescription={m['name']} lock theme\nType=sddm-theme\nVersion=1.0\nMainScript=Main.qml\nConfigFile=theme.conf\n")
 
 def fastfetch(name):
-    """Fastfetch has no include either: update its logo and label colours in place."""
+    """fastfetch has no include: write a coloured copy of config.jsonc to gen/ (the shell alias uses it).
+    Older setups without the alias get the colours edited in place, as before."""
     p = HOME / ".config/fastfetch/config.jsonc"
     if not p.exists():
         return
@@ -193,14 +194,24 @@ def fastfetch(name):
     for key, col in (('"1"', c["border_a"]), ('"2"', c["border_b"]), ('"keys"', c["border_a"]),
                      ('"title"', c["border_b"]), ('"separator"', c["border_a"])):
         s = re.sub(rf'({key}:\s*")#[0-9a-fA-F]{{6}}', rf"\g<1>{col}", s)
-    p.write_text(s, encoding="utf-8")
+    rc = (HOME / ".zshrc").read_text(encoding="utf-8") if (HOME / ".zshrc").exists() else ""
+    out = THEMES / name / "gen/fastfetch.jsonc" if "gen/fastfetch.jsonc" in rc else p
+    out.write_text(s, encoding="utf-8")
 
 def waybar(name):
-    """Update the theme-dependent values inside the Waybar config (it has no include for these)."""
+    """Render ~/.config/waybar/theme.jsonc.in to gen/waybar.jsonc (included by config.jsonc).
+    Older setups without the template get config.jsonc edited in place, as before."""
     t = load(name); c = t["colors"]; icon = t["meta"]["workspace_empty_icon"]
+    roles = {"months": c["accent"], "weekdays": c["accent"], "days": c["text"], "weeks": c["text_dim"], "today": c["alert"]}
+    tpl = HOME / ".config/waybar/theme.jsonc.in"
+    if tpl.exists():
+        s = tpl.read_text(encoding="utf-8")
+        for k, v in {**roles, "secondary": c["secondary"], "empty_icon": icon}.items():
+            s = s.replace(f"@{k}@", v)
+        (THEMES / name / "gen/waybar.jsonc").write_text(s, encoding="utf-8")
+        return
     p = HOME / ".config/waybar/config.jsonc"
     s = p.read_text(encoding="utf-8")
-    roles = {"months": c["accent"], "weekdays": c["accent"], "days": c["text"], "weeks": c["text_dim"], "today": c["alert"]}
     for key, col in roles.items():
         s = re.sub(rf'("{key}":\s*"<span color=\')#[0-9a-fA-F]{{6}}', rf"\g<1>{col}", s)
     s = re.sub(r"(<span color=')#[0-9a-fA-F]{6}('>Scroll: month)", rf"\g<1>{c['secondary']}\g<2>", s)

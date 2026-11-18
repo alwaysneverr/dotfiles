@@ -32,7 +32,7 @@ Kitty, Waybar, Dunst, fuzzel, Hyprland, the wallpaper (with a transition), hyprl
 ```
 
 - Each app's config **includes** a file from `current/gen/` (`kitty.conf`, `waybar.css`, `dunst.conf`, `fuzzel.ini`, `hyprlock.conf`, `hyprland.lua`, `gtk.css`, `qt.colors`, `prompt.sh`…), so switching is just regenerating and moving the symlink.
-- Waybar's `config.jsonc` (calendar colours, empty-workspace icon) and fastfetch's config are edited in place.
+- Waybar's themed keys (calendar colours, empty-workspace icon) live in `~/.config/waybar/theme.jsonc.in`; theme-gen renders it to `gen/waybar.jsonc`, which `config.jsonc` includes. fastfetch runs with `gen/fastfetch.jsonc` (a coloured copy of its config) through the shell alias. Neither config file changes on a switch.
 - The lock screen (qylock) gets a theme folder in `~/.local/share/qylock-themes/<name>/` that shares one config-driven `Main.qml` and font; only the video, emblem and `theme.conf` differ.
 - `theme-boot` (runs as root via pkexec) builds each theme's GRUB and Plymouth theme from `_base/` if missing, swaps in `grub.jpg` and the emblem, edits tuigreet's colours, then runs `grub-mkconfig` and `mkinitcpio -P`. Parts a machine doesn't use (no Plymouth, no tuigreet) are skipped.
 
@@ -51,7 +51,7 @@ Kitty, Waybar, Dunst, fuzzel, Hyprland, the wallpaper (with a transition), hyprl
 
 1. `cp -r ~/.config/themes/shorekeeper ~/.config/themes/NAME`, then delete its `gen/`.
 2. Edit `theme.ini`: `[meta]` name and boot theme names, `[colors]`, `[ansi]`, `[lock]` texts.
-3. Replace `wallpaper.jpg` (16:9; add `wallpaper.gif` for an animated one, the `.jpg` stays as its still version), `logo.png` (emblem, ~256 px, transparent), `lock.mp4` (1080p loop), `grub.jpg` (1920×1080, baseline JPEG) and `quotes.txt`.
+3. Replace `wallpaper.jpg` (16:9; add `wallpaper.mp4` or `wallpaper.gif` for an animated one, the `.jpg` stays as its still version), `logo.png` (emblem, ~256 px, transparent), `lock.mp4` (1080p loop), `grub.jpg` (1920×1080, baseline JPEG) and `quotes.txt`.
 4. `theme-switch NAME`, then `theme-switch NAME --boot` once happy.
 
 ## Palette

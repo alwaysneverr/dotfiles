@@ -1,0 +1,19 @@
+{
+    "hyprland/workspaces": {
+        "format-icons": {
+            "empty": "@empty_icon@"
+        }
+    },
+    "clock#date": {
+        "calendar": {
+            "format": {
+                "months": "<span color='@months@'><b>{}</b></span>",
+                "weekdays": "<span color='@weekdays@'>{}</span>",
+                "days": "<span color='@days@'>{}</span>",
+                "weeks": "<span color='@weeks@'><b>W{}</b></span>",
+                "today": "<span color='@today@'><b><u>{}</u></b></span>"
+            }
+        },
+        "tooltip-format": "<tt><small>{calendar}</small></tt>\n<span color='@secondary@'>Scroll: month   Click: year view   Middle: today   Right: pin</span>"
+    }
+}
