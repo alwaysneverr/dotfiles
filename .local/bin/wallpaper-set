@@ -1,16 +1,30 @@
 #!/bin/sh
-# wallpaper-set [FILE]   set the wallpaper through awww (formerly swww), with a transition.
-# No FILE: the current theme's wallpaper.gif (animated) if present, else wallpaper.jpg.
+# wallpaper-set [FILE]   set the wallpaper with an awww transition.
+# No FILE: the current theme's wallpaper, best available first:
+#   wallpaper.mp4  awww fades to wallpaper.jpg, then mpvpaper plays the video over it
+#                  (hardware decoding, paused while windows cover the screen)
+#   wallpaper.gif  played by awww
+#   wallpaper.jpg / .png
+# ~/.config/themes/.still (wallpaper-anim off) skips the mp4 and gif.
 # Tweak with WALL_TRANSITION (grow, wipe, wave, outer, fade, random, none...),
 # WALL_POS (center, top-left, 0.5,0.5...) and WALL_DURATION (seconds).
 T="$HOME/.config/themes/current"
-f=$1
+f=$1; video=""
+systemctl --user stop wallpaper-video 2>/dev/null; pkill -x mpvpaper 2>/dev/null
+
 if [ -z "$f" ]; then
-  # ~/.config/themes/.still (set by wallpaper-anim) keeps animated wallpapers still
-  anim="$T/wallpaper.gif"; [ -e "$HOME/.config/themes/.still" ] && anim=""
-  for c in $anim "$T/wallpaper.jpg" "$T/wallpaper.png"; do
-    [ -f "$c" ] && { f=$c; break; }
-  done
+  if [ ! -e "$HOME/.config/themes/.still" ]; then
+    if [ -f "$T/wallpaper.mp4" ] && command -v mpvpaper >/dev/null 2>&1; then
+      video="$T/wallpaper.mp4"
+    elif [ -f "$T/wallpaper.gif" ]; then
+      f="$T/wallpaper.gif"
+    fi
+  fi
+  if [ -z "$f" ]; then
+    for c in "$T/wallpaper.jpg" "$T/wallpaper.png"; do
+      [ -f "$c" ] && { f=$c; break; }
+    done
+  fi
 fi
 [ -f "$f" ] || { echo "wallpaper-set: no wallpaper found" >&2; exit 1; }
 
@@ -19,6 +33,12 @@ if ! "$A" query >/dev/null 2>&1; then
   uwsm app -t service -- "$A-daemon" >/dev/null 2>&1 || "$A-daemon" >/dev/null 2>&1 &
   i=0; until "$A" query >/dev/null 2>&1 || [ $i -ge 50 ]; do sleep 0.1; i=$((i + 1)); done
 fi
-exec "$A" img "$f" --resize crop \
+d=${WALL_DURATION:-1.2}
+"$A" img "$f" --resize crop \
   --transition-type "${WALL_TRANSITION:-grow}" --transition-pos "${WALL_POS:-center}" \
-  --transition-duration "${WALL_DURATION:-1.2}" --transition-fps 60
+  --transition-duration "$d" --transition-fps 60
+
+if [ -n "$video" ]; then
+  sleep "$d"   # let the transition finish on the still, then the video takes over
+  systemd-run --user --quiet --collect --unit=wallpaper-video -- mpvpaper -p -o "config=no load-scripts=no no-audio loop hwdec=auto panscan=1.0" ALL "$video" >/dev/null 2>&1
+fi
