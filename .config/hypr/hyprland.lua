@@ -330,4 +330,5 @@ hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("~/.local/bin/notif-center"))
 -- Theme picker
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/theme-picker-qs"))
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/theme-picker"))
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/wallpaper-anim"))

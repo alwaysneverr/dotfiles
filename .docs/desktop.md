@@ -28,6 +28,7 @@ gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
 | `Super+R` | launcher (hyprlauncher) |
 | `Super+Shift+F` | Firefox |
 | `Super+C` | close window |
+| `Super+F` | fullscreen on/off |
 | `Super+V` / `Super+P` / `Super+J` | float / pseudo / toggle split |
 | `Super+L` | lock screen |
 | `Super+M` | log out (`uwsm stop`) |
