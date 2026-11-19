@@ -61,9 +61,21 @@ Install the packages first and see [Install](.docs/install.md) for the full step
 
 ## Credits
 
-- **Hsin** (Wuthering Waves, © Kuro Games, used for personal customization): wallpaper, Mengzhou emblem (the fox logo), lock screen loop cut from official footage, and voice-line quotes.
-- **Shorekeeper** (Wuthering Waves, © Kuro Games, used for personal customization): Tethys wallpaper, Black Shores emblem, lock screen loop cut from her trailer, and voice-line quotes.
-- **Aemeath** (Wuthering Waves, © Kuro Games, used for personal customization): wallpaper, splash art (GRUB background), emblem, lock screen loop cut from her trailer, and voice-line quotes.
-- **Reze** (Chainsaw Man, © Tatsuki Fujimoto / Shueisha, used for personal customization): the lock screen loop is cut from the MAPPA anime (© MAPPA), and the "Last Summer" wallpaper is based on art by doveop ([X](https://x.com/Weidudoveop503/status/1977583658983928128), [pixiv](https://www.pixiv.net/en/artworks/137326451)); the animated widescreen version comes from vsthemes.org. The sparkler emblem is my own.
+Character art, footage and voice lines belong to their owners and are used here for personal customization.
+
+**Official art and game assets**
+
+- **Hsin** (Wuthering Waves, © Kuro Games): Mengzhou emblem (the fox logo), lock screen loop cut from official footage, and voice-line quotes.
+- **Shorekeeper** (Wuthering Waves, © Kuro Games): Tethys wallpaper, official art by void_0 ([pixiv](https://www.pixiv.net/en/artworks/124007525), [official post](https://x.com/Wuthering_Waves/status/1842776797504516473)); Black Shores emblem, lock screen loop cut from her trailer, and voice-line quotes.
+- **Aemeath** (Wuthering Waves, © Kuro Games): wallpaper, official art for the 环宇穹音 theme gift box by 一颗大脆桃桃 ([rednote](https://www.xiaohongshu.com/explore/6ab89408000000001402c3c5), [Kuro Games merch post](https://www.bilibili.com/opus/1180739616989249541)); splash art (GRUB background), emblem, lock screen loop cut from her trailer, and voice-line quotes.
+- **Reze** (Chainsaw Man, © Tatsuki Fujimoto / Shueisha): lock screen loop cut from the MAPPA anime, and voice-line quotes. The sparkler emblem is my own.
+
+**Fan art**
+
+- **Hsin** wallpaper by 若干爪 ([X](https://x.com/ruoganzhua/status/2075434349735137326)).
+- **Reze** "Last Summer" wallpaper by doveop ([X](https://x.com/Weidudoveop503/status/1977583658983928128), [pixiv](https://www.pixiv.net/en/artworks/137326451)); the animated widescreen version comes from vsthemes.org.
+
+**Built on**
+
 - **Lock screen:** based on the Wuthering Waves theme from [qylock](https://github.com/Darkkal44/qylock) by Darkkal44 (recoloured and edited by me), with its Orbitron font.
 - **GRUB theme:** based on [Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes) by vinceliuice, edited by me.
