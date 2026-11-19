@@ -115,7 +115,8 @@ ShellRoot {
                     orientation: ListView.Horizontal
                     spacing: 26
                     leftMargin: 20; rightMargin: 20
-                    clip: true
+                    clip: false
+                    cacheBuffer: 4000
                     interactive: false
                     model: root.themes
                     currentIndex: root.sel
