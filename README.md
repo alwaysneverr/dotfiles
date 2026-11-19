@@ -61,14 +61,9 @@ Install the packages first and see [Install](.docs/install.md) for the full step
 
 ## Credits
 
-- **Hsin**, **Shorekeeper**, **Aemeath** and all Wuthering Waves material belong to Kuro Games, used here for personal customization:
-  - the Hsin wallpaper;
-  - the lock screen background, a loop cut from official Hsin footage;
-  - the voice-line quotes on the hyprlock fallback (both characters);
-  - the Mengzhou emblem (the fox logo);
-  - the Shorekeeper wallpaper (Tethys) and the Black Shores emblem;
-  - the Shorekeeper lock screen background, a loop cut from her trailer;
-  - the Aemeath wallpaper, splash art (GRUB background) and emblem, and her lock screen loop, cut from her trailer.
-- **Reze** (Chainsaw Man) belongs to Tatsuki Fujimoto / Shueisha, used here for personal customization: the lock screen loop is cut from the MAPPA anime, and the animated "Last Summer" wallpaper is fan art found on vsthemes.org. The sparkler emblem is my own.
+- **Hsin** (Wuthering Waves, © Kuro Games, used for personal customization): wallpaper, Mengzhou emblem (the fox logo), lock screen loop cut from official footage, and voice-line quotes.
+- **Shorekeeper** (Wuthering Waves, © Kuro Games, used for personal customization): Tethys wallpaper, Black Shores emblem, lock screen loop cut from her trailer, and voice-line quotes.
+- **Aemeath** (Wuthering Waves, © Kuro Games, used for personal customization): wallpaper, splash art (GRUB background), emblem, lock screen loop cut from her trailer, and voice-line quotes.
+- **Reze** (Chainsaw Man, © Tatsuki Fujimoto / Shueisha, used for personal customization): the lock screen loop is cut from the MAPPA anime (© MAPPA), and the animated "Last Summer" wallpaper is fan art found on vsthemes.org. The sparkler emblem is my own.
 - **Lock screen:** based on the Wuthering Waves theme from [qylock](https://github.com/Darkkal44/qylock) by Darkkal44 (recoloured and edited by me), with its Orbitron font.
 - **GRUB theme:** based on [Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes) by vinceliuice, edited by me.
