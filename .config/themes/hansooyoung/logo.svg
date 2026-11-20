@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- original emblem: a fountain-pen nib (she's a writer) -->
+  <defs>
+    <mask id="m">
+      <rect width="256" height="256" fill="#fff"/>
+      <line x1="128" y1="122" x2="128" y2="230" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="128" cy="118" r="11" fill="#000"/>
+    </mask>
+    <radialGradient id="g" cx="0.5" cy="0.45" r="0.5">
+      <stop offset="0" stop-color="#5b93e6" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#5b93e6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="128" cy="120" r="110" fill="url(#g)"/>
+  <path mask="url(#m)" fill="#ffffff"
+        d="M128 236 L82 126 Q76 108 86 92 L100 70 L156 70 L170 92 Q180 108 174 126 Z"/>
+  <rect x="96" y="28" width="64" height="34" rx="6" fill="#ffffff"/>
+  <path d="M96 150 Q128 166 160 150" fill="none" stroke="#5b93e6" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+</svg>

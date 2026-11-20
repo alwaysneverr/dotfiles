@@ -62,7 +62,7 @@ for t in themes:
     # one picture per row: GitHub shrinks images that share a table row
     L += [img(P / f"palette-{i}.svg", f'{t["name"]} palette', 280), ""]
     shots = [("Wallpaper", d / "wallpaper.jpg"), ("Lock screen", P / f"lock-{i}.png"),
-             ("Lock background", P / f"lock-bg-{i}.webp"), ("Emblem", d / "logo.png")]
+             ("Lock background", next((x for x in (P / f"lock-bg-{i}.webp", d / "lock.jpg", d / "lock.png") if x.exists()), P / f"lock-bg-{i}.webp")), ("Emblem", d / "logo.png")]
     if t["boot"]:
         shots += [("Boot menu (GRUB)", P / f"grub-{i}.png"), ("Boot splash (Plymouth)", P / f"plymouth-{i}.gif")]
     for label, path in shots:

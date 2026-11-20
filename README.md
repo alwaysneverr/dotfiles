@@ -70,12 +70,14 @@ Character art, footage and voice lines belong to their owners and are used here 
 - **Aemeath** (Wuthering Waves, © Kuro Games): wallpaper, official art for the 环宇穹音 theme gift box by 一颗大脆桃桃 ([rednote](https://www.xiaohongshu.com/explore/6ab89408000000001402c3c5), [Kuro Games merch post](https://www.bilibili.com/opus/1180739616989249541)); splash art (GRUB background), emblem, lock screen loop cut from her trailer, and voice-line quotes.
 - **Reze** (Chainsaw Man, © Tatsuki Fujimoto / Shueisha): lock screen loop cut from the MAPPA anime, and voice-line quotes. The sparkler emblem is my own.
 - **Akane Kurokawa** (Oshi no Ko, © Aka Akasaka / Mengo Yokoyari / Shueisha): lock screen loop and GRUB background from the Doga Kobo anime, and quotes. The star emblem and its Plymouth spin are my own.
+- **Han Sooyoung** (Omniscient Reader's Viewpoint, © singNsong / Munpia): quotes from the novel; lock screen art is the novel's volume 5 cover illustration by BLACKBOX, extended to widescreen by u/hsyluvvrr. The pen-nib emblem is my own.
 
 **Fan art**
 
 - **Hsin** wallpaper by 若干爪 ([X](https://x.com/ruoganzhua/status/2075434349735137326)).
 - **Reze** "Last Summer" wallpaper by doveop ([X](https://x.com/Weidudoveop503/status/1977583658983928128), [pixiv](https://www.pixiv.net/en/artworks/137326451)); the animated widescreen version comes from vsthemes.org.
 - **Akane Kurokawa** wallpaper by Lilac ([X](https://x.com/a_Lil4c), [pixiv](https://www.pixiv.net/en/users/13457305)).
+- **Han Sooyoung** wallpaper by BLACKBOX ([X](https://x.com/1L9l2Aa8UCL0IGJ/status/1351123490880032769)).
 
 **Built on**
 
