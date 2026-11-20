@@ -168,8 +168,15 @@ THEME_ARROW='{c['border_a']}'
     for stale in ("bg.mp4", "bg.jpg"):
         if stale != media[0] and (q / stale).is_symlink():
             (q / stale).unlink()
-    links = {"Main.qml": QYLOCK / "_shared/Main.qml", "font": QYLOCK / "_shared/font",
+    # lock_layout in [lock]: "wuwa" (default, _shared/Main.qml) or another layout in _shared/<name>.qml
+    lay = load(name)["lock"].get("lock_layout", "wuwa").strip() if load(name).has_section("lock") else "wuwa"
+    main = QYLOCK / "_shared/Main.qml" if lay == "wuwa" else QYLOCK / f"_shared/{lay}.qml"
+    links = {"Main.qml": main, "font": QYLOCK / "_shared/font",
              media[0]: media[1], "logo.png": td / "logo.png"}
+    if (td / "lock-backdrop.jpg").exists():
+        links["backdrop.jpg"] = td / "lock-backdrop.jpg"
+    elif (q / "backdrop.jpg").is_symlink():
+        (q / "backdrop.jpg").unlink()
     for f, target in links.items():
         p = q / f
         if p.is_symlink() or p.exists():

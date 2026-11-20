@@ -1,0 +1,32 @@
+# Plymouth script theme ("spin" style): the theme's emblem slowly rotates and twinkles
+# over bg.png (if the theme ships plymouth-bg.png), else a dark indigo gradient
+
+Window.SetBackgroundTopColor(0.10, 0.10, 0.28);
+Window.SetBackgroundBottomColor(0.05, 0.05, 0.16);
+
+bg.image = Image("bg.png");
+if (bg.image) {
+    bg.sprite = Sprite(bg.image.Scale(Window.GetWidth(), Window.GetHeight()));
+    bg.sprite.SetX(Window.GetX());
+    bg.sprite.SetY(Window.GetY());
+    bg.sprite.SetZ(-10);
+}
+
+logo.image = Image("logo.png");
+logo.sprite = Sprite();
+logo.sprite.SetZ(10);
+
+frame = 0;
+
+fun refresh_callback () {
+    # ~50 calls a second: one turn every ~6 s, a twinkle every ~2 s
+    frame++;
+    pulse = 0.88 + 0.12 * Math.Sin(frame * 0.063);
+    img = logo.image.Rotate(frame * 0.021).Scale(logo.image.GetWidth() * pulse, logo.image.GetHeight() * pulse);
+    logo.sprite.SetImage(img);
+    logo.sprite.SetX(Window.GetX() + Window.GetWidth() / 2 - img.GetWidth() / 2);
+    logo.sprite.SetY(Window.GetY() + Window.GetHeight() / 2 - img.GetHeight() / 2);
+    logo.sprite.SetOpacity(0.85 + 0.15 * Math.Sin(frame * 0.063));
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);

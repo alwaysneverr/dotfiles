@@ -27,13 +27,22 @@ ply = meta.get("plymouth_theme", "")
 if ply and re.fullmatch(r"[a-z0-9-]+", ply) and have("plymouth-set-default-theme"):
     pdir = Path("/usr/share/plymouth/themes") / ply
     tpl = base / "plymouth"
-    if not pdir.exists() and (tpl / "template.plymouth").exists():
-        pdir.mkdir(parents=True)
+    # plymouth_style in [meta]: "fade" (template.script) or another style (template-<style>.script)
+    style = meta.get("plymouth_style", "fade").strip()
+    script = tpl / ("template.script" if style == "fade" else f"template-{style}.script")
+    if not re.fullmatch(r"[a-z0-9-]+", style) or not script.exists():
+        print(f"theme-boot: no Plymouth style '{style}', using fade"); script = tpl / "template.script"
+    if (tpl / "template.plymouth").exists() and script.exists():
+        pdir.mkdir(parents=True, exist_ok=True)   # rebuilt every time, so style changes apply
         txt = (tpl / "template.plymouth").read_text().replace("@ID@", ply).replace("@NAME@", meta.get("name", ply))
         (pdir / f"{ply}.plymouth").write_text(txt)
-        shutil.copyfile(tpl / "template.script", pdir / f"{ply}.script")
+        shutil.copyfile(script, pdir / f"{ply}.script")
     if pdir.exists():
         shutil.copyfile(tdir / "logo.png", pdir / "logo.png")
+        if (tdir / "plymouth-bg.png").exists():
+            shutil.copyfile(tdir / "plymouth-bg.png", pdir / "bg.png")
+        elif (pdir / "bg.png").exists():
+            (pdir / "bg.png").unlink()
         subprocess.run(["plymouth-set-default-theme", ply], check=True)
         done.append("Plymouth")
     else:
@@ -54,6 +63,14 @@ if gname and re.fullmatch(r"[A-Za-z0-9-]+", gname) and have("grub-mkconfig") and
     if gdir.exists():
         m = re.search(r'desktop-image\s*:\s*"([^"]+)"', (gdir / "theme.txt").read_text())
         img = m.group(1) if m else "background.jpg"
+        # GRUB logo: the theme's grub-logo.png, or none with grub_logo = none, else the base's
+        if (tdir / "grub-logo.png").exists():
+            shutil.copyfile(tdir / "grub-logo.png", gdir / "logo.png")
+        elif meta.get("grub_logo", "").strip().lower() == "none":
+            import zlib, struct
+            def chunk(t, d): return struct.pack(">I", len(d)) + t + d + struct.pack(">I", zlib.crc32(t + d) & 0xffffffff)
+            (gdir / "logo.png").write_bytes(b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 1, 8, 6, 0, 0, 0))
+                                             + chunk(b"IDAT", zlib.compress(b"\x00\x00\x00\x00\x00")) + chunk(b"IEND", b""))
         if (tdir / "grub.jpg").exists():
             shutil.copyfile(tdir / "grub.jpg", gdir / img)
         elif not (gdir / img).exists():
