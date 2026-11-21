@@ -58,7 +58,10 @@ g = Path("/etc/default/grub")
 if gname and re.fullmatch(r"[A-Za-z0-9-]+", gname) and have("grub-mkconfig") and g.exists():
     groot = Path("/boot/grub/themes")
     gdir = groot / gname
-    if not gdir.exists() and (base / "grub" / "theme.txt").exists():
+    custom = tdir / "grub-theme"
+    if (custom / "theme.txt").exists():          # the theme's own GRUB layout (refreshed every time)
+        shutil.copytree(custom, gdir, dirs_exist_ok=True)
+    elif not gdir.exists() and (base / "grub" / "theme.txt").exists():
         shutil.copytree(base / "grub", gdir)
     if gdir.exists():
         m = re.search(r'desktop-image\s*:\s*"([^"]+)"', (gdir / "theme.txt").read_text())

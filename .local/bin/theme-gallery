@@ -45,7 +45,9 @@ for d in sorted(T.iterdir()):
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(d / "lock.mp4"), "-vf", "fps=12,scale=640:360:flags=lanczos",
                         "-c:v", "libwebp", "-q:v", "60", "-loop", "0", "-an", str(loop)], check=False)
     swatch(d.name, c)
+    publish = meta.get("publish", "yes").strip().lower() not in ("no", "false", "0")
     themes.append(dict(id=d.name, name=meta.get("name", d.name), src=src, boot=boot, wall=wall, lock=lockkind,
+                       publish=publish, art_link=meta.get("art_link", ""),
                        accent=c.get("accent", ""), tagline=lock.get("tagline", ""), dir=d))
 
 L = ["[← README](../README.md)", "", "# Theme gallery", "",
@@ -61,6 +63,13 @@ for t in themes:
     if t["tagline"]: L += [f'> {t["tagline"]}', ""]
     # one picture per row: GitHub shrinks images that share a table row
     L += [img(P / f"palette-{i}.svg", f'{t["name"]} palette', 280), ""]
+    if not t["publish"]:   # the artist asked for no re-uploads: no pictures of the art in the repo
+        L += ["*The art for this theme isn't included in the repository, at the artist's request.*"
+              + (f' See the artist\'s own posts: {t["art_link"]}' if t["art_link"] else ""), "",
+              "**Emblem**", "", img(d / "logo.png", t["name"] + " emblem", 160), ""]
+        if t["boot"]:
+            L += ["**Boot splash (Plymouth)**", "", img(P / f"plymouth-{i}.gif", t["name"] + " Plymouth"), ""]
+        continue
     shots = [("Wallpaper", d / "wallpaper.jpg"), ("Lock screen", P / f"lock-{i}.png"),
              ("Lock background", next((x for x in (P / f"lock-bg-{i}.webp", d / "lock.jpg", d / "lock.png") if x.exists()), P / f"lock-bg-{i}.webp")), ("Emblem", d / "logo.png")]
     if t["boot"]:

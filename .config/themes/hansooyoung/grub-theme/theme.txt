@@ -1,0 +1,52 @@
+# Han Sooyoung GRUB theme: same structure as her lock screen.
+# Full-screen art (grub.jpg, copied in as background.jpg), menu centred in the train window
+# like the lock's page of text, the selected entry marked by a ruled line, countdown in the bottom band.
+title-text: ""
+desktop-image: "background.jpg"
+desktop-color: "#0d0e12"
+terminal-font: "Terminus Regular 14"
+terminal-left: "10%"
+terminal-top: "10%"
+terminal-width: "80%"
+terminal-height: "80%"
+terminal-border: "0"
+
++ boot_menu {
+  left = 36%
+  top = 18%
+  width = 28%
+  height = 16%
+  item_font = "HSY Serif Regular 20"
+  item_color = "#c9cfdc"
+  selected_item_font = "HSY Serif Bold 20"
+  selected_item_color = "#ffffff"
+  selected_item_pixmap_style = "select_*.png"
+  item_height = 30
+  item_padding = 6
+  item_spacing = 2
+  icon_width = 0
+  icon_height = 0
+  item_icon_space = 0
+  scrollbar = false
+}
+
++ label {
+  left = 0
+  top = 100%-62
+  width = 100%
+  align = "center"
+  text = "Enter to boot   ·   e to edit   ·   c for a console"
+  font = "HSY Sans Regular 14"
+  color = "#a9b0c2"
+}
+
++ label {
+  id = "__timeout__"
+  left = 0
+  top = 100%-36
+  width = 100%
+  align = "center"
+  text = "Starting in %d s"
+  font = "HSY Sans Regular 14"
+  color = "#dfe3ec"
+}
