@@ -55,7 +55,7 @@ gsettings set org.gnome.desktop.interface icon-theme 'breeze-dark'
 | Module | Click | Right click | Other |
 |--------|-------|-------------|-------|
 | Wi-Fi | network menu (fuzzel) | nmtui | |
-| Date | year view | pinned calendar (zenity) | scroll: change month, middle click: today |
+| Date | year view | calendar popup (Quickshell) | scroll: change month, middle click: today |
 | Bell | notification history | do not disturb | |
 
 App icons are mapped by window class in `window-rewrite` (`.config/waybar/config.jsonc`). Unknown apps get a generic icon.

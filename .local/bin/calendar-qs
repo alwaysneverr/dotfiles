@@ -1,0 +1,4 @@
+#!/bin/sh
+# calendar-qs: toggle the Quickshell calendar popup
+if pgrep -f "[-]c calendar" >/dev/null; then pkill -f "[-]c calendar"; exit 0; fi
+QT_LOGGING_RULES="qt.qpa.wayland.textinput=false" exec qs -c calendar

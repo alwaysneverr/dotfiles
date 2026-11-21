@@ -127,7 +127,7 @@
 
     "clock#date": {
         "format": "󰃭 {:%a %d %b}",
-        "on-click-right": "zenity --calendar --title=Calendar",
+        "on-click-right": "$HOME/.local/bin/calendar-qs",
         "calendar": {
             "mode": "month",
             "mode-mon-col": 3,

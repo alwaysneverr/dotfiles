@@ -35,7 +35,7 @@
 | Screenshots | `grim`, `slurp` | `hypr/screenshot.sh` |
 | Images | `imv` | `imv-folder` opens the whole folder |
 | Video | `mpv` | uosc and videoclip, installed by hand |
-| Calendar | `zenity` | pinned calendar on right-click of the date |
+| Calendar | `quickshell` | popup calendar on right-click of the date (`calendar-qs`) |
 | Bluetooth | `bluez`, `blueman` | |
 | Hardware keys | `brightnessctl`, `playerctl` | |
 | Snapshots | `timeshift`, `cronie` | rsync, daily |
