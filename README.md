@@ -1,6 +1,6 @@
 # dotfiles
 
-Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Wuthering Waves, with switchable desktop themes (Hsin, Shorekeeper, Aemeath and Reze).
+Dotfiles for my ASUS M415D laptop: Arch Linux + Hyprland, run through uwsm and themed after Wuthering Waves, with switchable desktop themes (Hsin, Shorekeeper, Aemeath, Reze, Akane Kurokawa and Han Sooyoung).
 
 Hardware: ASUS VivoBook M415DA, AMD Ryzen 3 3250U, Vega 3 graphics, 14 GB RAM, 1080p panel.
 
@@ -70,7 +70,7 @@ Character art, footage and voice lines belong to their owners and are used here 
 - **Aemeath** (Wuthering Waves, © Kuro Games): wallpaper, official art for the 环宇穹音 theme gift box by 一颗大脆桃桃 ([rednote](https://www.xiaohongshu.com/explore/6ab89408000000001402c3c5), [Kuro Games merch post](https://www.bilibili.com/opus/1180739616989249541)); splash art (GRUB background), emblem, lock screen loop cut from her trailer, and voice-line quotes.
 - **Reze** (Chainsaw Man, © Tatsuki Fujimoto / Shueisha): lock screen loop cut from the MAPPA anime, and voice-line quotes. The sparkler emblem is my own.
 - **Akane Kurokawa** (Oshi no Ko, © Aka Akasaka / Mengo Yokoyari / Shueisha): lock screen loop and GRUB background from the Doga Kobo anime, and quotes. The star emblem and its Plymouth spin are my own.
-- **Han Sooyoung** (Omniscient Reader's Viewpoint, © singNsong / Munpia): quotes from the novel; lock screen art is the novel's volume 5 cover illustration by BLACKBOX, extended to widescreen by u/hsyluvvrr. The pen-nib emblem is my own.
+- **Han Sooyoung** (Omniscient Reader's Viewpoint, © singNsong / Munpia): quotes from the novel; lock screen art is the novel's volume 5 cover illustration by BLACKBOX, extended to widescreen by u/hsyluvvrr; GRUB background is BLACKBOX's official promotional art for the Thai box set, enhanced and darkened for the menu. Her art is kept out of this repo at the artist's request. The pen-nib emblem is my own.
 
 **Fan art**
 

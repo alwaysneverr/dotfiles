@@ -2,7 +2,7 @@
 
 # Themes
 
-The whole desktop switches between themes at once: colours, wallpaper, lock screen, prompt and fastfetch. GRUB, Plymouth and tuigreet can optionally switch too. Three themes ship: **Hsin** (amber on navy) and **Shorekeeper** (sky blue on deep sea) from Wuthering Waves, with boot visuals, and **Reze** (crimson glow on dusk blue) from Chainsaw Man, desktop-only with a video wallpaper.
+The whole desktop switches between themes at once: colours, wallpaper, lock screen, prompt and fastfetch. GRUB, Plymouth and tuigreet can optionally switch too. Six themes ship: **Hsin**, **Shorekeeper** and **Aemeath** from Wuthering Waves, **Akane Kurokawa** from Oshi no Ko and **Han Sooyoung** from Omniscient Reader's Viewpoint, all with boot visuals, and **Reze** from Chainsaw Man, desktop-only with a video wallpaper. Han Sooyoung's art isn't in the repo (the artist asked for no reuploads), so her theme needs your own copies; see the [gallery](gallery.md).
 
 ## Switching
 
@@ -33,8 +33,8 @@ Kitty, Waybar, Dunst, fuzzel, Hyprland, the wallpaper (with a transition), hyprl
 
 - Each app's config **includes** a file from `current/gen/` (`kitty.conf`, `waybar.css`, `dunst.conf`, `fuzzel.ini`, `hyprlock.conf`, `hyprland.lua`, `gtk.css`, `qt.colors`, `prompt.sh`…), so switching is just regenerating and moving the symlink.
 - Waybar's themed keys (calendar colours, empty-workspace icon) live in `~/.config/waybar/theme.jsonc.in`; theme-gen renders it to `gen/waybar.jsonc`, which `config.jsonc` includes. fastfetch runs with `gen/fastfetch.jsonc` (a coloured copy of its config) through the shell alias. Neither config file changes on a switch.
-- The lock screen (qylock) gets a theme folder in `~/.local/share/qylock-themes/<name>/` that shares one config-driven `Main.qml` and font; only the video, emblem and `theme.conf` differ.
-- `theme-boot` (runs as root via pkexec) builds each theme's GRUB and Plymouth theme from `_base/` if missing, swaps in `grub.jpg` and the emblem, edits tuigreet's colours, then runs `grub-mkconfig` and `mkinitcpio -P`. Parts a machine doesn't use (no Plymouth, no tuigreet) are skipped.
+- The lock screen (qylock) gets a theme folder in `~/.local/share/qylock-themes/<name>/` that uses one of three shared, config-driven layouts (`lock_layout`, see below); only the media, emblem and `theme.conf` differ.
+- `theme-boot` (runs as root via pkexec) builds each theme's GRUB and Plymouth theme from `_base/` if missing (or copies the theme's own `grub-theme/` layout), swaps in `grub.jpg` and the emblem, edits tuigreet's colours, then runs `grub-mkconfig` and `mkinitcpio -P`. Parts a machine doesn't use (no Plymouth, no tuigreet) are skipped.
 
 > **Screens above 1080p:** the GRUB base in `_base/grub` is built for 1080p (16 px Unifont, 1920×1080 backgrounds). On a 2K or 4K screen, set `GRUB_GFXMODE=1920x1080,auto` in `/etc/default/grub` so GRUB runs at 1080p and the screen scales it. For a native-resolution menu, add the larger fonts from [Wuthering-grub2-themes](https://github.com/vinceliuice/Wuthering-grub2-themes), change the sizes in `theme.txt`, and use bigger `grub.jpg` images.
 
@@ -54,6 +54,22 @@ Kitty, Waybar, Dunst, fuzzel, Hyprland, the wallpaper (with a transition), hyprl
 3. Replace `wallpaper.jpg` (16:9; add `wallpaper.mp4` or `wallpaper.gif` for an animated one, the `.jpg` stays as its still version), `logo.png` (emblem, ~256 px, transparent), `lock.mp4` (1080p loop), `grub.jpg` (1920×1080, baseline JPEG) and `quotes.txt`.
 4. `theme-switch NAME`, then `theme-switch NAME --boot` once happy.
 
+### Optional per-theme settings
+
+| Where | Setting | Effect |
+|---|---|---|
+| `[meta]` | `boot = no` | Desktop-only theme; `--boot` refuses it (Reze) |
+| `[meta]` | `plymouth_style = spin` | Rotating, twinkling emblem instead of the default fade (Akane) |
+| `[meta]` | `grub_logo = none` | No emblem on the GRUB screen; a `grub-logo.png` replaces it instead |
+| `[meta]` | `publish = no` | The gallery shows a note instead of the theme's art (Han Sooyoung) |
+| `[lock]` | `lock_layout = stage` | Lock clip in a framed window, centre stage (Akane); add `lock-backdrop.jpg` for behind it |
+| `[lock]` | `lock_layout = novel` | Full-screen art with the clock and password as lines on a page (Han Sooyoung); `ink`, `serif`, `sans` set its text colour and fonts |
+| folder | `grub-theme/` | The theme's own GRUB layout (`theme.txt`, pixmaps, fonts), used instead of `_base/grub` (Han Sooyoung) |
+| folder | `plymouth-bg.png` | Background behind the Plymouth emblem |
+| folder | `lock.jpg` | Still lock background instead of `lock.mp4` |
+
+**GRUB fonts:** GRUB draws text without anti-aliasing, so thin serifs come out jagged. A well-hinted sans (Noto Sans, DejaVu Sans) at 20 px or more looks smoothest. Build fonts with `grub-mkfont -n "NAME" -s SIZE`; GRUB names them `NAME Regular SIZE` or `NAME Bold SIZE`. In zsh, write `"${1}:weight=…"` rather than `"$1:weight=…"` when scripting `fc-match`, since zsh reads `$1:w` as a modifier.
+
 ## Palette
 
 Every colour comes from the active theme's `theme.ini`.
@@ -64,3 +80,5 @@ Every colour comes from the active theme's `theme.ini`.
 | Shorekeeper | sky blue `#55a6dc` | `#9ecbe7` | coral `#e85d75` | deep sea `#0a1424` |
 | Aemeath | lavender `#b29dff` | `#f4a9cf` | coral `#ff6a6a` | starry indigo `#0d0c18` |
 | Reze | crimson pink `#e0607a` | `#8fa6c8` | orange-red `#ff5a4f` | dusk `#151a24` |
+| Akane Kurokawa | `#5fcde0` | `#f29bb8` | `#ff5f5f` | `#0e1120` |
+| Han Sooyoung | `#5b93e6` | `#a9b8d6` | `#e05561` | `#17181c` |
