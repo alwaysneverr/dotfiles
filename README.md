@@ -30,8 +30,23 @@ Shown: **Shorekeeper**. Every theme: [theme gallery](.docs/gallery.md).
 
 ## At a glance
 
+[![Arch Linux](https://img.shields.io/badge/Arch_Linux-0a1424?style=for-the-badge&logo=archlinux&logoColor=55a6dc)](https://archlinux.org)
+[![Wayland](https://img.shields.io/badge/Wayland-0a1424?style=for-the-badge&logo=wayland&logoColor=55a6dc)](https://gitlab.freedesktop.org/wayland/wayland)
+[![Hyprland](https://img.shields.io/badge/Hyprland-0a1424?style=for-the-badge&logo=hyprland&logoColor=55a6dc)](https://github.com/hyprwm/Hyprland)
+[![Lua](https://img.shields.io/badge/Lua_config-0a1424?style=for-the-badge&logo=lua&logoColor=55a6dc)](https://www.lua.org)
+[![uwsm](https://img.shields.io/badge/uwsm-0a1424?style=for-the-badge)](https://github.com/Vladimir-csp/uwsm)
+[![greetd](https://img.shields.io/badge/greetd-0a1424?style=for-the-badge)](https://git.sr.ht/~kennylevinsen/greetd)
+[![Quickshell](https://img.shields.io/badge/Quickshell-0a1424?style=for-the-badge&logo=qt&logoColor=55a6dc)](https://git.outfoxxed.me/quickshell/quickshell)
+[![qylock](https://img.shields.io/badge/qylock-0a1424?style=for-the-badge)](https://github.com/Darkkal44/qylock)
+[![Waybar](https://img.shields.io/badge/Waybar-0a1424?style=for-the-badge)](https://github.com/Alexays/Waybar)
+[![fuzzel](https://img.shields.io/badge/fuzzel-0a1424?style=for-the-badge)](https://codeberg.org/dnkl/fuzzel)
+[![awww](https://img.shields.io/badge/awww-0a1424?style=for-the-badge)](https://codeberg.org/LGFae/awww)
+[![mpvpaper](https://img.shields.io/badge/mpvpaper-0a1424?style=for-the-badge&logo=mpv&logoColor=55a6dc)](https://github.com/GhostNaN/mpvpaper)
+[![GRUB](https://img.shields.io/badge/GRUB-0a1424?style=for-the-badge&logo=gnu&logoColor=55a6dc)](https://www.gnu.org/software/grub/)
+[![Plymouth](https://img.shields.io/badge/Plymouth-0a1424?style=for-the-badge)](https://gitlab.freedesktop.org/plymouth/plymouth)
+
 - **Hyprland** (Lua config) through **uwsm**, autologin with **greetd** that boots straight into the lock screen
-- **Switchable themes** (Hsin, Shorekeeper, Aemeath, Reze): one command or `Super+T` recolours the desktop, lock screen, shell and fastfetch, and optionally GRUB, Plymouth and the greeter
+- **Switchable themes** (Hsin, Shorekeeper, Aemeath, Reze, Akane Kurokawa, Han Sooyoung): one command or `Super+T` recolours the desktop, lock screen, shell and fastfetch, and optionally GRUB, Plymouth and the greeter
 - **Animated wallpapers:** video (mpvpaper) or GIF (awww) per theme, with a transition on every switch; `Super+Shift+W` toggles to the still image
 - **Quickshell** lock screen (qylock) and theme picker, **Waybar** with app icons per workspace, **fuzzel** menus for Wi-Fi, power, clipboard and notifications
 - Quiet boot: themed GRUB, Plymouth splash, no console text
