@@ -1,6 +1,6 @@
 # Han Sooyoung GRUB theme: same structure as her lock screen.
-# Full-screen art (grub.jpg, copied in as background.jpg), menu centred in the train window
-# like the lock's page of text, the selected entry marked by a ruled line, countdown in the bottom band.
+# Full-screen art (grub.jpg, copied in as background.jpg); the menu sits on a frosted panel
+# centred in the train window, the selected entry marked by a ruled line; countdown in the bottom band.
 title-text: ""
 desktop-image: "background.jpg"
 desktop-color: "#0d0e12"
@@ -12,28 +12,40 @@ terminal-height: "80%"
 terminal-border: "0"
 
 + boot_menu {
-  left = 36%
-  top = 18%
-  width = 28%
-  height = 16%
-  item_font = "HSY Serif Regular 20"
+  left = 4%
+  top = 33%
+  width = 460
+  height = 132
+  menu_pixmap_style = "menu_*.png"
+  item_font = "HSY Sans Regular 20"
+  selected_item_font = "HSY Sans Bold 20"
+  # serif ("book") look instead; bigger sizes hide GRUB's missing anti-aliasing better:
+  # item_font = "HSY Serif Regular 24"
+  # selected_item_font = "HSY Serif Bold 24"
   item_color = "#c9cfdc"
-  selected_item_font = "HSY Serif Bold 20"
   selected_item_color = "#ffffff"
   selected_item_pixmap_style = "select_*.png"
-  item_height = 30
-  item_padding = 6
+  item_height = 32
+  item_padding = 14
   item_spacing = 2
   icon_width = 0
   icon_height = 0
   item_icon_space = 0
-  scrollbar = false
+  scrollbar = true
+  scrollbar_frame = "scroll_frame_*.png"
+  scrollbar_thumb = "scroll_thumb_*.png"
+  scrollbar_width = 4
+  scrollbar_slice = "east"
+  scrollbar_left_pad = 6
+  scrollbar_right_pad = 6
+  scrollbar_top_pad = 0
+  scrollbar_bottom_pad = 0
 }
 
 + label {
   left = 0
   top = 100%-62
-  width = 100%
+  width = 460%
   align = "center"
   text = "Enter to boot   ·   e to edit   ·   c for a console"
   font = "HSY Sans Regular 14"
@@ -44,7 +56,7 @@ terminal-border: "0"
   id = "__timeout__"
   left = 0
   top = 100%-36
-  width = 100%
+  width = 460%
   align = "center"
   text = "Starting in %d s"
   font = "HSY Sans Regular 14"
