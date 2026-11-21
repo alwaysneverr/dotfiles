@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+"""theme-import ID KIND FILE [options]: bring media into a theme in the format the switcher expects.
+
+  wallpaper FILE   image -> wallpaper.jpg; GIF -> wallpaper.gif (+ still); video -> wallpaper.mp4 (+ still)
+  lock FILE        video -> lock.mp4 loop; image -> lock.jpg
+  logo FILE        -> logo.png (256 px square, transparent padding)
+  grub FILE        -> grub.jpg (1920x1080, cover-cropped, baseline JPEG)
+  backdrop FILE    -> lock-backdrop.jpg (blurred, darkened; behind the stage layout's frame)
+  quotes FILE      -> quotes.txt (one per line; blank lines and duplicates dropped)
+
+Video options (wallpaper/lock): --from S --to S (seconds or mm:ss), --speed X, --pingpong,
+--size WxH (lock, default 1920x1080). backdrop from a video takes the frame at --from.
+"""
+import argparse, os, re, shutil, subprocess, sys, tempfile
+from pathlib import Path
+
+THEMES = Path.home() / ".config/themes"
+VIDEO = {".mp4", ".mkv", ".webm", ".mov", ".avi", ".m4v"}
+
+def die(msg): sys.exit(f"theme-import: {msg}")
+def ff(*args): subprocess.run(["ffmpeg", "-v", "error", "-y", *args], check=True)
+def cover(w, h): return f"scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
+
+def oriented(src, tmp):
+    """Stills only: apply EXIF rotation with ImageMagick when it's installed (ffmpeg ignores it)."""
+    if src.suffix.lower() in VIDEO | {".gif"} or not shutil.which("magick"):
+        return src
+    out = Path(tmp) / "oriented.png"
+    subprocess.run(["magick", str(src), "-auto-orient", str(out)], check=True)
+    return out
+
+def trim(a):
+    return (["-ss", a.start] if a.start else []) + (["-to", a.end] if a.end else [])
+
+def video(src, dst, a, size=None):
+    vf = []
+    if size: vf.append(cover(*size))
+    vf.append("fps=30")
+    if a.speed != 1: vf.append(f"setpts=PTS/{a.speed}")
+    chain = ",".join(vf)
+    if a.pingpong:   # forwards, then backwards: a seamless loop from any clip
+        fc = f"[0:v]{chain},split[f][b];[b]reverse[r];[f][r]concat=n=2:v=1[v]"
+        ff(*trim(a), "-i", str(src), "-filter_complex", fc, "-map", "[v]", "-an", *x264(), str(dst))
+    else:
+        ff(*trim(a), "-i", str(src), "-vf", chain, "-an", *x264(), str(dst))
+
+def x264(): return ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-movflags", "+faststart"]
+def still(src, dst, vf=None, at=None):
+    ff(*(["-ss", at] if at else []), "-i", str(src), "-frames:v", "1", *(["-vf", vf] if vf else []), "-q:v", "2", str(dst))
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("id"); p.add_argument("kind", choices=["wallpaper", "lock", "logo", "grub", "backdrop", "quotes"])
+    p.add_argument("file", type=Path)
+    p.add_argument("--from", dest="start"); p.add_argument("--to", dest="end")
+    p.add_argument("--speed", type=float, default=1.0); p.add_argument("--pingpong", action="store_true")
+    p.add_argument("--size", default="1920x1080")
+    a = p.parse_args()
+    if not re.fullmatch(r"[a-z0-9-]+", a.id) or a.id.startswith("_"): die(f"bad theme id '{a.id}'")
+    t = THEMES / a.id
+    if not (t / "theme.ini").exists(): die(f"no theme '{a.id}' (make it with theme-new first)")
+    src = a.file.expanduser().resolve()
+    if not src.is_file(): die(f"no such file: {a.file}")
+    if a.kind != "quotes" and not shutil.which("ffmpeg"): die("needs ffmpeg")
+    m = re.fullmatch(r"(\d+)x(\d+)", a.size) or die("--size must look like 1920x1080")
+    size = (int(m[1]), int(m[2]))
+    ext = src.suffix.lower()
+    wrote = []
+    with tempfile.TemporaryDirectory() as tmp:
+        img = oriented(src, tmp)
+        if a.kind == "wallpaper":
+            if ext == ".gif":
+                shutil.copyfile(src, t / "wallpaper.gif"); still(src, t / "wallpaper.jpg")
+                wrote += ["wallpaper.gif", "wallpaper.jpg"]
+            elif ext in VIDEO:
+                video(src, t / "wallpaper.mp4", a); still(t / "wallpaper.mp4", t / "wallpaper.jpg")
+                wrote += ["wallpaper.mp4", "wallpaper.jpg"]
+            else:
+                still(img, t / "wallpaper.jpg"); wrote.append("wallpaper.jpg")
+                for f in ("wallpaper.mp4", "wallpaper.gif"):
+                    if (t / f).exists(): print(f"note: {f} still exists and is used over the still; delete it for a still wallpaper")
+        elif a.kind == "lock":
+            if ext in VIDEO | {".gif"}:
+                video(src, t / "lock.mp4", a, size); wrote.append("lock.mp4")
+            else:
+                still(img, t / "lock.jpg", cover(*size)); wrote.append("lock.jpg")
+                if (t / "lock.mp4").exists(): print("note: lock.mp4 exists and is used over lock.jpg; delete it for a still lock screen")
+        elif a.kind == "logo":
+            ff("-i", str(img), "-frames:v", "1", "-vf",
+               "format=rgba,scale=256:256:force_original_aspect_ratio=decrease,pad=256:256:(ow-iw)/2:(oh-ih)/2:color=black@0",
+               str(t / "logo.png")); wrote.append("logo.png")
+        elif a.kind == "grub":
+            still(img, t / "grub.jpg", cover(1920, 1080) + ",format=yuvj420p"); wrote.append("grub.jpg")
+        elif a.kind == "backdrop":
+            still(img if ext not in VIDEO | {".gif"} else src, t / "lock-backdrop.jpg",
+                  cover(*size) + ",gblur=sigma=28,eq=brightness=-0.08", at=a.start if ext in VIDEO | {".gif"} else None)
+            wrote.append("lock-backdrop.jpg")
+        elif a.kind == "quotes":
+            seen, out = set(), []
+            for line in src.read_text(encoding="utf-8").splitlines():
+                q = line.strip()
+                if q and q not in seen: seen.add(q); out.append(q)
+            if not out: die("no quotes in that file")
+            (t / "quotes.txt").write_text("\n".join(out) + "\n", encoding="utf-8"); wrote.append(f"quotes.txt ({len(out)} lines)")
+    print(f"theme-import: {a.id}: " + ", ".join(wrote))
+    cur = THEMES / "current"
+    if cur.is_symlink() and os.readlink(cur).rstrip("/").split("/")[-1] == a.id:
+        print(f"run 'theme-switch {a.id}' to apply" + (" (add --boot for GRUB)" if a.kind == "grub" else ""))
+
+if __name__ == "__main__":
+    try: main()
+    except subprocess.CalledProcessError as e: die(f"{e.cmd[0]} failed (exit {e.returncode})")

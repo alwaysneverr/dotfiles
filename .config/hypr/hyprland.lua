@@ -311,8 +311,6 @@ hl.window_rule({ name = "nmtui-float", match = { class = "^(nmtui-float)$" }, fl
 -- Media server (CIFS automount)
 hl.bind(mainMod .. " + SHIFT + V", launch("dolphin " .. os.getenv("HOME") .. "/M710q/Videos"))
 
--- Pinned calendar (Waybar clock right-click)
-hl.window_rule({ name = "calendar-float", match = { class = "^(zenity)$" }, float = true })
 
 -- ASUS touchpad key
 hl.bind("XF86TouchpadToggle", hl.dsp.exec_cmd("~/.local/bin/touchpad-toggle"))

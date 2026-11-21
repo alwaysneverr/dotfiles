@@ -1,0 +1,136 @@
+#!/usr/bin/env python3
+"""theme-new ID "Display Name" [--wallpaper FILE] [--from THEME] [--layout wuwa|stage|novel] [--boot]
+
+Creates ~/.config/themes/ID with a theme.ini based on THEME (default: shorekeeper). With --wallpaper,
+imports it and derives the whole palette (colours, ANSI, lock and tuigreet colours) from it.
+New themes are desktop-only (boot = no) unless --boot. Then add media with theme-import.
+"""
+import argparse, colorsys, configparser, math, os, re, shutil, subprocess, sys
+from pathlib import Path
+
+THEMES = Path.home() / ".config/themes"
+BIN = Path.home() / ".local/bin"
+
+def die(msg): sys.exit(f"theme-new: {msg}")
+def hx(h, l, s):
+    r, g, b = colorsys.hls_to_rgb((h % 360) / 360, max(0, min(1, l)), max(0, min(1, s)))
+    return "#%02x%02x%02x" % (round(r * 255), round(g * 255), round(b * 255))
+def hdist(a, b): d = abs(a - b) % 360; return min(d, 360 - d)
+def cmean(hs, ws):
+    x = sum(w * math.cos(math.radians(h)) for h, w in zip(hs, ws)); y = sum(w * math.sin(math.radians(h)) for h, w in zip(hs, ws))
+    return math.degrees(math.atan2(y, x)) % 360
+
+def pixels(img):
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(img), "-frames:v", "1", "-vf", "scale=96:54",
+                          "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
+    return [colorsys.rgb_to_hsv(raw[i] / 255, raw[i + 1] / 255, raw[i + 2] / 255) for i in range(0, len(raw) - 2, 3)]
+
+def palette(img):
+    px = pixels(img)
+    bins = {}
+    for h, s, v in px:   # vivid pixels vote for a hue, weighted by how vivid they are
+        if s > 0.3 and v > 0.35:
+            bins.setdefault(int(h * 24) % 24, []).append((h * 360, s * v, s))
+    ranked = sorted(bins.values(), key=lambda b: -sum(w for _, w, _ in b))
+    if ranked:
+        top = ranked[0]; ah = cmean([h for h, _, _ in top], [w for _, w, _ in top])
+        asat = max(0.45, min(0.75, sorted(s for _, _, s in top)[len(top) // 2]))
+        tw = sum(w for _, w, _ in top)
+        sec = next((b for b in ranked[1:] if sum(w for _, w, _ in b) > 0.15 * tw
+                    and hdist(cmean([h for h, _, _ in b], [w for _, w, _ in b]), ah) >= 40), None)
+    else:   # greyscale art: a calm steel blue
+        ah, asat, sec = 215, 0.45, None
+    dark = [(h * 360, s) for h, s, v in px if v < 0.35 and s > 0.08]
+    bh = cmean([h for h, _ in dark], [1] * len(dark)) if len(dark) > 20 else ah
+    bs = min(0.3, sum(s for _, s in dark) / len(dark)) if len(dark) > 20 else 0.12
+    acc = hx(ah, 0.62, asat)
+    secc = hx(cmean([h for h, _, _ in sec], [w for _, w, _ in sec]), 0.74, 0.45) if sec else hx(ah, 0.8, 0.35)
+    red = ah < 20 or ah > 330
+    c = {
+        "bg": hx(bh, 0.085, bs), "bg_alt": hx(bh, 0.1, bs), "view": hx(bh, 0.11, bs), "surface": hx(bh, 0.15, bs),
+        "card": hx(bh, 0.16, bs), "surface_hi": hx(ah, 0.33, 0.35), "prompt_dim": hx(bh, 0.2, 0.2),
+        "text": hx(bh, 0.9, 0.15), "text_bright": "#ffffff", "text_dim": hx(bh, 0.5, 0.12),
+        "accent": acc, "secondary": secc, "alert": hx(25, 0.6, 0.85) if red else hx(355, 0.62, 0.7),
+        "good": hx(150, 0.68, 0.4), "border_a": acc, "border_b": secc,
+    }
+    blue = acc if 190 <= ah <= 250 else hx(215, 0.65, 0.7)
+    base = [c["surface"], c["alert"], c["good"], hx(45, 0.75, 0.6), blue, hx(275, 0.7, 0.55), hx(190, 0.62, 0.5), c["text"]]
+    bright = [hx(bh, 0.38, 0.12)] + [lighten(x) for x in base[1:7]] + ["#ffffff"]
+    ansi = {f"color{i}": x for i, x in enumerate(base + bright)}
+    lock = {"accent_dim": hx(ah, 0.45, asat), "accent_glow": hx(ah, 0.88, 0.6), "silver": c["text"],
+            "ghost": hx(bh, 0.62, 0.14), "panel": c["surface"], "panel_light": c["surface_hi"],
+            "white": hx(bh, 0.97, 0.3), "shade": hx(bh, 0.05, bs)[1:], "ink": hx(bh, 0.17, 0.4)}
+    return c, ansi, lock, ah
+
+def lighten(x):
+    r, g, b = (int(x[i:i + 2], 16) / 255 for i in (1, 3, 5)); h, l, s = colorsys.rgb_to_hls(r, g, b)
+    return hx(h * 360, l + 0.1, s)
+
+def tui_name(h):
+    for lo, hi, n in ((20, 70, "yellow"), (70, 160, "green"), (160, 200, "cyan"), (200, 260, "blue"), (260, 335, "magenta")):
+        if lo <= h < hi: return n
+    return "red"
+
+def main():
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("id"); p.add_argument("name")
+    p.add_argument("--wallpaper", type=Path); p.add_argument("--from", dest="base", default="shorekeeper")
+    p.add_argument("--layout", choices=["wuwa", "stage", "novel"], default="wuwa"); p.add_argument("--boot", action="store_true")
+    a = p.parse_args()
+    if not re.fullmatch(r"[a-z0-9-]+", a.id) or a.id.startswith("_") or a.id == "current": die(f"bad theme id '{a.id}' (use a-z, 0-9, -)")
+    t = THEMES / a.id
+    if t.exists(): die(f"{t} already exists")
+    src = THEMES / a.base / "theme.ini"
+    if not src.exists(): die(f"no theme '{a.base}' to start from")
+    if a.wallpaper and not a.wallpaper.expanduser().is_file(): die(f"no such file: {a.wallpaper}")
+
+    cp = configparser.RawConfigParser(delimiters=("=",)); cp.optionxform = str; cp.read(src, encoding="utf-8")
+    for sec in ("meta", "colors", "ansi", "lock"):
+        if not cp.has_section(sec): cp.add_section(sec)
+    m = cp["meta"]
+    for k in ("publish", "art_link", "grub_theme", "plymouth_theme", "grub_logo", "plymouth_style", "boot"):
+        m.pop(k, None)
+    m["name"] = a.name
+    if a.boot: m["grub_theme"] = a.id; m["plymouth_theme"] = a.id
+    else: m["boot"] = "no"
+    lk = cp["lock"]
+    lk.pop("lock_layout", None)
+    if a.layout != "wuwa": lk["lock_layout"] = a.layout
+    lk["tagline"] = ""; lk["failtext"] = "Wrong password."; lk["footer"] = a.name
+    lk["product"] = f"{os.uname().nodename.upper()}  ·  {a.name.upper()}"
+
+    t.mkdir(parents=True)
+    try:
+        with open(t / "theme.ini", "w", encoding="utf-8") as f: cp.write(f)   # so theme-import accepts the id
+        derived = False
+        if a.wallpaper:
+            subprocess.run([str(BIN / "theme-import"), a.id, "wallpaper", str(a.wallpaper)], check=True)
+            c, ansi, lock, ah = palette(t / "wallpaper.jpg"); derived = True
+            cp["colors"].update(c); cp["ansi"].update(ansi)
+            for k, v in lock.items():
+                if k in lk or k == "ink" and a.layout == "novel": lk[k] = v
+            if a.layout == "novel": lk.setdefault("serif", "Noto Serif"); lk.setdefault("sans", "Noto Sans")
+            if "tuigreet_theme" in m:
+                n = tui_name(ah)
+                m["tuigreet_theme"] = f"border={n};text=white;prompt=light{n};time=light{n};action=light{n};button=gray;container=black"
+                m["tuigreet_matrix"] = f"light{n},{n},gray"
+        with open(t / "theme.ini", "w", encoding="utf-8") as f:
+            f.write(f"# {a.name} - made by theme-new from {a.base}" + (f", palette derived from {a.wallpaper.name}" if derived else "") + "\n")
+            cp.write(f)
+        (t / "quotes.txt").write_text(f"(no quotes yet: theme-import {a.id} quotes FILE)\n", encoding="utf-8")
+    except BaseException:
+        shutil.rmtree(t, ignore_errors=True); raise
+
+    print(f"theme-new: made {t}" + (" (desktop-only)" if not a.boot else " (with boot visuals)"))
+    if derived:
+        print("  palette: " + "  ".join(f"{k} {cp['colors'][k]}" for k in ("accent", "secondary", "alert", "bg")))
+    todo = [f"theme-import {a.id} {k} FILE" for k, f in (("wallpaper", "wallpaper.jpg"), ("logo", "logo.png"), ("lock", "lock.mp4"))
+            if not (t / f).exists()]
+    if a.layout == "stage": todo.append(f"theme-import {a.id} backdrop FILE")
+    if a.boot: todo.append(f"theme-import {a.id} grub FILE")
+    todo += [f"theme-import {a.id} quotes FILE", f"edit tagline/failtext in {t}/theme.ini", f"theme-switch {a.id}"]
+    print("next:\n  " + "\n  ".join(todo))
+
+if __name__ == "__main__":
+    try: main()
+    except subprocess.CalledProcessError as e: die(f"{os.path.basename(str(e.cmd[0]))} failed (exit {e.returncode})")
