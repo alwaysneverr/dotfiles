@@ -34,6 +34,7 @@ for d in sorted(T.iterdir()):
     if d.name in ("current", "_base") or d.is_symlink() or not ini.is_file(): continue
     cp = configparser.RawConfigParser(delimiters=("=",)); cp.read(ini, encoding="utf-8")
     meta = cp["meta"]; c = dict(cp["colors"]); lock = cp["lock"] if cp.has_section("lock") else {}
+    if meta.get("gallery", "yes").strip().lower() in ("no", "false", "0"): continue   # draft theme
     first = ini.read_text(encoding="utf-8").splitlines()[0]
     m = re.search(r"\(([^)]+)\)", first)
     src = meta.get("source") or (m.group(1) if m else "")

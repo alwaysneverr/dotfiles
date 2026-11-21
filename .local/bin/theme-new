@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """theme-new ID "Display Name" [--wallpaper FILE] [--from THEME] [--layout wuwa|stage|novel] [--boot]
+           [--accent HEX] [--secondary HEX]
+theme-new ID --repalette [--accent HEX] [--secondary HEX]
 
 Creates ~/.config/themes/ID with a theme.ini based on THEME (default: shorekeeper). With --wallpaper,
 imports it and derives the whole palette (colours, ANSI, lock and tuigreet colours) from it.
-New themes are desktop-only (boot = no) unless --boot. Then add media with theme-import.
+--accent/--secondary pin those colours and build the rest around them (handy for pale art, where the
+picked accent can land on skin tones). --repalette redoes the palette of an existing theme from its
+wallpaper.jpg and leaves everything else alone.
+New themes are desktop-only (boot = no) and left out of the gallery (gallery = no) until you change that.
 """
 import argparse, colorsys, configparser, math, os, re, shutil, subprocess, sys
 from pathlib import Path
@@ -25,7 +30,13 @@ def pixels(img):
                           "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
     return [colorsys.rgb_to_hsv(raw[i] / 255, raw[i + 1] / 255, raw[i + 2] / 255) for i in range(0, len(raw) - 2, 3)]
 
-def palette(img):
+def parse_hex(x):
+    if not x: return None
+    if not re.fullmatch(r"#?[0-9a-fA-F]{6}", x): die(f"not a colour: {x} (use #rrggbb)")
+    x = x.lstrip("#"); r, g, b = (int(x[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    h, l, s = colorsys.rgb_to_hls(r, g, b); return "#" + x.lower(), h * 360, s
+
+def palette(img, accent=None, secondary=None):
     px = pixels(img)
     bins = {}
     for h, s, v in px:   # vivid pixels vote for a hue, weighted by how vivid they are
@@ -45,6 +56,10 @@ def palette(img):
     bs = min(0.3, sum(s for _, s in dark) / len(dark)) if len(dark) > 20 else 0.12
     acc = hx(ah, 0.62, asat)
     secc = hx(cmean([h for h, _, _ in sec], [w for _, w, _ in sec]), 0.74, 0.45) if sec else hx(ah, 0.8, 0.35)
+    if accent:   # pinned accent: backgrounds take its hue too, so nothing drifts toward the art's skin tones
+        acc, ah, asat = accent; asat = max(0.35, min(0.8, asat)); bh, bs = ah, min(0.28, max(0.1, asat * 0.3))
+        if not sec: secc = hx(ah, 0.8, 0.35)
+    if secondary: secc = secondary[0]
     red = ah < 20 or ah > 330
     c = {
         "bg": hx(bh, 0.085, bs), "bg_alt": hx(bh, 0.1, bs), "view": hx(bh, 0.11, bs), "surface": hx(bh, 0.15, bs),
@@ -71,13 +86,45 @@ def tui_name(h):
         if lo <= h < hi: return n
     return "red"
 
+def apply(cp, img, layout, accent, secondary):
+    c, ansi, lock, ah = palette(img, accent, secondary)
+    m, lk = cp["meta"], cp["lock"]
+    cp["colors"].update(c); cp["ansi"].update(ansi)
+    for k, v in lock.items():
+        if k in lk or k == "ink" and layout == "novel": lk[k] = v
+    if layout == "novel": lk.setdefault("serif", "Noto Serif"); lk.setdefault("sans", "Noto Sans")
+    if "tuigreet_theme" in m:
+        n = tui_name(ah)
+        m["tuigreet_theme"] = f"border={n};text=white;prompt=light{n};time=light{n};action=light{n};button=gray;container=black"
+        m["tuigreet_matrix"] = f"light{n},{n},gray"
+
+def repalette(a):
+    t = THEMES / a.id; ini = t / "theme.ini"
+    if not ini.exists(): die(f"no theme '{a.id}'")
+    if not (t / "wallpaper.jpg").exists(): die(f"{a.id} has no wallpaper.jpg to take colours from")
+    first = ini.read_text(encoding="utf-8").splitlines()[0]
+    cp = configparser.RawConfigParser(delimiters=("=",)); cp.optionxform = str; cp.read(ini, encoding="utf-8")
+    for sec in ("meta", "colors", "ansi", "lock"):
+        if not cp.has_section(sec): cp.add_section(sec)
+    apply(cp, t / "wallpaper.jpg", cp["lock"].get("lock_layout", "wuwa"), parse_hex(a.accent), parse_hex(a.secondary))
+    with open(ini, "w", encoding="utf-8") as f:
+        if first.startswith("#"): f.write(first + "\n")
+        cp.write(f)
+    print(f"theme-new: new palette for {a.id}: " + "  ".join(f"{k} {cp['colors'][k]}" for k in ("accent", "secondary", "alert", "bg")))
+    print(f"run 'theme-switch {a.id}' to apply")
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("id"); p.add_argument("name")
+    p.add_argument("id"); p.add_argument("name", nargs="?")
+    p.add_argument("--repalette", action="store_true")
+    p.add_argument("--accent"); p.add_argument("--secondary")
     p.add_argument("--wallpaper", type=Path); p.add_argument("--from", dest="base", default="shorekeeper")
     p.add_argument("--layout", choices=["wuwa", "stage", "novel"], default="wuwa"); p.add_argument("--boot", action="store_true")
     a = p.parse_args()
     if not re.fullmatch(r"[a-z0-9-]+", a.id) or a.id.startswith("_") or a.id == "current": die(f"bad theme id '{a.id}' (use a-z, 0-9, -)")
+    if a.repalette: return repalette(a)
+    if not a.name: die('needs a display name: theme-new ID "Name" ...')
+    acc, sec2 = parse_hex(a.accent), parse_hex(a.secondary)
     t = THEMES / a.id
     if t.exists(): die(f"{t} already exists")
     src = THEMES / a.base / "theme.ini"
@@ -93,6 +140,7 @@ def main():
     m["name"] = a.name
     if a.boot: m["grub_theme"] = a.id; m["plymouth_theme"] = a.id
     else: m["boot"] = "no"
+    m["gallery"] = "no"
     lk = cp["lock"]
     lk.pop("lock_layout", None)
     if a.layout != "wuwa": lk["lock_layout"] = a.layout
@@ -105,15 +153,7 @@ def main():
         derived = False
         if a.wallpaper:
             subprocess.run([str(BIN / "theme-import"), a.id, "wallpaper", str(a.wallpaper)], check=True)
-            c, ansi, lock, ah = palette(t / "wallpaper.jpg"); derived = True
-            cp["colors"].update(c); cp["ansi"].update(ansi)
-            for k, v in lock.items():
-                if k in lk or k == "ink" and a.layout == "novel": lk[k] = v
-            if a.layout == "novel": lk.setdefault("serif", "Noto Serif"); lk.setdefault("sans", "Noto Sans")
-            if "tuigreet_theme" in m:
-                n = tui_name(ah)
-                m["tuigreet_theme"] = f"border={n};text=white;prompt=light{n};time=light{n};action=light{n};button=gray;container=black"
-                m["tuigreet_matrix"] = f"light{n},{n},gray"
+            apply(cp, t / "wallpaper.jpg", a.layout, acc, sec2); derived = True
         with open(t / "theme.ini", "w", encoding="utf-8") as f:
             f.write(f"# {a.name} - made by theme-new from {a.base}" + (f", palette derived from {a.wallpaper.name}" if derived else "") + "\n")
             cp.write(f)
@@ -128,7 +168,8 @@ def main():
             if not (t / f).exists()]
     if a.layout == "stage": todo.append(f"theme-import {a.id} backdrop FILE")
     if a.boot: todo.append(f"theme-import {a.id} grub FILE")
-    todo += [f"theme-import {a.id} quotes FILE", f"edit tagline/failtext in {t}/theme.ini", f"theme-switch {a.id}"]
+    todo += [f"theme-import {a.id} quotes FILE", f"edit tagline/failtext in {t}/theme.ini", f"theme-switch {a.id}",
+             "when it's ready for the gallery: delete 'gallery = no' in theme.ini, then run theme-gallery"]
     print("next:\n  " + "\n  ".join(todo))
 
 if __name__ == "__main__":

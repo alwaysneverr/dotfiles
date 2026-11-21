@@ -19,6 +19,8 @@ Rectangle {
     readonly property color cLight:  config.white || "#f5f7fb"
     readonly property string serif:  config.serif || "Noto Serif"
     readonly property string sans:   config.sans || "Noto Sans"
+    // edge darkening; lower it (vignette = 0.3) for pale, bright art
+    readonly property real vig: config.vignette ? Number(config.vignette) : 0.62
 
     // background media: plays (video) or rests (image) the same way as the other layouts
     readonly property bool imageMode: config.type === "image"
@@ -67,7 +69,7 @@ Rectangle {
         horizontalRadius: width * 0.72; verticalRadius: height * 0.8
         gradient: Gradient {
             GradientStop { position: 0.55; color: "transparent" }
-            GradientStop { position: 1.0;  color: Qt.rgba(0, 0, 0, 0.62) }
+            GradientStop { position: 1.0;  color: Qt.rgba(0, 0, 0, root.vig) }
         }
     }
 
