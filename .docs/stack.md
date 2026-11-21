@@ -36,6 +36,7 @@
 | Images | `imv` | `imv-folder` opens the whole folder |
 | Video | `mpv` | uosc and videoclip, installed by hand |
 | Calendar | `quickshell` | popup calendar on right-click of the date (`calendar-qs`) |
+| OSD | `quickshell` | volume, mic and brightness pop-up (`qs -c osd`) |
 | Bluetooth | `bluez`, `blueman` | |
 | Hardware keys | `brightnessctl`, `playerctl` | |
 | Snapshots | `timeshift`, `cronie` | rsync, daily |

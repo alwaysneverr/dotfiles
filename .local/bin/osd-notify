@@ -1,0 +1,3 @@
+#!/bin/sh
+# osd-notify brightness|volume: ask the OSD daemon to show the current level
+qs ipc -c osd call osd "${1:-brightness}" >/dev/null 2>&1 || qs -c osd ipc call osd "${1:-brightness}" >/dev/null 2>&1

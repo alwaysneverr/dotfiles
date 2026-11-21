@@ -9,4 +9,5 @@ if [ -e "$f" ]; then
   hyprctl dispatch 'hl.dsp.submap("reset")' >/dev/null 2>&1
 fi
 for app in waybar kitty; do uwsm app -t service -- "$app" >/dev/null 2>&1; done
+uwsm app -t service -- qs -c osd >/dev/null 2>&1
 WALL_TRANSITION=fade "$HOME/.local/bin/wallpaper-set" >/dev/null 2>&1
