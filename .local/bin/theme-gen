@@ -188,7 +188,10 @@ THEME_ARROW='{c['border_a']}'
         f"[General]\nbackground={media[0]}\ntype={kind}\n"
         f"bg={c['bg_alt']}\naccent={c['accent']}\nalert={c['alert']}\n"
         + "".join(f"{k}={L[k]}\n" for k in ("accent_dim", "accent_glow", "silver", "ghost", "panel", "panel_light", "white",
-                                            "shade", "tagline", "failtext", "footer", "product")), encoding="utf-8")
+                                            "shade", "tagline", "failtext", "footer", "product"))
+        # any other [lock] keys (e.g. ink, serif for the "novel" layout) pass through as-is
+        + "".join(f"{k}={v}\n" for k, v in L.items() if k not in ("accent_dim", "accent_glow", "silver", "ghost", "panel",
+                  "panel_light", "white", "shade", "tagline", "failtext", "footer", "product", "lock_layout")), encoding="utf-8")
     (q / "metadata.desktop").write_text(f"[SddmGreeterTheme]\nName={name}\nDescription={m['name']} lock theme\nType=sddm-theme\nVersion=1.0\nMainScript=Main.qml\nConfigFile=theme.conf\n")
 
 def fastfetch(name):
