@@ -175,6 +175,10 @@ tooltip label {
     background-color: transparent;
 }
 
+#status #wireplumber {
+    padding-right: 9px;
+}
+
 #workspaces button {
     font-size: 19px;
 }
