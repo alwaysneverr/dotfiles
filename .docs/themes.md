@@ -49,10 +49,7 @@ Kitty, Waybar, Dunst, fuzzel, Hyprland, the wallpaper (with a transition), hyprl
 
 ## Adding a theme
 
-1. `cp -r ~/.config/themes/shorekeeper ~/.config/themes/NAME`, then delete its `gen/`.
-2. Edit `theme.ini`: `[meta]` name and boot theme names, `[colors]`, `[ansi]`, `[lock]` texts.
-3. Replace `wallpaper.jpg` (16:9; add `wallpaper.mp4` or `wallpaper.gif` for an animated one, the `.jpg` stays as its still version), `logo.png` (emblem, ~256 px, transparent), `lock.mp4` (1080p loop), `grub.jpg` (1920×1080, baseline JPEG) and `quotes.txt`.
-4. `theme-switch NAME`, then `theme-switch NAME --boot` once happy.
+`theme-new` creates a theme (palette included) from a wallpaper, and `theme-import` converts the wallpaper, lock clip, emblem, GRUB art and quotes. The full walkthrough, down to GRUB, Plymouth and tuigreet: [Making a new theme](new-theme.md).
 
 ### Optional per-theme settings
 
