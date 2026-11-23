@@ -13,7 +13,6 @@ from pathlib import Path
 
 H = Path.home(); T = H / ".config/themes"; P = H / "Pictures/readme"; OUT = H / ".docs/gallery.md"
 P.mkdir(parents=True, exist_ok=True)
-cur = os.path.basename(os.path.realpath(T / "current"))
 SW = ("bg", "surface_hi", "text", "accent", "secondary", "alert", "good")
 
 def swatch(tid, c):
@@ -48,7 +47,7 @@ for d in sorted(T.iterdir()):
     swatch(d.name, c)
     publish = meta.get("publish", "yes").strip().lower() not in ("no", "false", "0")
     themes.append(dict(id=d.name, name=meta.get("name", d.name), src=src, boot=boot, wall=wall, lock=lockkind,
-                       publish=publish, art_link=meta.get("art_link", ""),
+                       publish=publish, art_link=meta.get("art_link", ""), art_request=meta.get("art_request", ""),
                        accent=c.get("accent", ""), tagline=lock.get("tagline", ""), dir=d))
 
 L = ["[← README](../README.md)", "", "# Theme gallery", "",
@@ -56,8 +55,7 @@ L = ["[← README](../README.md)", "", "# Theme gallery", "",
      "| Theme | From | Accent | Wallpaper | Lock background | Boot visuals |",
      "|-------|------|--------|-----------|-----------------|--------------|"]
 for t in themes:
-    star = " (active)" if t["id"] == cur else ""
-    L.append(f'| [{t["name"]}](#{t["id"]}){star} | {t["src"] or "—"} | `{t["accent"]}` | {t["wall"]} | {t["lock"]} | {"GRUB, Plymouth, tuigreet" if t["boot"] else "—"} |')
+    L.append(f'| [{t["name"]}](#{t["id"]}) | {t["src"] or "—"} | `{t["accent"]}` | {t["wall"]} | {t["lock"]} | {"GRUB, Plymouth, tuigreet" if t["boot"] else "—"} |')
 for t in themes:
     d = t["dir"]; i = t["id"]
     L += ["", f'<a id="{i}"></a>', "", f'## {t["name"]}', ""]
@@ -65,8 +63,9 @@ for t in themes:
     # one picture per row: GitHub shrinks images that share a table row
     L += [img(P / f"palette-{i}.svg", f'{t["name"]} palette', 280), ""]
     if not t["publish"]:   # the artist asked for no re-uploads: no pictures of the art in the repo
-        L += ["*The art for this theme isn't included in the repository, at the artist's request.*"
-              + (f' See the artist\'s own posts: {t["art_link"]}' if t["art_link"] else ""), "",
+        req = f'[request]({t["art_request"]})' if t["art_request"] else "request"
+        L += [f"*The art for this theme isn't included in the repository, at the artist's {req}.*"
+              + (f' See the artist\'s own posts [here]({t["art_link"]}).' if t["art_link"] else ""), "",
               "**Emblem**", "", img(d / "logo.png", t["name"] + " emblem", 160), ""]
         if t["boot"]:
             L += ["**Boot splash (Plymouth)**", "", img(P / f"plymouth-{i}.gif", t["name"] + " Plymouth"), ""]
