@@ -1,31 +1,38 @@
-# Han Sooyoung GRUB theme: same structure as her lock screen.
-# Full-screen art (grub.jpg, copied in as background.jpg); the menu sits on a frosted panel
-# centred in the train window, the selected entry marked by a ruled line; countdown in the bottom band.
+# Han Sooyoung GRUB theme, after her "novel" lock screen: full-screen art (grub.jpg, copied in as
+# background.jpg), the menu on a frosted panel at the left, the selected entry marked by a ruled line.
+#
+# GRUB draws text without anti-aliasing, so:
+# - the menu uses a bitmap book face: New Century Schoolbook from the X11 100dpi fonts, hand-drawn
+#   for pixels, so it stays crisp where outline fonts turn jagged;
+# - the hint line is a pre-rendered, smooth image (hint.png, TeX Gyre Schola, the same face's
+#   outline cousin). The menu entries and the countdown change at boot, so they stay text.
+#
+# Rebuild the fonts (pacman -S xorg-fonts-100dpi; the pixel size must match the bitmap exactly):
+#   grub-mkfont -n "HSY Book" -s 25 -o book-25.pf2      /usr/share/fonts/100dpi/ncenR18.pcf.gz
+#   grub-mkfont -n "HSY Book" -s 25 -o book-bold-25.pf2 /usr/share/fonts/100dpi/ncenB18.pcf.gz
+#   grub-mkfont -n "HSY Book" -s 17 -o book-17.pf2      /usr/share/fonts/100dpi/ncenR12.pcf.gz
 title-text: ""
 desktop-image: "background.jpg"
 desktop-color: "#0d0e12"
 terminal-font: "Terminus Regular 14"
-terminal-left: "10%"
-terminal-top: "10%"
-terminal-width: "80%"
-terminal-height: "80%"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
 terminal-border: "0"
 
 + boot_menu {
   left = 4%
   top = 33%
-  width = 460
-  height = 132
+  width = 520
+  height = 156
   menu_pixmap_style = "menu_*.png"
-  item_font = "HSY Sans Regular 20"
-  selected_item_font = "HSY Sans Bold 20"
-  # serif ("book") look instead; bigger sizes hide GRUB's missing anti-aliasing better:
-  # item_font = "HSY Serif Regular 24"
-  # selected_item_font = "HSY Serif Bold 24"
+  item_font = "HSY Book Regular 25"
+  selected_item_font = "HSY Book Bold 25"
   item_color = "#c9cfdc"
   selected_item_color = "#ffffff"
   selected_item_pixmap_style = "select_*.png"
-  item_height = 32
+  item_height = 38
   item_padding = 14
   item_spacing = 2
   icon_width = 0
@@ -42,23 +49,22 @@ terminal-border: "0"
   scrollbar_bottom_pad = 0
 }
 
-+ label {
-  left = 0
-  top = 100%-62
-  width = 460%
-  align = "center"
-  text = "Enter to boot   ·   e to edit   ·   c for a console"
-  font = "HSY Sans Regular 14"
-  color = "#a9b0c2"
+# hint line: a smooth pre-rendered image, centred near the bottom
++ image {
+  left = 50%-193
+  top = 100%-66
+  width = 386
+  height = 20
+  file = "hint.png"
 }
 
 + label {
   id = "__timeout__"
   left = 0
   top = 100%-36
-  width = 460%
+  width = 100%
   align = "center"
   text = "Starting in %d s"
-  font = "HSY Sans Regular 14"
+  font = "HSY Book Regular 17"
   color = "#dfe3ec"
 }
