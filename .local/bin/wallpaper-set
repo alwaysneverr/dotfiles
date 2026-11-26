@@ -11,6 +11,11 @@
 T="$HOME/.config/themes/current"
 f=$1; video=""
 systemctl --user stop wallpaper-video 2>/dev/null; pkill -x mpvpaper 2>/dev/null
+# theme-cycle: a theme with a walls/ deck shows the wallpaper dealt last
+if [ -z "$f" ]; then
+  s="$HOME/.local/state/theme-walls/$(basename "$(readlink -f "$T")")"
+  [ -f "$s" ] && [ -f "$T/walls/$(cat "$s")" ] && f="$T/walls/$(cat "$s")"
+fi
 
 if [ -z "$f" ]; then
   if [ ! -e "$HOME/.config/themes/.still" ]; then

@@ -1,0 +1,18 @@
+#!/bin/sh
+# theme-wall              list the current theme's walls/ wallpapers (* = showing)
+# theme-wall NAME         show one; its accent/secondary from walls.ini tint the desktop
+# theme-wall off          back to the theme's own wallpaper and colours
+T="$HOME/.config/themes/current"; id=$(basename "$(readlink -f "$T")")
+S="$HOME/.local/state/theme-walls"; mkdir -p "$S"
+case "$1" in
+  "") cur=$(cat "$S/$id" 2>/dev/null)
+      for f in "$T"/walls/*; do [ -f "$f" ] || continue; n=$(basename "$f")
+        [ "$n" = "$cur" ] && echo "* ${n%.*}" || echo "  ${n%.*}"; done; exit 0 ;;
+  off) rm -f "$S/$id" ;;
+  *) n=$(basename "$1"); [ -f "$T/walls/$n" ] || n="$n.jpg"
+     [ -f "$T/walls/$n" ] || { echo "theme-wall: no '$1' in $id/walls/ (run theme-wall to list)" >&2; exit 1; }
+     echo "$n" > "$S/$id" ;;
+esac
+"$HOME/.local/bin/theme-gen" "$id" >/dev/null && hyprctl reload >/dev/null 2>&1
+pkill -USR2 -x waybar; dunstctl reload >/dev/null 2>&1; pkill -USR1 -x kitty
+WALL_TRANSITION=fade "$HOME/.local/bin/wallpaper-set" >/dev/null 2>&1

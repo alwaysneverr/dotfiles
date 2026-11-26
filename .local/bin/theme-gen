@@ -13,7 +13,24 @@ def load(name):
         sys.exit(f"theme-gen: no theme '{name}' ({p} missing)")
     cp = configparser.RawConfigParser(delimiters=("=",))
     cp.read(p, encoding="utf-8")
+    walls_tint(name, cp)
     return cp
+
+def walls_tint(name, cp):
+    """theme-cycle: while one of the theme's walls/ wallpapers is up, its accent/secondary from walls.ini
+    replace the theme's own (window borders follow when they matched). The lock screen keeps the theme's accent."""
+    wi = THEMES / name / "walls.ini"; st = HOME / ".local/state/theme-walls" / name
+    if not (wi.is_file() and st.is_file() and cp.has_section("colors")): return
+    wall = st.read_text().strip()
+    w = configparser.RawConfigParser(delimiters=("=",)); w.read(wi, encoding="utf-8")
+    if not w.has_section(wall): return
+    c = cp["colors"]
+    if cp.has_section("lock"): cp["lock"]["base_accent"] = c["accent"]
+    for k, b in (("accent", "border_a"), ("secondary", "border_b")):
+        new = w[wall].get(k, "").strip()
+        if not new: continue
+        if c.get(b, "").lower() == c.get(k, "").lower(): c[b] = new
+        c[k] = new
 
 def h(c):            # "#rrggbb" -> "rrggbb"
     return c.strip().lstrip("#").lower()
@@ -186,12 +203,12 @@ THEME_ARROW='{c['border_a']}'
         p.symlink_to(target)
     (q / "theme.conf").write_text(
         f"[General]\nbackground={media[0]}\ntype={kind}\n"
-        f"bg={c['bg_alt']}\naccent={c['accent']}\nalert={c['alert']}\n"
+        f"bg={c['bg_alt']}\naccent={L.get('base_accent', c['accent'])}\nalert={c['alert']}\n"
         + "".join(f"{k}={L[k]}\n" for k in ("accent_dim", "accent_glow", "silver", "ghost", "panel", "panel_light", "white",
                                             "shade", "tagline", "failtext", "footer", "product"))
         # any other [lock] keys (e.g. ink, serif for the "novel" layout) pass through as-is
         + "".join(f"{k}={v}\n" for k, v in L.items() if k not in ("accent_dim", "accent_glow", "silver", "ghost", "panel",
-                  "panel_light", "white", "shade", "tagline", "failtext", "footer", "product", "lock_layout")), encoding="utf-8")
+                  "panel_light", "white", "shade", "tagline", "failtext", "footer", "product", "lock_layout", "base_accent")), encoding="utf-8")
     (q / "metadata.desktop").write_text(f"[SddmGreeterTheme]\nName={name}\nDescription={m['name']} lock theme\nType=sddm-theme\nVersion=1.0\nMainScript=Main.qml\nConfigFile=theme.conf\n")
 
 def fastfetch(name):
