@@ -62,8 +62,7 @@ App icons are mapped by window class in `window-rewrite` (`.config/waybar/config
 
 ## Launcher icons
 
-hyprtoolkit 0.6.0 has two icon bugs: absolute `Icon=` paths that include a file extension fail ([hyprlauncher#152](https://github.com/hyprwm/hyprlauncher/issues/152)), and icons in `~/.local/share/icons` are missed (fixed upstream in [hyprtoolkit#157](https://github.com/hyprwm/hyprtoolkit/pull/157), not released yet). Fixes used here:
+hyprtoolkit has one icon bug left: absolute `Icon=` paths that include a file extension fail ([hyprlauncher#152](https://github.com/hyprwm/hyprlauncher/issues/152)). Icons in `~/.local/share/icons`, such as Steam's game icons, are found since hyprtoolkit 0.7.0 ([#157](https://github.com/hyprwm/hyprtoolkit/pull/157)). Fixes used here:
 
 - Copy the app's `.desktop` file to `~/.local/share/applications/` and set `Icon=` to a theme icon name.
-- Steam game icons live in `~/.local/share/icons/hicolor`; symlink them into `/usr/share/icons/hicolor` (see the loop in my notes) after adding a game. Not needed once hyprtoolkit 0.6.0 is replaced by a newer release.
 - Hide clutter (Wine entries and similar) with `NoDisplay=true` in a local copy.
