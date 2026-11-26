@@ -1,0 +1,69 @@
+# Akane Kurokawa GRUB theme, after her "stage" lock screen: the art fills the screen, and the menu sits
+# on a lit card at the left (indigo, teal border and glow, like the lock's framed clip), with the
+# selected entry in a teal pill like the lock's password field.
+#
+# GRUB draws text without anti-aliasing, so:
+# - menu and countdown use a bitmap sans (Lucida Sans from the X11 100dpi fonts, drawn for pixels);
+# - the card, her star, name and the hint line are one smooth pre-rendered image (card.png).
+#
+# Rebuild the fonts (pacman -S xorg-fonts-100dpi; the pixel size must match the bitmap exactly):
+#   grub-mkfont -n "AK Sans" -s 20 -o ak-sans-20.pf2      /usr/share/fonts/100dpi/luRS14.pcf.gz
+#   grub-mkfont -n "AK Sans" -s 20 -o ak-sans-bold-20.pf2 /usr/share/fonts/100dpi/luBS14.pcf.gz
+#   grub-mkfont -n "AK Sans" -s 17 -o ak-sans-17.pf2      /usr/share/fonts/100dpi/luRS12.pcf.gz
+title-text: ""
+desktop-image: "background.jpg"
+desktop-color: "#0e1120"
+terminal-font: "Terminus Regular 14"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
+
+
++ boot_menu {
+  left = 6%+10
+  top = 50%-99
+  width = 480
+  height = 192
+  item_font = "AK Sans Regular 20"
+  selected_item_font = "AK Sans Bold 20"
+  item_color = "#dde6f5"
+  selected_item_color = "#ffffff"
+  selected_item_pixmap_style = "select_*.png"
+  item_height = 36
+  item_padding = 16
+  item_spacing = 4
+  icon_width = 0
+  icon_height = 0
+  item_icon_space = 0
+  scrollbar = true
+  scrollbar_frame = "scroll_frame_*.png"
+  scrollbar_thumb = "scroll_thumb_*.png"
+  scrollbar_width = 4
+  scrollbar_slice = "center"
+  scrollbar_left_pad = 8
+  scrollbar_right_pad = 0
+  scrollbar_top_pad = 0
+  scrollbar_bottom_pad = 0
+}
+
++ label {
+  id = "__timeout__"
+  left = 6%+26
+  top = 50%+129
+  width = 448
+  align = "left"
+  text = "Starting in %d s"
+  font = "AK Sans Regular 17"
+  color = "#7fdcec"
+}
+
+# the card (500x326, plus 14 px of glow on every side)
++ image {
+  left = 6%-14
+  top = 50%-177
+  width = 528
+  height = 354
+  file = "card.png"
+}
