@@ -9,4 +9,4 @@ case "$1" in
     *) exit 1 ;;
 esac
 if [ -n "$GEOM" ]; then grim -g "$GEOM" - | tee "$FILE" | wl-copy; else grim - | tee "$FILE" | wl-copy; fi
-notify-send "Screenshot" "$MSG" -i camera
+notify-send "Screenshot" "$MSG" -i "$FILE"
